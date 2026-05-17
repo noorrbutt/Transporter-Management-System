@@ -1767,7 +1767,7 @@ a:focus {
 }
 
 .top_nav li a i {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .navbar-static-top {
@@ -1798,7 +1798,7 @@ a:focus {
 
 .nav.side-menu>li>a {
   margin-bottom: 6px;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .nav.side-menu>li>a i {
@@ -1826,7 +1826,7 @@ a:focus {
 
 .nav.child_menu li:hover>a,
 .nav.child_menu li.active>a {
-  color: #2c3e50 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .nav.child_menu li {
@@ -1864,7 +1864,7 @@ a:focus {
 .nav.child_menu>li>a {
   color: #e7e7e7;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .nav.child_menu li li:hover,
@@ -2411,7 +2411,7 @@ table.tile_info {
 table.tile_info td {
   text-align: left;
   padding: 1px;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 table.tile_info td p {
@@ -3389,7 +3389,7 @@ button,
 }
 
 .mail_list h3 {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: bold;
   margin: 0px 0 6px;
 }
@@ -3567,7 +3567,7 @@ legend {
   height: 23px;
   color: #bbb;
   line-height: 24px;
-  font-size: 15px;
+  font-size: 17px;
   top: 0px;
   width: 34px;
   text-align: center;
@@ -4660,7 +4660,7 @@ ul.project_files li a i {
   position: relative;
   display: block;
   text-align: center;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: #fff;
   -webkit-transform: rotate(45deg);
@@ -6254,6 +6254,89 @@ ul.notifications {
 
 .calendar-exibit .calendar-table {
   padding: 0 0 4px 0;
+}
+
+/* === SIDEBAR 3RD-LEVEL TEXT OVERRIDES === */
+.nav.child_menu .nav.child_menu>li>a {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.nav.child_menu .nav.child_menu>li>a:hover {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.nav.child_menu .nav.child_menu li.active>a,
+.nav.child_menu .nav.child_menu li.current-page>a {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* === GLOBAL FONT SIZE OVERRIDES === */
+body {
+  font-size: 17px;
+}
+
+.nav.side-menu>li>a {
+  font-size: 17px;
+}
+
+.nav.side-menu>li>a i {
+  font-size: 17px;
+}
+
+.nav.child_menu>li>a {
+  font-size: 14px;
+}
+
+.nav.child_menu .nav.child_menu>li>a {
+  font-size: 13.5px;
+}
+
+.x_content,
+.x_panel {
+  font-size: 17px;
+}
+
+table,
+.table {
+  font-size: 14px;
+}
+
+.form-control {
+  font-size: 14px;
+}
+
+label,
+.col-form-label {
+  font-size: 14px;
+}
+
+.btn {
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 2.2rem;
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+p,
+li,
+td,
+th,
+span,
+div {
+  font-size: inherit;
 }
 
 #slash {

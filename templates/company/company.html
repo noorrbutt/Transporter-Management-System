@@ -79,7 +79,10 @@
                                                   </div>
                                                   <div class="modal-footer">
                                                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                      <a href="{% url 'delete_company' company.cid %}" class="btn btn-danger">Delete</a>
+                                                      <form method="post" action="{% url 'delete_company' company.cid %}" style="display:inline;">
+                                                          {% csrf_token %}
+                                                          <button type="submit" class="btn btn-danger">Delete</button>
+                                                      </form>
                                                   </div>
                                               </div>
                                           </div>
