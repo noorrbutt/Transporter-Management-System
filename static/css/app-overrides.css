@@ -90,7 +90,7 @@
 .btn.btn-info:hover {
     background-color: #f7d794 !important;
     border-color: #f7d794 !important;
-    color: #ffffff !important;
+    color: #2c3e50 !important;
     transition: all 0.3s ease;
 }
 
@@ -204,7 +204,7 @@
 .nav.side-menu>li>a:active {
     background-color: #f7d794 !important;
     background: #f7d794 !important;
-    color: #ffffff !important;
+    color: #2c3e50 !important;
     border-color: transparent !important;
     outline: none !important;
     box-shadow: none !important;
@@ -220,7 +220,7 @@
     background-color: #f7d794 !important;
     background: #f7d794 !important;
     border-color: #f7d794 !important;
-    color: #ffffff !important;
+    color: #2c3e50 !important;
 }
 
 /* Nested Child Menu (3rd level) */
@@ -282,7 +282,7 @@
 .pagination>li>span:hover {
     background-color: #f7d794 !important;
     border-color: #f7d794 !important;
-    color: #ffffff !important;
+    color: #2c3e50 !important;
 }
 
 /* Active pagination */
@@ -290,7 +290,7 @@
 .pagination>.active>span {
     background-color: #f7d794 !important;
     border-color: #f7d794 !important;
-    color: #ffffff !important;
+    color: #2c3e50 !important;
 }
 
 /* Modern Top Navigation Bar Styling */
@@ -447,7 +447,7 @@
 
 .dropdown-usermenu .dropdown-item:hover {
     background: #f7d794 !important;
-    color: #ffffff !important;
+    color: #2c3e50 !important;
     transform: none !important;
     text-decoration: none !important;
 }
