@@ -128,7 +128,8 @@ def add_driver_training(request, D_ID):
                     setattr(meeting_train, training_no, date)
                     meeting_train.save()
                 except Exception as e:
-                    print(f"An error occurred: {str(e)}")
+                    messages.error(request, f"Operation failed: {str(e)}")
+                    return redirect(request.path)
             else:
                 meeting_train = annual_training_driver(
                     user=driver, **{training_no: date}
@@ -150,8 +151,8 @@ def add_driver_training(request, D_ID):
             context = {"driver": driver, "drills": drills, "training": training}
             return render(request, "training/add_training.html", context)
     except Exception as e:
-        print(str(e))
-        return HttpResponseRedirect("/")
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
@@ -162,9 +163,6 @@ def add_tbm(request, D_ID):
         if request.method == "POST":
             meeting_topic = request.POST.get("meeting_topic")
             tbm_obj = tool_box_meeting_topics.objects.get(meeting_topic=meeting_topic)
-            meetings_old = driver_tool_box_meeting_attended.objects.get(
-                meeting_attended_by=driver, meetings_attended=tbm_obj
-            )
             existing_record = driver_tool_box_meeting_attended.objects.filter(
                 meeting_attended_by=driver, meetings_attended=tbm_obj
             ).first()
@@ -172,8 +170,7 @@ def add_tbm(request, D_ID):
                 tool = driver_tool_box_meeting_attended(
                     meeting_attended_by=driver,
                     meetings_attended=tbm_obj,
-                    no_of_times_meeting_attended=meetings_old.no_of_times_meeting_attended
-                    + 1,
+                    no_of_times_meeting_attended=1,
                 )
                 tool.save()
             else:
@@ -185,8 +182,8 @@ def add_tbm(request, D_ID):
             context = {"driver": driver, "tbms": tbm}
             return render(request, "tbm/add_tbm.html", context)
     except Exception as e:
-        print(str(e))
-        return HttpResponseRedirect("/")
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
@@ -212,8 +209,8 @@ def add_driver_violation(request, D_ID):
             context = {"driver": driver, "violations": violation}
             return render(request, "violation/add_driver_violation.html", context)
     except Exception as e:
-        print(str(e))
-        return HttpResponseRedirect("/")
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
@@ -235,8 +232,9 @@ def add_maker(request):
             return HttpResponseRedirect("/makers")
         else:
             return render(request, "vehicle_maker/add_vm.html", {"action": "Add"})
-    except Exception:
-        return HttpResponseRedirect("/makers")
+    except Exception as e:
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
@@ -247,8 +245,9 @@ def edit_maker(request, maker_id):
             maker.VMNAME = request.POST.get("maker")
             maker.save()
             return HttpResponseRedirect("/makers")
-    except Exception:
-        return HttpResponseRedirect("/makers")
+    except Exception as e:
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
     return render(
         request, "vehicle_maker/add_vm.html", {"maker": maker, "action": "Edit"}
     )
@@ -277,8 +276,9 @@ def add_owner(request):
             return HttpResponseRedirect("/owners")
         else:
             return render(request, "vehicle_owner/add_vo.html", {"action": "Add"})
-    except Exception:
-        return HttpResponseRedirect("/owners")
+    except Exception as e:
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
@@ -289,8 +289,9 @@ def edit_owner(request, owner_id):
             owner.VO_name = request.POST.get("vowner")
             owner.save()
             return HttpResponseRedirect("/owners")
-    except Exception:
-        return HttpResponseRedirect("/owners")
+    except Exception as e:
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
     return render(
         request, "vehicle_owner/add_vo.html", {"owner": owner, "action": "Edit"}
     )
@@ -414,8 +415,8 @@ def add_driver(request):
             context = {"omc": omcc, "loc": locc, "action": "Add"}
             return render(request, "driver/add_driver.html", context)
     except Exception as e:
-        print(str(e))
-        return HttpResponseRedirect("/drivers")
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
@@ -425,45 +426,49 @@ def add_vehicle(request):
     company = Company.objects.all()
 
     if request.method == "POST":
-        # Check if selected foreign key values exist in related models
-        omc_exists = Company.objects.get(cname=request.POST.get("omc"))
-        make_exists = VehicleMaker.objects.get(VMNAME=request.POST.get("vmake"))
-        lease_company_exist = VehicleOwner.objects.get(
-            VO_name=request.POST.get("lease_company")
-        )
-        lease_bank_exist = VehicleOwner.objects.get(
-            VO_name=request.POST.get("lease_bank")
-        )
+        try:
+            # Check if selected foreign key values exist in related models
+            omc_exists = Company.objects.get(cname=request.POST.get("omc"))
+            make_exists = VehicleMaker.objects.get(VMNAME=request.POST.get("vmake"))
+            lease_company_exist = VehicleOwner.objects.get(
+                VO_name=request.POST.get("lease_company")
+            )
+            lease_bank_exist = VehicleOwner.objects.get(
+                VO_name=request.POST.get("lease_bank")
+            )
 
-        # Create a new vehicle object with the extracted data
-        new_vehicle = Vehicle(
-            TL_Number=request.POST.get("tl_number"),
-            Capacity=request.POST.get("capacity"),
-            OMC=omc_exists,
-            Make=make_exists,
-            Chambers=request.POST.get("chambers"),
-            Model=request.POST.get("model"),
-            Engine_Number=request.POST.get("engine_number"),
-            Chassis_Number=request.POST.get("chassis_number"),
-            LEASE_COMPANY=lease_company_exist,
-            LEASE_BANK=lease_bank_exist,
-            Status=request.POST.get("status"),
-            Type=request.POST.get("type"),
-            Trailer_ID=request.POST.get("trailer_id"),
-            Brand=request.POST.get("brand"),
-            NHA_Configuration_Class=request.POST.get("nha"),
-            Gross_Empty_Trailer_Weight=request.POST.get("gross"),
-            DIP_CHART_Date=request.POST.get("vd_ed"),
-            INSURANCE_Date=request.POST.get("vr_ed"),
-            TAX_PAID_Date=request.POST.get("vt_ed"),
-            FITNISSE_Date=request.POST.get("vf_ed"),
-            Q_FOM_Date=request.POST.get("vq_ed"),
-            Route_Permit_Date=request.POST.get("vrp_ed"),
-        )
+            # Create a new vehicle object with the extracted data
+            new_vehicle = Vehicle(
+                TL_Number=request.POST.get("tl_number"),
+                Capacity=request.POST.get("capacity"),
+                OMC=omc_exists,
+                Make=make_exists,
+                Chambers=request.POST.get("chambers"),
+                Model=request.POST.get("model"),
+                Engine_Number=request.POST.get("engine_number"),
+                Chassis_Number=request.POST.get("chassis_number"),
+                LEASE_COMPANY=lease_company_exist,
+                LEASE_BANK=lease_bank_exist,
+                Status=request.POST.get("status"),
+                Type=request.POST.get("type"),
+                Trailer_ID=request.POST.get("trailer_id"),
+                Brand=request.POST.get("brand"),
+                NHA_Configuration_Class=request.POST.get("nha"),
+                Gross_Empty_Trailer_Weight=request.POST.get("gross"),
+                DIP_CHART_Date=request.POST.get("vd_ed"),
+                INSURANCE_Date=request.POST.get("vr_ed"),
+                TAX_PAID_Date=request.POST.get("vt_ed"),
+                FITNISSE_Date=request.POST.get("vf_ed"),
+                Q_FOM_Date=request.POST.get("vq_ed"),
+                Route_Permit_Date=request.POST.get("vrp_ed"),
+            )
 
-        # Save the new vehicle object
-        new_vehicle.save()
-        return HttpResponseRedirect("/vehicleview/" + str(new_vehicle.id) + "/")
+            # Save the new vehicle object
+            new_vehicle.save()
+            return HttpResponseRedirect("/vehicleview/" + str(new_vehicle.id) + "/")
+        except Exception as e:
+            messages.error(request, f"Operation failed: {str(e)}")
+            return redirect(request.path)
 
     context = {
         "vehicle_makers": vehicle_makers,
@@ -485,44 +490,48 @@ def edit_vehicle(request, vehicle_id):
     vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
 
     if request.method == "POST":
-        # Check if selected foreign key values exist in related models
-        omc_exists = Company.objects.get(cname=request.POST.get("omc"))
-        make_exists = VehicleMaker.objects.get(VMNAME=request.POST.get("vmake"))
-        lease_company_exist = VehicleOwner.objects.get(
-            VO_name=request.POST.get("lease_company")
-        )
-        lease_bank_exist = VehicleOwner.objects.get(
-            VO_name=request.POST.get("lease_bank")
-        )
+        try:
+            # Check if selected foreign key values exist in related models
+            omc_exists = Company.objects.get(cname=request.POST.get("omc"))
+            make_exists = VehicleMaker.objects.get(VMNAME=request.POST.get("vmake"))
+            lease_company_exist = VehicleOwner.objects.get(
+                VO_name=request.POST.get("lease_company")
+            )
+            lease_bank_exist = VehicleOwner.objects.get(
+                VO_name=request.POST.get("lease_bank")
+            )
 
-        # Update the fields of the existing vehicle instance
-        vehicle.TL_Number = request.POST.get("tl_number")
-        vehicle.Capacity = request.POST.get("capacity")
-        vehicle.OMC = omc_exists
-        vehicle.Make = make_exists
-        vehicle.Chambers = request.POST.get("chambers")
-        vehicle.Model = request.POST.get("model")
-        vehicle.Engine_Number = request.POST.get("engine_number")
-        vehicle.Chassis_Number = request.POST.get("chassis_number")
-        vehicle.LEASE_COMPANY = lease_company_exist
-        vehicle.LEASE_BANK = lease_bank_exist
-        vehicle.Status = request.POST.get("status")
-        vehicle.Type = request.POST.get("type")
-        vehicle.Trailer_ID = request.POST.get("trailer_id")
-        vehicle.Brand = request.POST.get("brand")
-        vehicle.NHA_Configuration_Class = request.POST.get("nha")
-        vehicle.Gross_Empty_Trailer_Weight = request.POST.get("gross")
-        vehicle.DIP_CHART_Date = request.POST.get("vd_ed")
-        vehicle.INSURANCE_Date = request.POST.get("vr_ed")
-        vehicle.TAX_PAID_Date = request.POST.get("vt_ed")
-        vehicle.FITNISSE_Date = request.POST.get("vf_ed")
-        vehicle.Q_FOM_Date = request.POST.get("vq_ed")
-        vehicle.Route_Permit_Date = request.POST.get("vrp_ed")
+            # Update the fields of the existing vehicle instance
+            vehicle.TL_Number = request.POST.get("tl_number")
+            vehicle.Capacity = request.POST.get("capacity")
+            vehicle.OMC = omc_exists
+            vehicle.Make = make_exists
+            vehicle.Chambers = request.POST.get("chambers")
+            vehicle.Model = request.POST.get("model")
+            vehicle.Engine_Number = request.POST.get("engine_number")
+            vehicle.Chassis_Number = request.POST.get("chassis_number")
+            vehicle.LEASE_COMPANY = lease_company_exist
+            vehicle.LEASE_BANK = lease_bank_exist
+            vehicle.Status = request.POST.get("status")
+            vehicle.Type = request.POST.get("type")
+            vehicle.Trailer_ID = request.POST.get("trailer_id")
+            vehicle.Brand = request.POST.get("brand")
+            vehicle.NHA_Configuration_Class = request.POST.get("nha")
+            vehicle.Gross_Empty_Trailer_Weight = request.POST.get("gross")
+            vehicle.DIP_CHART_Date = request.POST.get("vd_ed")
+            vehicle.INSURANCE_Date = request.POST.get("vr_ed")
+            vehicle.TAX_PAID_Date = request.POST.get("vt_ed")
+            vehicle.FITNISSE_Date = request.POST.get("vf_ed")
+            vehicle.Q_FOM_Date = request.POST.get("vq_ed")
+            vehicle.Route_Permit_Date = request.POST.get("vrp_ed")
 
-        # Save the updated vehicle instance
-        vehicle.save()
+            # Save the updated vehicle instance
+            vehicle.save()
 
-        return HttpResponseRedirect("/vehicleview/" + str(vehicle.id) + "/")
+            return HttpResponseRedirect("/vehicleview/" + str(vehicle.id) + "/")
+        except Exception as e:
+            messages.error(request, f"Operation failed: {str(e)}")
+            return redirect(request.path)
 
     context = {
         "vehicle_makers": vehicle_makers,
@@ -536,8 +545,15 @@ def edit_vehicle(request, vehicle_id):
 
 
 @transaction.atomic
-def delete_vehicle(request):
-    pass
+def delete_vehicle(request, vehicle_id):
+    if request.method != "POST":
+        return redirect("/vehicles/all/")
+    try:
+        vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
+        vehicle.delete()
+    except Exception:
+        pass
+    return redirect("/vehicles/all/")
 
 
 @transaction.atomic
@@ -651,13 +667,20 @@ def edit_driver(request, driver_id):
             context = {"driver": driver, "omc": omcc, "loc": locc, "action": "Edit"}
             return render(request, "driver/add_driver.html", context)
     except Exception as e:
-        print(str(e))
-        return HttpResponseRedirect("/drivers")
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
-def delete_driver(request):
-    pass
+def delete_driver(request, driver_id):
+    if request.method != "POST":
+        return redirect("/drivers")
+    try:
+        driver = get_object_or_404(Driver, D_ID=driver_id)
+        driver.delete()
+    except Exception:
+        pass
+    return redirect("/drivers")
 
 
 def get_violation(request):
@@ -690,8 +713,9 @@ def add_company(request):
             return HttpResponseRedirect("/company")
         else:
             return render(request, "company/add_company.html")
-    except Exception:
-        return HttpResponseRedirect("/company")
+    except Exception as e:
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
@@ -721,8 +745,9 @@ def edit_company(request, company_id):
             company.save()
 
             return HttpResponseRedirect("/company")
-    except Exception:
-        return HttpResponseRedirect("/company")
+    except Exception as e:
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
     return render(
         request, "company/add_company.html", {"company": company, "action": "Edit"}
     )
@@ -967,7 +992,7 @@ def dashboard(request):
     ]
 
     context = {
-        "total_drivers": drivers.count,
+        "total_drivers": drivers.count(),
         "total_vehicles": total_vehicles,
         "man_days_work": man_days_work,
         "expired_cnic_list": expired_cnic_list,

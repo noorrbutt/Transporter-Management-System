@@ -61,6 +61,7 @@
               
                 <tr>
                     <th>Avatar</th>
+                    <th>Action</th>
                     <th>Tank Lorry Number</th>
                     <th>Capacity</th>
                     <th>Chambers</th>
@@ -101,22 +102,18 @@
                      
                       </li>
                     </ul>
-                    <a href="{% url 'edit_vehicle' vehicle.id %}"><i class="fa fa-edit"></i>Edit</a>
-                    
-                   
-
-                  </td>
-                    <td><a href="{% url 'vehicleview' vehicle.id %}">{{ vehicle.TL_Number }}</td>
-                   
-                    <td>{{ vehicle.Capacity }}</td>
-                    <td>{{ vehicle.Chambers }}</td>
-                    {% if not image %}
-                    <td>{{ vehicle.OMC }}</td>
-                    {% endif %}
-                    <td>{{ vehicle.Make }}</td>
-                    <td>{{ vehicle.Model }}</td>
-                    <td>{{ vehicle.Engine_Number }}</td>
-                    <td>{{ vehicle.Chassis_Number }}</td>
+                  </a>
+                </td>
+                <td>
+                  <a href="{% url 'edit_vehicle' vehicle.id %}"><i class="fa fa-edit"></i>Edit</a>
+                  <form method="post" action="{% url 'delete_vehicle' vehicle_id=vehicle.id %}" style="display:inline; margin-left: 8px;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                  </form>
+                </td>
+                <td><a href="{% url 'vehicleview' vehicle.id %}">{{ vehicle.TL_Number }}</a></td>
+                <td>{{ vehicle.Capacity }}</td>
+                <td>{{ vehicle.Chambers }}</td>
                     <td>{{ vehicle.LEASE_COMPANY }}</td>
                     <td>{{ vehicle.LEASE_BANK }}</td>
                     <td>{{ vehicle.Status }}</td>

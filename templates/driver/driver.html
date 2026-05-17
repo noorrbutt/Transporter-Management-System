@@ -45,6 +45,7 @@
                 <tr>
                     {% comment %} <th>Serial Number</th> {% endcomment %}
                     <th>Avatar</th>
+                    <th>Action</th>
                     <th>Driver Number</th>
                     <th>Oil Marketing Company</th>
                     <th>Driver Name</th>
@@ -96,12 +97,17 @@
                               {% endif %}
                             </li>
                           </ul>
+                          </a>
                           <a href="{% url 'editdriver' driver_id=driver.D_ID %}"><i class="fa fa-edit"></i>Edit</a>
                           
                          
+                          <form method="post" action="{% url 'delete_driver' driver_id=driver.D_ID %}" style="display:inline; margin-left: 8px;">
+                              {% csrf_token %}
+                              <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                          </form>
 
                         </td>
-                        <td><a href="{% url 'driverview' driver_id=driver.D_ID %}">{{ driver.D_Number }}</td>
+                        <td><a href="{% url 'driverview' driver_id=driver.D_ID %}">{{ driver.D_Number }}</a></td>
                         <td>{{ driver.Oil_Marketing_Company }}</td>
                         <td>{{ driver.D_Name }}</td>
                         <td>{{ driver.Father_Name }}</td>
