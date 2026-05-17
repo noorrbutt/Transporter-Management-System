@@ -1,10 +1,6 @@
 import calendar
-import csv
 from datetime import date, datetime
 from io import BytesIO
-import os
-
-import pandas as pd
 from PIL import Image
 
 from django.contrib import messages
@@ -35,76 +31,6 @@ from dashboard.models import (
     tool_box_meeting_topics,
     driver_tool_box_meeting_attended,
 )
-
-
-def remove_null_images(request):
-    drivers_with_null = Driver.objects.filter(D_Image="Null")
-    for driver in drivers_with_null:
-        driver.D_Image = None
-        driver.save()
-    return HttpResponse("Records updated successfully.")
-
-
-def import_drivers_from_images(request):
-    image_folder = "/Users/AWB/Downloads/img"
-    for filename in os.listdir(image_folder):
-        driver_number = os.path.splitext(filename)[0]
-        try:
-            driver = Driver.objects.get(D_Number=driver_number)
-            driver.D_Image = f"driver_images/{filename}"
-            driver.save()
-        except Driver.DoesNotExist:
-            pass
-    return HttpResponse("Drivers updated successfully.")
-
-
-def count_uploaded_images(request):
-    count = Driver.objects.exclude(D_Image__exact="").count()
-    return HttpResponse(f"Number of uploaded images: {count}")
-
-
-def match_driver_ids(request):
-    csv_file_path = "/Users/AWB/Desktop/Book2.csv"
-
-    def get_driver_id(d_number):
-        try:
-            driver = Driver.objects.get(D_Number=d_number)
-            return driver.D_ID
-        except Driver.DoesNotExist:
-            return None
-
-    df = pd.read_csv(csv_file_path)
-    df["Driver_ID"] = df["D_Number"].apply(get_driver_id)
-    output_csv_file_path = os.path.join(os.getcwd(), "output.csv")
-    df.to_csv(output_csv_file_path, index=False)
-    with open(output_csv_file_path, "rb") as csv_file:
-        response = HttpResponse(csv_file.read(), content_type="text/csv")
-        response["Content-Disposition"] = "attachment; filename=output.csv"
-        return response
-
-
-def update_models_from_csv(request):
-    with open("/Users/AWB/Desktop/tb.csv", "r") as csv_file:
-        csv_reader = csv.reader(csv_file)
-        for row in csv_reader:
-            if len(row) >= 3:
-                driver_id = int(row[0])
-                driver, created = Driver.objects.get_or_create(D_ID=driver_id)
-                for column_index, meeting_count in enumerate(row[1:], start=1):
-                    if meeting_count:
-                        try:
-                            meeting_count = int(meeting_count)
-                        except ValueError:
-                            continue
-                        meeting_topic = tool_box_meeting_topics.objects.get(
-                            id=column_index
-                        )
-                        driver_tool_box_meeting_attended.objects.update_or_create(
-                            meeting_attended_by=driver,
-                            meetings_attended=meeting_topic,
-                            defaults={"no_of_times_meeting_attended": meeting_count},
-                        )
-    return HttpResponse("Models updated from CSV file.")
 
 
 @transaction.atomic
@@ -831,8 +757,10 @@ def get_date_status(date, field_name):
 
 def get_driver(request):
 
-    # Query the database to get all drivers
-    drivers = Driver.objects.all().order_by("D_Name")
+    # Query the database to get all drivers with Oil Marketing Company preloaded
+    drivers = (
+        Driver.objects.select_related("Oil_Marketing_Company").all().order_by("D_Name")
+    )
     for driver in drivers:
         # Define a dictionary to store the date fields and their corresponding status messages
         date_fields = {
@@ -865,17 +793,36 @@ def get_driver(request):
 def get_vehicle(request, filter):
 
     if filter == "apl":
-        vehicles = Vehicle.objects.filter(OMC_id=4)
+        apl_company = Company.objects.filter(cabb__iexact="APL").first()
+        vehicles = (
+            Vehicle.objects.filter(OMC=apl_company)
+            if apl_company
+            else Vehicle.objects.none()
+        )
         image = "/static/images/attock-logo.png"
     elif filter == "pso":
-        vehicles = Vehicle.objects.filter(OMC_id=6)
+        pso_company = Company.objects.filter(cabb__iexact="PSO").first()
+        vehicles = (
+            Vehicle.objects.filter(OMC=pso_company)
+            if pso_company
+            else Vehicle.objects.none()
+        )
         image = "/static/images/pso-logo.png"
     elif filter == "go":
-        vehicles = Vehicle.objects.filter(OMC_id=5)
+        go_company = Company.objects.filter(cabb__iexact="GO").first()
+        vehicles = (
+            Vehicle.objects.filter(OMC=go_company)
+            if go_company
+            else Vehicle.objects.none()
+        )
         image = "/static/images/go-logo.png"
     elif filter == "tppl":
-        omc_ids = [1, 2, 3]
-        vehicles = Vehicle.objects.filter(OMC_id__in=omc_ids)
+        tppl_companies = Company.objects.filter(cabb__iexact="TPPL")
+        vehicles = (
+            Vehicle.objects.filter(OMC__in=tppl_companies)
+            if tppl_companies.exists()
+            else Vehicle.objects.none()
+        )
         image = "/static/images/total-logo.png"
     elif filter == "all":
         vehicles = Vehicle.objects.all()

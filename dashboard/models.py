@@ -75,7 +75,7 @@ class Vehicle(models.Model):
     Route_Permit_Date = models.DateField(null=True)
 
     def __str__(self):
-        return self.VH_number
+        return str(self.TL_Number)
 
     class Meta:
         verbose_name_plural = "Vehicles"
