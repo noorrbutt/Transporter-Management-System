@@ -1767,7 +1767,7 @@ a:focus {
 }
 
 .top_nav li a i {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .navbar-static-top {
@@ -1798,7 +1798,7 @@ a:focus {
 
 .nav.side-menu>li>a {
   margin-bottom: 6px;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .nav.side-menu>li>a i {
@@ -1826,7 +1826,7 @@ a:focus {
 
 .nav.child_menu li:hover>a,
 .nav.child_menu li.active>a {
-  color: #2c3e50 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .nav.child_menu li {
@@ -1864,7 +1864,7 @@ a:focus {
 .nav.child_menu>li>a {
   color: #e7e7e7;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .nav.child_menu li li:hover,
@@ -1909,7 +1909,7 @@ a:focus {
       to(#2c4257)),
     #1e40af;
   background: linear-gradient(#6c7ae0, #1d4ed8), #1e40af;
-  color: #ffffff !important;
+  color: rgba(255, 255, 255, 0.85) !important;
   -webkit-box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0,
     inset rgba(255, 255, 255, 0.16) 0 1px 0;
   box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0,
@@ -1918,11 +1918,11 @@ a:focus {
 
 .nav.side-menu>li.active>a:hover,
 .nav.side-menu>li.active>a:focus {
-  color: #ffffff !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .nav.side-menu>li.active>a i {
-  color: #ffffff !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .navbar-brand,
@@ -2411,7 +2411,7 @@ table.tile_info {
 table.tile_info td {
   text-align: left;
   padding: 1px;
-  font-size: 15px;
+  font-size: 17px;
 }
 
 table.tile_info td p {
@@ -3389,7 +3389,7 @@ button,
 }
 
 .mail_list h3 {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: bold;
   margin: 0px 0 6px;
 }
@@ -3567,7 +3567,7 @@ legend {
   height: 23px;
   color: #bbb;
   line-height: 24px;
-  font-size: 15px;
+  font-size: 17px;
   top: 0px;
   width: 34px;
   text-align: center;
@@ -4660,7 +4660,7 @@ ul.project_files li a i {
   position: relative;
   display: block;
   text-align: center;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: #fff;
   -webkit-transform: rotate(45deg);
@@ -6262,7 +6262,7 @@ ul.notifications {
 }
 
 .nav.child_menu .nav.child_menu>li>a:hover {
-  color: #2c3e50 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .nav.child_menu .nav.child_menu li.active>a,
@@ -6272,11 +6272,11 @@ ul.notifications {
 
 /* === GLOBAL FONT SIZE OVERRIDES === */
 body {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .nav.side-menu>li>a {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .nav.side-menu>li>a i {
@@ -6293,7 +6293,7 @@ body {
 
 .x_content,
 .x_panel {
-  font-size: 15px;
+  font-size: 17px;
 }
 
 table,
@@ -6354,5 +6354,5 @@ div {
 .nav.side-menu>li.active>a i,
 .nav.side-menu>li.active>a:hover i,
 .nav.side-menu>li.active>a:focus i {
-  color: #ffffff !important
+  color: #2c3e50 !important
 }
