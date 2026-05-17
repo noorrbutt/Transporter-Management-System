@@ -74,16 +74,10 @@ urlpatterns = [
         views.add_driver_violation,
         name="add_driver_violation",
     ),
-    # path('import_drivers/', views.import_drivers_from_images, name='import_drivers'),
-    # path('count_uploaded_images/', views.count_uploaded_images, name='count_uploaded_images'),
-    # path('remove_null_images/', views.remove_null_images, name='remove_null_images'),
-    # path('match_driver_ids/', views.match_driver_ids, name='match_driver_ids'),
-    # path('update_models_from_csv/', views.update_models_from_csv, name='update_models_from_csv'),
     path("addtbm/<int:D_ID>/", views.add_tbm, name="add_tbm"),
     path(
         "addtraining/<int:D_ID>/", views.add_driver_training, name="add_driver_training"
     ),
-    # path('update_driver_ages/', views.update_driver_ages, name='update_driver_ages'),
     path("procedures/", views.get_procedures, name="get_procedures"),
     path("drivermanagement/", views.get_dm, name="get_dm"),
     path("vehiclemanagement/", views.get_vm, name="get_vm"),
@@ -91,7 +85,7 @@ urlpatterns = [
     path("operationprocedures/", views.get_op, name="get_op"),
     path("policies", views.get_policies),
     path("emergencyprocedures", views.get_emergency_procedures),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
