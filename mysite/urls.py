@@ -31,7 +31,6 @@ urlpatterns = [
     path("edituser/<int:id>", views.edituser, name="edituser"),
     path("deleteuser/<int:id>/", views.deleteuser, name="deleteuser"),
     path("logout/", views.logout_user, name="logout"),
-    # path('print_user_data_pdf/<int:user_id>/', views.print_user_data_pdf, name='print_user_data_pdf'),
     # # Company crud URLs
     path("company", views.get_company, name="get_company"),
     path("addcompany/", views.add_company, name="add_company"),
@@ -84,7 +83,6 @@ urlpatterns = [
     path("hseprocedures/", views.get_hsep, name="get_hsep"),
     path("operationprocedures/", views.get_op, name="get_op"),
     path("policies", views.get_policies),
-    path("emergencyprocedures", views.get_emergency_procedures),
 ]
 
 if settings.DEBUG:
