@@ -114,6 +114,11 @@
                 <td><a href="{% url 'vehicleview' vehicle.id %}">{{ vehicle.TL_Number }}</a></td>
                 <td>{{ vehicle.Capacity }}</td>
                 <td>{{ vehicle.Chambers }}</td>
+                    {% if not image %}<td>{{ vehicle.OMC }}</td>{% endif %}
+                    <td>{{ vehicle.Make }}</td>
+                    <td>{{ vehicle.Model }}</td>
+                    <td>{{ vehicle.Engine_Number }}</td>
+                    <td>{{ vehicle.Chassis_Number }}</td>
                     <td>{{ vehicle.LEASE_COMPANY }}</td>
                     <td>{{ vehicle.LEASE_BANK }}</td>
                     <td>{{ vehicle.Status }}</td>
@@ -122,35 +127,23 @@
                     <td>{{ vehicle.Brand }}</td>
                     <td>{{ vehicle.NHA_Configuration_Class }}</td>
                     <td>{{ vehicle.Gross_Empty_Trailer_Weight }}</td>
-                    <td> {{ vehicle.DIP_CHART_Date }}
-                      <span class="badge {% if vehicle.Dip_Chart_status == 'Close to Expiry' %}badge-warning{% elif vehicle.Dip_Chart_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                        {{ vehicle.Dip_Chart_status }}
-                      </td>
-                    </span>
+                    <td>{{ vehicle.DIP_CHART_Date }}
+                      <span class="badge {% if vehicle.Dip_Chart_status == 'Close to Expiry' %}badge-warning{% elif vehicle.Dip_Chart_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">{{ vehicle.Dip_Chart_status }}</span>
+                    </td>
                     <td>{{ vehicle.INSURANCE_Date }}
-                      <span class="badge {% if vehicle.road_insurance_status == 'Close to Expiry' %}badge-warning{% elif vehicle.road_insurance_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                        {{ vehicle.road_insurance_status }}
-                      </td>
+                      <span class="badge {% if vehicle.road_insurance_status == 'Close to Expiry' %}badge-warning{% elif vehicle.road_insurance_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">{{ vehicle.road_insurance_status }}</span>
                     </td>
                     <td>{{ vehicle.TAX_PAID_Date }}
-                      <span class="badge {% if vehicle.tax_expiry_status == 'Close to Expiry' %}badge-warning{% elif vehicle.tax_expiry_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                        {{ vehicle.tax_expiry_status }}
-                      </td>
+                      <span class="badge {% if vehicle.tax_expiry_status == 'Close to Expiry' %}badge-warning{% elif vehicle.tax_expiry_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">{{ vehicle.tax_expiry_status }}</span>
                     </td>
                     <td>{{ vehicle.FITNISSE_Date }}
-                      <span class="badge {% if vehicle.fitness_expiry_status == 'Close to Expiry' %}badge-warning{% elif vehicle.fitness_expiry_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                        {{ vehicle.fitness_expiry_status }}
-                      </td>
+                      <span class="badge {% if vehicle.fitness_expiry_status == 'Close to Expiry' %}badge-warning{% elif vehicle.fitness_expiry_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">{{ vehicle.fitness_expiry_status }}</span>
                     </td>
                     <td>{{ vehicle.Q_FOM_Date }}
-                      <span class="badge {% if vehicle.Q_Fom_status == 'Close to Expiry' %}badge-warning{% elif vehicle.Q_Fom_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                        {{ vehicle.Q_Fom_status }}
-                      </td>
+                      <span class="badge {% if vehicle.Q_Fom_status == 'Close to Expiry' %}badge-warning{% elif vehicle.Q_Fom_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">{{ vehicle.Q_Fom_status }}</span>
                     </td>
                     <td>{{ vehicle.Route_Permit_Date }}
-                      <span class="badge {% if vehicle.Route_status == 'Close to Expiry' %}badge-warning{% elif vehicle.Route_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                        {{ vehicle.Route_status }}
-                      </td>
+                      <span class="badge {% if vehicle.Route_status == 'Close to Expiry' %}badge-warning{% elif vehicle.Route_status == 'Expired' %}badge-danger{% else %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">{{ vehicle.Route_status }}</span>
                     </td>
 
                     
