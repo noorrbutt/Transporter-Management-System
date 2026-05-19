@@ -123,25 +123,6 @@
           <!-- /page content -->
 
 
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.76/pdfmake.min.js"></script>
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.76/vfs_fonts.js"></script>
-          
 
-          <script>
-            document.getElementById("download-pdf-button").addEventListener("click", function () {
-                const content = document.getElementById("content-to-convert");
-    
-                // Define the PDF document definition
-                const docDefinition = {
-                    content: [
-                        { text: "PDF Generated from HTML", fontSize: 16, bold: true, margin: [0, 0, 0, 10] },
-                        { text: content.innerText }
-                    ]
-                };
-    
-                // Create and download the PDF
-                pdfMake.createPdf(docDefinition).download("your_document.pdf");
-            });
-        </script>
 
 {% endblock %}

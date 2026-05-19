@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}
+{% block title %}Add Violation Type{% endblock %}
+{% block content %}
+<div class="right_col" role="main">
+  <div class="page-title">
+    <div class="title_left"><h3>Add Violation Type</h3></div>
+  </div>
+  <div class="clearfix"></div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="x_panel">
+        <div class="x_content">
+          <form method="post" class="form-horizontal form-label-left">
+            {% csrf_token %}
+            <div class="item form-group">
+              <label class="col-form-label col-md-3 col-sm-3 label-align" for="violation_type">Violation Type <span class="required">*</span></label>
+              <div class="col-md-6 col-sm-6">
+                <input type="text" id="violation_type" name="violation_type" required class="form-control" placeholder="e.g. Speeding">
+              </div>
+            </div>
+            <div class="item form-group">
+              <div class="col-md-6 col-sm-6 offset-md-3">
+                <button type="submit" class="btn btn-success">Save</button>
+                <a href="/violations" class="btn btn-default">Cancel</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -253,8 +253,8 @@
         <div class="stat-icon">
           <i class="fa fa-users"></i>
         </div>
-        <div class="stat-number">163</div>
-        <div class="stat-label">Total Man Power</div>
+          <div class="stat-number">{{ total_manpower }}</div>
+          <div class="stat-label">Total Man Power</div>
         <div class="stat-change">+4% from last week</div>
       </div>
       
@@ -328,7 +328,7 @@
       <div class="stat-icon" style="color: white; margin-bottom: 8px; font-size: 1.5rem;">
         <i class="fa fa-caret-square-o-right"></i>
       </div>
-      <div style="font-size: 1.8rem; font-weight: bold; margin-bottom: 3px;">179</div>
+      <div style="font-size: 1.8rem; font-weight: bold; margin-bottom: 3px;">{{ total_tbm_sessions }}</div>
       <div style="font-size: 0.9rem;">Total Sessions</div>
     </div>
     
@@ -336,7 +336,7 @@
       <div class="stat-icon" style="color: white; margin-bottom: 8px; font-size: 1.5rem;">
         <i class="fa fa-check-square-o"></i>
       </div>
-      <div style="font-size: 1.8rem; font-weight: bold; margin-bottom: 3px;">9,672</div>
+      <div style="font-size: 1.8rem; font-weight: bold; margin-bottom: 3px;">{{ total_tbm_participants }}</div>
       <div style="font-size: 0.9rem;">Participants</div>
     </div>
   </div>
@@ -382,7 +382,7 @@
             </div>
             <div class="expired-details">
               <h6><a href="{% url 'driverview' driver_id=driver.D_ID %}" style="text-decoration: none; color: #2c3e50;">{{ driver.D_Name }}</a></h6>
-              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.CNIC_Validity }}</p>
+              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.DDC_Expiry_Date }}</p>
             </div>
             <span class="danger-badge">Expired</span>
           </div>
@@ -408,7 +408,7 @@
             </div>
             <div class="expired-details">
               <h6><a href="{% url 'driverview' driver_id=driver.D_ID %}" style="text-decoration: none; color: #2c3e50;">{{ driver.D_Name }}</a></h6>
-              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.CNIC_Validity }}</p>
+              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.Expiry_Date }}</p>
             </div>
             <span class="danger-badge">Expired</span>
           </div>
@@ -434,7 +434,7 @@
             </div>
             <div class="expired-details">
               <h6><a href="{% url 'driverview' driver_id=driver.D_ID %}" style="text-decoration: none; color: #2c3e50;">{{ driver.D_Name }}</a></h6>
-              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.CNIC_Validity }}</p>
+              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.HTV_License_Expiry_Date }}</p>
             </div>
             <span class="danger-badge">Expired</span>
           </div>

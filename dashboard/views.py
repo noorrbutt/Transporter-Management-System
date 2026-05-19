@@ -5,13 +5,15 @@ from PIL import Image
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.db import transaction
-from django.http import HttpResponseRedirect, JsonResponse
+from django.db.models import Count
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.core.exceptions import PermissionDenied
+from django.urls import reverse, reverse_lazy
 
 from dashboard.models import (
     Company,
@@ -55,11 +57,7 @@ def add_driver_training(request, D_ID):
                 except Exception as e:
                     messages.error(request, f"Operation failed: {str(e)}")
                     return redirect(request.path)
-            else:
-                meeting_train = annual_training_driver(
-                    user=driver, **{training_no: date}
-                )
-                meeting_train.save()
+            # If created_train is True, get_or_create already saved the record with the correct date via defaults.
             drilling_no = "train" + str(drilling.id) + "_completed_date"
             meeting_drill, created_drill = annual_drill_driver.objects.get_or_create(
                 user=driver, defaults={drilling_no: date}
@@ -67,9 +65,7 @@ def add_driver_training(request, D_ID):
             if not created_drill:
                 setattr(meeting_drill, drilling_no, date)
                 meeting_drill.save()
-            else:
-                meeting_drill = annual_drill_driver(user=driver, **{drilling_no: date})
-                meeting_drill.save()
+            # If created_drill is True, get_or_create already saved the record with the correct date via defaults.
             driver_view_url = reverse("driverview", args=[D_ID])
             return HttpResponseRedirect(driver_view_url)
         else:
@@ -483,7 +479,7 @@ def delete_vehicle(request, vehicle_id):
 
 @transaction.atomic
 def edit_driver(request, driver_id):
-    driver = Driver.objects.get(D_ID=driver_id)
+    driver = get_object_or_404(Driver, D_ID=driver_id)
     omcc = Company.objects.all()
     locc = Location.objects.all()
 
@@ -609,25 +605,32 @@ def delete_driver(request, driver_id):
 
 
 def get_violation(request):
-    pass
+    violations = Violations.objects.all()
+    context = {"violations": violations}
+    return render(request, "violation/violations.html", context)
 
 
+@transaction.atomic
 def add_violation(request):
-    pass
+    try:
+        if request.method == "POST":
+            violation_type = request.POST.get("violation_type")
+            if not violation_type or not violation_type.strip():
+                messages.error(request, "Violation type cannot be empty.")
+                return redirect(request.path)
+            Violations.objects.create(violation_type=violation_type.strip())
+            return redirect("/violations")
+        else:
+            return render(request, "violation/add_violation.html")
+    except Exception as e:
+        messages.error(request, f"Operation failed: {str(e)}")
+        return redirect(request.path)
 
 
 @transaction.atomic
 def add_company(request):
     if not request.user.is_superuser:
-        logout_user(request)
-        return render(
-            request,
-            "user/login.html",
-            {
-                "error_head": "You do not have the authority to perform edit or delete operations. ",
-                "log": "Log In with Full Access Account.",
-            },
-        )
+        raise PermissionDenied
     try:
         if request.method == "POST":
             company = Company()
@@ -637,7 +640,7 @@ def add_company(request):
 
             return HttpResponseRedirect("/company")
         else:
-            return render(request, "company/add_company.html")
+            return render(request, "company/add_company.html", {"action": "Add"})
     except Exception as e:
         messages.error(request, f"Operation failed: {str(e)}")
         return redirect(request.path)
@@ -646,15 +649,7 @@ def add_company(request):
 @transaction.atomic
 def edit_company(request, company_id):
     if not request.user.is_superuser:
-        logout_user(request)
-        return render(
-            request,
-            "user/login.html",
-            {
-                "error_head": "You do not have the authority to perform edit or delete operations. ",
-                "log": "Log In with Full Access Account.",
-            },
-        )
+        raise PermissionDenied
     # Retrieve the company record based on company_id
     company = get_object_or_404(Company, cid=company_id)
 
@@ -827,16 +822,6 @@ def get_vehicle(request, filter):
         vehicles = Vehicle.objects.all()
         image = ""
 
-    def get_date_status(date, field_name):
-        current_date = datetime.now().date()
-        days_remaining = (date - current_date).days
-        if days_remaining <= 0:
-            return f"Expired"
-        elif days_remaining <= 90:
-            return f"Close to Expiry"
-        else:
-            return f"Valid"
-
     for vehicle in vehicles:
         # Define a dictionary to store the date fields and their corresponding status messages
         date_fields = {
@@ -925,7 +910,9 @@ def dashboard(request):
             if day != 0 and calendar.weekday(year, month, day) != 6:
                 working_days += 1
 
-    man_days_work = (58 + int(drivers.count())) * working_days
+    NON_DRIVER_STAFF_COUNT = 58  # Update this when non-driver headcount changes
+    total_manpower = NON_DRIVER_STAFF_COUNT + drivers.count()
+    man_days_work = total_manpower * working_days
     meetings_data = (
         tool_box_meeting_topics.objects
         # Assuming the related name is set to 'driver_tool_box_meeting_attended_set'
@@ -940,27 +927,22 @@ def dashboard(request):
     context = {
         "total_drivers": drivers.count(),
         "total_vehicles": total_vehicles,
+        "total_manpower": total_manpower,
         "man_days_work": man_days_work,
         "expired_cnic_list": expired_cnic_list,
         "expired_ddc_list": expired_ddc_list,
         "expired_htv_license_list": expired_htv_license_list,
         "expired_general_list": expired_general_list,
         "tbm_data": tbm_data,
+        "total_tbm_sessions": sum(tbm_data),
+        "total_tbm_participants": driver_tool_box_meeting_attended.objects.count(),
     }
     return render(request, "dashboard.html", context)
 
 
 def adduser(request):
     if not request.user.is_superuser:
-        logout_user(request)
-        return render(
-            request,
-            "user/login.html",
-            {
-                "error_head": "You do not have the authority to perform edit or delete operations. ",
-                "log": "Log In with Full Access Account.",
-            },
-        )
+        raise PermissionDenied
 
     if request.method == "POST":
         # Get data from the form
@@ -1010,18 +992,11 @@ def adduser(request):
 
 def deleteuser(request, id):
     if not request.user.is_superuser:
-        logout_user(request)
-        return render(
-            request,
-            "user/login.html",
-            {
-                "error_head": "You do not have the authority to perform edit or delete operations. ",
-                "log": "Log In with Full Access Account.",
-            },
-        )
+        raise PermissionDenied
     if request.method != "POST":
+
         return redirect("/allusers")
-    user = User.objects.get(id=id)
+    user = get_object_or_404(User, id=id)
     user.delete()
 
     return redirect("/allusers")
@@ -1029,17 +1004,9 @@ def deleteuser(request, id):
 
 def edituser(request, id):
     if not request.user.is_superuser:
-        logout_user(request)
-        return render(
-            request,
-            "user/login.html",
-            {
-                "error_head": "You do not have the authority to perform edit or delete operations. ",
-                "log": "Log In with Full Access Account.",
-            },
-        )
+        raise PermissionDenied
 
-    user = User.objects.get(id=id)
+    user = get_object_or_404(User, id=id)
 
     # Retrieve the user's image if it exists
     flag = True
@@ -1214,10 +1181,6 @@ def get_vm(request):
 
 def get_op(request):
     return render(request, "static_content/op.html")
-
-
-def get_emergency_procedures(request):
-    return render(request, "static_content/eprocedures.html")
 
 
 def get_policies(request):

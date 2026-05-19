@@ -165,7 +165,9 @@ class Driver(models.Model):
     Expiry_Date = models.DateField(
         null=True, blank=True, verbose_name="Medical Expiry Date"
     )
-    Blood_Group = models.CharField(max_length=10, verbose_name="Blood Group")
+    Blood_Group = models.CharField(
+        max_length=10, verbose_name="Blood Group", null=True, blank=True
+    )
 
     Medical_Health = models.CharField(
         max_length=5, verbose_name="Medical Health", null=True
