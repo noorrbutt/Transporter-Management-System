@@ -995,7 +995,8 @@
                           </tr>
                         </thead>
                         <tbody>
-                        {% for drill in driver_attendance %}
+                        {% with drill=driver_attendance.first %}
+                        {% if drill %}
                             <tr>
                               <td>1</td>
                               <td>January</td>
@@ -1080,7 +1081,10 @@
                               <td>Mega Drill</td>
                               <td>{{ drill.train12_completed_date|default:"Not Completed" }}</td>
                             </tr>
-                          {% endfor %}
+                        {% else %}
+                            <tr><td colspan="5" class="text-center text-muted">No training records found.</td></tr>
+                        {% endif %}
+                        {% endwith %}
                         </tbody>
                       </table>
                     </div>
@@ -1106,7 +1110,7 @@
                   </div>
                 </div>
               </div>
-            )
+            </div>
             
 
           </div>
@@ -1214,27 +1218,7 @@
       </div>
   </div>
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var printButton = document.querySelector('.btn-outline-danger');
 
-        if (printButton) {
-            printButton.addEventListener('click', function () {
-                // Extract user ID from the current URL
-                var pathArray = window.location.pathname.split('/');
-                var userId = pathArray[pathArray.length - 2];  // Access the second-to-last element
-                console.log("====", userId);
-
-                // Check if userId is a valid integer
-                if (!isNaN(userId) && userId !== '') {
-                    window.location.href = `/print_user_data_pdf/${userId}/`;
-                } else {
-                    console.error('Invalid user ID in the URL');
-                }
-            });
-        }
-    });
-</script>
 
   <!-- /page content -->
 {% endblock %}

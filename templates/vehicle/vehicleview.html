@@ -142,12 +142,12 @@
                 <div class="col-md-6">
                   <div class="user-box">
                     <img class="img-responsive avatar-view" 
-                      src="{% if driver.D_Image %}{{ driver.D_Image.url }}{% else %}/static/images/truck.png{% endif %}" 
-                      alt="Avatar" title="Change the avatar"/>
+                      src="/static/images/truck.png" 
+                      alt="Vehicle" />
                       <div class="user-content">
                         <h5>{{ vehicle.TL_Number }}</h5>
-                        <p>{{ driver.Address }}</p>
-                        <p>{{ driver.Cell_Phone_Num }}</p>
+                        <p>{{ vehicle.OMC }}</p>
+                        <p>{{ vehicle.Status }}</p>
                       </div>
                   </div>
                 </div>
