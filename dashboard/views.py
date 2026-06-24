@@ -1112,23 +1112,6 @@ def allusers(request):
     return render(request, "user/users.html", context)
 
 
-def update_driver_ages(request):
-    # Since driver age is auto generated field we need a function to automatically update age coloumn with the help of DOB.
-    drivers = Driver.objects.all()
-    # Should be a celery job to update after every month.
-    for driver in drivers:
-        today = date.today()
-        age = (
-            today.year
-            - driver.DOB.year
-            - ((today.month, today.day) < (driver.DOB.month, driver.DOB.day))
-        )
-        driver.age = age
-        driver.save()
-
-    return redirect("/drivers")
-
-
 def get_tppl(request):
 
     vehicles = Vehicle.objects.all()

@@ -191,22 +191,22 @@ class Driver(models.Model):
         max_length=255, null=True, blank=True, verbose_name="Previous Company"
     )
     Tank_Lorry = models.CharField(max_length=255, verbose_name="Tank Lorry", null=True)
-    age = models.IntegerField(blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        today = date.today()
-        if self.DOB:
-            self.age = (
-                today.year
-                - self.DOB.year
-                - ((today.month, today.day) < (self.DOB.month, self.DOB.day))
-            )
-        else:
-            self.age = None
-        super(Driver, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.D_Name
+    
+    
+    @property
+    def age(self):
+        if not self.DOB:
+            return None
+        today = date.today()
+        return (
+            today.year
+            - self.DOB.year
+            - ((today.month, today.day) < (self.DOB.month, self.DOB.day))
+    )
 
     class Meta:
         verbose_name_plural = "Drivers"
