@@ -1,8 +1,6 @@
 {% extends 'base/base.html' %}
 
-{% block title %}
-  View
-{% endblock %}
+{% block title %}View{% endblock %}
 
 {% block content %}
 
@@ -25,13 +23,13 @@
                     <img class="company-logo" src="/static/images/total.png" alt="Total" />
                 {% endif %}
             </div>
-            
+
             <div class="profile-content">
               <div class="row">
                 <div class="col-md-8">
                   <div class="d-flex align-items-center">
-                    <img class="driver-avatar" 
-                      src="{% if driver.D_Image %}{{ driver.D_Image.url }}{% else %}/static/images/user.png{% endif %}" 
+                    <img class="driver-avatar"
+                      src="{% if driver.D_Image %}{{ driver.D_Image.url }}{% else %}/static/images/user.png{% endif %}"
                       alt="{{ driver.D_Name }}" />
                     <div class="driver-info">
                       <h1 class="driver-name">{{ driver.D_Name }}</h1>
@@ -53,7 +51,7 @@
                       <i class="fa fa-edit"></i>Edit Profile
                     </a>
                   </div>
-                  
+
                   <div class="stats-grid">
                     <div class="stat-item">
                       <div class="stat-label">Age</div>
@@ -66,13 +64,13 @@
                   </div>
                 </div>
               </div>
-              
+
               <!-- Quick Actions -->
               <div class="quick-actions">
                 <h4><i class="fa fa-bolt"></i>Quick Actions</h4>
                 <div class="action-grid">
                   <a href="{% url 'add_driver_training' D_ID=driver.D_ID %}" class="action-card">
-                    <h6>Add Training & Drill Records</h6>
+                    <h6>Add Training &amp; Drill Records</h6>
                     <i class="fa fa-plus-circle"></i>
                   </a>
                   <a href="{% url 'add_driver_violation' D_ID=driver.D_ID %}" class="action-card">
@@ -83,19 +81,17 @@
               </div>
             </div>
           </div>
+
             <!--Personal Information - Modern Tabbed Interface-->
             <div class="row mt-4">
               <div class="col-md-12">
                 <div class="modern-panel">
-                  <!--Header-->
                   <div class="panel-header">
                     <h2><i class="fa fa-user"></i>Personal Information</h2>
                     <a class="collapse-link" style="color: white;"><i class="fa fa-chevron-up"></i></a>
                   </div>
-                  <!--Content with Tabs-->
                   <div class="panel-content">
                     <div class="info-tabs-container">
-                      <!-- Tab Navigation -->
                       <div class="tab-navigation">
                         <button class="tab-nav-item active" data-tab="basic">
                           <i class="fa fa-user"></i>Basic Info
@@ -110,73 +106,60 @@
                           <i class="fa fa-heartbeat"></i>Medical
                         </button>
                       </div>
-                      
-                      <!-- Tab Contents -->
+
                       <!-- Basic Info Tab -->
                       <div class="tab-content active" id="basic">
                         <div class="info-cards-grid">
                           <div class="info-card">
                             <div class="info-card-header">
-                              <div class="info-card-icon">
-                                <i class="fa fa-user"></i>
-                              </div>
+                              <div class="info-card-icon"><i class="fa fa-user"></i></div>
                               <h4 class="info-card-title">Father Name</h4>
                             </div>
                             <p class="info-card-value">{{ driver.Father_Name }}</p>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
-                              <div class="info-card-icon">
-                                <i class="fa fa-birthday-cake"></i>
-                              </div>
+                              <div class="info-card-icon"><i class="fa fa-birthday-cake"></i></div>
                               <h4 class="info-card-title">Date of Birth</h4>
                             </div>
                             <p class="info-card-value">{{ driver.DOB }}</p>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
-                              <div class="info-card-icon">
-                                <i class="fa fa-graduation-cap"></i>
-                              </div>
+                              <div class="info-card-icon"><i class="fa fa-graduation-cap"></i></div>
                               <h4 class="info-card-title">Education</h4>
                             </div>
                             <p class="info-card-value">{{ driver.Education }}</p>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
-                              <div class="info-card-icon">
-                                <i class="fa fa-tint"></i>
-                              </div>
+                              <div class="info-card-icon"><i class="fa fa-tint"></i></div>
                               <h4 class="info-card-title">Blood Group</h4>
                             </div>
                             <p class="info-card-value">{{ driver.Blood_Group }}</p>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
-                              <div class="info-card-icon">
-                                <i class="fa fa-building"></i>
-                              </div>
+                              <div class="info-card-icon"><i class="fa fa-building"></i></div>
                               <h4 class="info-card-title">Previous Company</h4>
                             </div>
                             <p class="info-card-value">{{ driver.Previous_Company|default:"Not specified" }}</p>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
-                              <div class="info-card-icon">
-                                <i class="fa fa-truck"></i>
-                              </div>
+                              <div class="info-card-icon"><i class="fa fa-truck"></i></div>
                               <h4 class="info-card-title">Tank Lorry</h4>
                             </div>
                             <p class="info-card-value">{{ driver.Tank_Lorry }}</p>
                           </div>
                         </div>
                       </div>
-                      
+
                       <!-- Documents Tab -->
                       <div class="tab-content" id="documents">
                         <div class="status-timeline">
@@ -202,7 +185,7 @@
                           </div>
                         </div>
                       </div>
-                      
+
                       <!-- Certifications Tab -->
                       <div class="tab-content" id="certifications">
                         <div class="status-timeline">
@@ -214,7 +197,7 @@
                               <div class="timeline-title">Dangerous Driving Certificate (DDC)</div>
                               <div class="timeline-subtitle">Status: {{ driver.Motorway_Trained }}</div>
                               <div class="timeline-date">
-                                <strong>Issued:</strong> {{ driver.DDC_Issue_Date|default:"N/A" }} | 
+                                <strong>Issued:</strong> {{ driver.DDC_Issue_Date|default:"N/A" }} |
                                 <strong>Expires:</strong> {{ driver.DDC_Expiry_Date }}
                               </div>
                               <div class="cert-progress-container">
@@ -229,7 +212,7 @@
                               </span>
                             </div>
                           </div>
-                          
+
                           <div class="timeline-item">
                             <div class="timeline-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
                               <i class="fa fa-id-badge"></i>
@@ -239,7 +222,7 @@
                               <div class="timeline-subtitle">License No: {{ driver.License_No }}</div>
                               <div class="timeline-date">
                                 <strong>Authority:</strong> {{ driver.HTV_License_Authority }}<br>
-                                <strong>Issued:</strong> {{ driver.HTV_License_Issue_Date }} | 
+                                <strong>Issued:</strong> {{ driver.HTV_License_Issue_Date }} |
                                 <strong>Expires:</strong> {{ driver.HTV_License_Expiry_Date }}
                               </div>
                               <div class="cert-progress-container">
@@ -256,7 +239,7 @@
                           </div>
                         </div>
                       </div>
-                      
+
                       <!-- Medical Tab -->
                       <div class="tab-content" id="medical">
                         <div class="info-cards-grid">
@@ -269,7 +252,7 @@
                             </div>
                             <p class="info-card-value">{{ driver.Lab_Name }}</p>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
                               <div class="info-card-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
@@ -279,7 +262,7 @@
                             </div>
                             <p class="info-card-value">{{ driver.Report_Date }}</p>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
                               <div class="info-card-icon" style="background: linear-gradient(135deg, #f43f5e, #e11d48);">
@@ -297,7 +280,7 @@
                               {{ driver.Expiry_Date_status }}
                             </span>
                           </div>
-                          
+
                           <div class="info-card">
                             <div class="info-card-header">
                               <div class="info-card-icon" style="background: linear-gradient(135deg, #84cc16, #65a30d);">
@@ -320,56 +303,94 @@
               </div>
             </div>
 
-             <!--Monthly Training & Drill Attendance-->
-             <div class="row mt-3">
+            <!--Monthly HSE Training Attendance-->
+            <div class="row mt-3">
               <div class="col-md-12">
                 <div class="modern-panel">
-                  <!--Header-->
                   <div class="panel-header">
-                    <h2><i class="fa fa-graduation-cap"></i>Monthly Training &amp; Drill Attendance</h2>
+                    <h2><i class="fa fa-graduation-cap"></i>HSE Training Attendance</h2>
                     <a class="collapse-link" style="color: white;"><i class="fa fa-chevron-up"></i></a>
                   </div>
-                  <!--Content-->
                   <div class="panel-content">
                     <div class="modern-table">
                       <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Training</th>
-            <th>Month</th>
-            <th>Completed Date</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for completion in training_completions %}
-        <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ completion.training.train_name }}</td>
-            <td>{{ completion.training.training_month }}</td>
-            <td>{{ completion.completed_date }}</td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="4" class="text-center text-muted">No training records found.</td></tr>
-    {% endfor %}
-    </tbody>
-</table>
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Training Topic</th>
+                            <th>Month</th>
+                            <th>Completed Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for completion in training_completions %}
+                          <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ completion.training.train_name }}</td>
+                            <td>{{ completion.training.training_month }}</td>
+                            <td>{{ completion.completed_date }}</td>
+                          </tr>
+                          {% empty %}
+                          <tr>
+                            <td colspan="4" class="text-center text-muted">No training records found.</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-             <!--Tool Box Meeting Attendance-->
-             <div class="row mt-3">
+            <!--Monthly Drill Attendance-->
+            <div class="row mt-3">
               <div class="col-md-12">
                 <div class="modern-panel">
-                  <!--Header-->
+                  <div class="panel-header">
+                    <h2><i class="fa fa-fire"></i>Drill Attendance</h2>
+                    <a class="collapse-link" style="color: white;"><i class="fa fa-chevron-up"></i></a>
+                  </div>
+                  <div class="panel-content">
+                    <div class="modern-table">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Drill Exercise</th>
+                            <th>Month</th>
+                            <th>Completed Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for completion in drill_completions %}
+                          <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ completion.drill.drill_name }}</td>
+                            <td>{{ completion.drill.drilling_month }}</td>
+                            <td>{{ completion.completed_date }}</td>
+                          </tr>
+                          {% empty %}
+                          <tr>
+                            <td colspan="4" class="text-center text-muted">No drill records found.</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--Tool Box Meeting Attendance-->
+            <div class="row mt-3">
+              <div class="col-md-12">
+                <div class="modern-panel">
                   <div class="panel-header">
                     <h2><i class="fa fa-bar-chart"></i>Tool Box Meeting Attendance</h2>
                     <a class="collapse-link" style="color: white;"><i class="fa fa-chevron-up"></i></a>
                   </div>
-                  <!--Content-->
                   <div class="panel-content">
                     <div class="chart-container">
                       <canvas id="barChart" height="350"></canvas>
@@ -378,19 +399,16 @@
                 </div>
               </div>
             </div>
-            
 
           </div>
           </div>
-          
+
         <script>
           const tbm_data = JSON.parse('{{ tbm_data|escapejs }}')
-          
-          // Custom color palette for bars with golden yellow theme
+
           const colorPalette = ['rgba(247, 215, 148, 0.8)']
           const borderColorPalette = ['rgba(247, 215, 148, 1)']
-          
-          // Dummy data
+
           const data = {
             labels: ['Syndicate Sessions', 'Heat Stress Management', 'Pre-load Inspection', 'Safe Decantation at Retail Site', 'Roll Over Prevention', 'Fatigue Management', 'Defensive Driving', 'Unauthorized Passenger', 'Loading & Unloading', '360 Walkabout Process', 'Vehicle Fitness', 'Emergency Response', 'PPE Compliance', 'Duty & Driving Hours', 'On-Road Distraction', 'Security Awareness', 'Manual Handling', 'Working at Height', 'Adverse Weather Condition', 'Static Charge', 'Driver Behavior on Road', 'Foggy Weather', 'Sugarcane Trolleys Hazards and Controls', 'NMPI Reporting', 'Black Spots'],
             datasets: [
@@ -405,62 +423,35 @@
               }
             ]
           }
-          
+
           const options = {
             scales: {
-              x: {
-                beginAtZero: true,
-                maxRotation: 45,
-                minRotation: 0
-              },
-              y: {
-                beginAtZero: true,
-                stepSize: 1,
-                max: 6
-              }
+              x: { beginAtZero: true, maxRotation: 45, minRotation: 0 },
+              y: { beginAtZero: true, stepSize: 1, max: 6 }
             },
-            responsive: true, // Make the chart responsive
-            maintainAspectRatio: false, // Maintain aspect ratio when resizing
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
-              legend: {
-                display: false // Hide the legend
-              },
-              tooltips: {
-                enabled: true, // Show tooltips on hover
-                mode: 'index',
-                intersect: false
-              }
+              legend: { display: false },
+              tooltips: { enabled: true, mode: 'index', intersect: false }
             }
           }
-          
-          // Chart configuration with golden yellow theme
-          var ctx = document.getElementById("barChart").getContext('2d');
-          var barChart = new Chart(ctx, {
-            type: 'bar',
-            data: data,
-            options: options
-          })
 
-          // Tab functionality for Personal Information section
+          var ctx = document.getElementById("barChart").getContext('2d');
+          var barChart = new Chart(ctx, { type: 'bar', data: data, options: options })
+
+          // Tab functionality
           document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab-nav-item');
             const tabContents = document.querySelectorAll('.tab-content');
 
             tabButtons.forEach(button => {
               button.addEventListener('click', () => {
-                // Remove active class from all buttons and contents
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
-
-                // Add active class to clicked button
                 button.classList.add('active');
-
-                // Show corresponding content
-                const tabId = button.getAttribute('data-tab');
-                const targetContent = document.getElementById(tabId);
-                if (targetContent) {
-                  targetContent.classList.add('active');
-                }
+                const targetContent = document.getElementById(button.getAttribute('data-tab'));
+                if (targetContent) targetContent.classList.add('active');
               });
             });
           });
@@ -470,7 +461,6 @@
             $('.collapse-link').click(function() {
               var panel = $(this).closest('.modern-panel').find('.panel-content');
               var icon = $(this).find('i');
-              
               if (panel.is(':visible')) {
                 panel.slideUp();
                 icon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
@@ -486,7 +476,4 @@
   </div>
 </body>
 
-
-  <!-- /page content -->
 {% endblock %}
-
