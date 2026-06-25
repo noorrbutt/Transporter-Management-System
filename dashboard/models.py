@@ -117,7 +117,6 @@ class Driver(models.Model):
     )
     DOB = models.DateField(verbose_name="Date of Birth", null=True, blank=True)
 
-    # Choices for DL_Status field
     DL_STATUS_CHOICES = [
         ("HTV", "HTV"),
         ("PSV", "PSV"),
@@ -152,9 +151,7 @@ class Driver(models.Model):
         verbose_name="HTV License Expiry Date", null=True, blank=True
     )
     DDC_Expiry_Date = models.DateField(verbose_name="DDC Date", null=True, blank=True)
-
     Education = models.CharField(max_length=16, verbose_name="Education", null=True)
-
     Medical = models.BooleanField(verbose_name="Medical Status", null=True)
     Report_Date = models.DateField(
         null=True, blank=True, verbose_name="Medical Report Date"
@@ -168,11 +165,9 @@ class Driver(models.Model):
     Blood_Group = models.CharField(
         max_length=10, verbose_name="Blood Group", null=True, blank=True
     )
-
     Medical_Health = models.CharField(
         max_length=5, verbose_name="Medical Health", null=True
     )
-
     Joining_Date = models.DateField(verbose_name="Joining Date", null=True, blank=True)
     Salary_Increment_Date = models.DateField(
         verbose_name="Salary Increment Date", null=True, blank=True
@@ -192,11 +187,6 @@ class Driver(models.Model):
     )
     Tank_Lorry = models.CharField(max_length=255, verbose_name="Tank Lorry", null=True)
 
-
-    def __str__(self):
-        return self.D_Name
-    
-    
     @property
     def age(self):
         if not self.DOB:
@@ -206,7 +196,10 @@ class Driver(models.Model):
             today.year
             - self.DOB.year
             - ((today.month, today.day) < (self.DOB.month, self.DOB.day))
-    )
+        )
+
+    def __str__(self):
+        return self.D_Name
 
     class Meta:
         verbose_name_plural = "Drivers"
@@ -243,6 +236,8 @@ class annual_drill(models.Model):
         verbose_name_plural = "Drill Trainings"
 
 
+# ── LEGACY: kept only for the data migration. Delete after running migrate. ──
+
 class annual_drill_driver(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(Driver, on_delete=models.CASCADE, verbose_name="User")
@@ -260,14 +255,13 @@ class annual_drill_driver(models.Model):
     train12_completed_date = models.DateField(null=True, blank=True)
 
     class Meta:
-        verbose_name = "Dril Driver"
+        verbose_name = "Drill Driver"
         verbose_name_plural = "Drill Drivers"
 
 
 class annual_training_driver(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(Driver, on_delete=models.CASCADE, verbose_name="User")
-
     train1_completed_date = models.DateField(
         null=True, blank=True, verbose_name="TRAIN1 Completed Date"
     )
@@ -309,6 +303,46 @@ class annual_training_driver(models.Model):
         verbose_name = "HSE Training Driver"
         verbose_name_plural = "HSE Training Drivers"
 
+
+# ── NEW: replacement tables ──────────────────────────────────────────────────
+
+class DriverTrainingCompletion(models.Model):
+    driver = models.ForeignKey(
+        Driver, on_delete=models.CASCADE, related_name="training_completions"
+    )
+    training = models.ForeignKey(
+        annual_training, on_delete=models.CASCADE, related_name="driver_completions"
+    )
+    completed_date = models.DateField()
+
+    class Meta:
+        unique_together = ("driver", "training")
+        verbose_name = "Driver Training Completion"
+        verbose_name_plural = "Driver Training Completions"
+
+    def __str__(self):
+        return f"{self.driver} – {self.training} – {self.completed_date}"
+
+
+class DriverDrillCompletion(models.Model):
+    driver = models.ForeignKey(
+        Driver, on_delete=models.CASCADE, related_name="drill_completions"
+    )
+    drill = models.ForeignKey(
+        annual_drill, on_delete=models.CASCADE, related_name="driver_completions"
+    )
+    completed_date = models.DateField()
+
+    class Meta:
+        unique_together = ("driver", "drill")
+        verbose_name = "Driver Drill Completion"
+        verbose_name_plural = "Driver Drill Completions"
+
+    def __str__(self):
+        return f"{self.driver} – {self.drill} – {self.completed_date}"
+
+
+# ── UNCHANGED below ──────────────────────────────────────────────────────────
 
 class Violations(models.Model):
     id = models.AutoField(primary_key=True)
@@ -357,14 +391,8 @@ class tool_box_meeting_topics(models.Model):
 
 class driver_tool_box_meeting_attended(models.Model):
     id = models.AutoField(primary_key=True)
-
-    # This is topic of the meeting
     meetings_attended = models.ForeignKey(
         tool_box_meeting_topics, on_delete=models.CASCADE, null=True
     )
-
-    # This is the Driver ID who has attended the meeting
     meeting_attended_by = models.ForeignKey(Driver, on_delete=models.CASCADE, null=True)
-
-    # This is the no of times a single meeting is attended by the driver
     no_of_times_meeting_attended = models.IntegerField()

@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
+
 from dashboard.models import (
     Company,
     VehicleMaker,
@@ -30,6 +31,9 @@ from dashboard.models import (
     Driver_Violation,
     tool_box_meeting_topics,
     driver_tool_box_meeting_attended,
+    DriverTrainingCompletion,
+    DriverDrillCompletion,
+
 )
 
 
@@ -38,42 +42,33 @@ def add_driver_training(request, D_ID):
     driver = get_object_or_404(Driver, D_ID=D_ID)
     drills = annual_drill.objects.all()
     training = annual_training.objects.all()
-    try:
-        if request.method == "POST":
-            train = request.POST.get("train")
-            drill = request.POST.get("drill")
-            date = request.POST.get("date")
-            traing = annual_training.objects.get(train_name=train)
-            drilling = annual_drill.objects.get(drill_name=drill)
-            training_no = "train" + str(traing.id) + "_completed_date"
-            meeting_train, created_train = annual_training_driver.objects.get_or_create(
-                user=driver, defaults={training_no: date}
-            )
-            if not created_train:
-                try:
-                    setattr(meeting_train, training_no, date)
-                    meeting_train.save()
-                except Exception as e:
-                    messages.error(request, f"Operation failed: {str(e)}")
-                    return redirect(request.path)
-            # If created_train is True, get_or_create already saved the record with the correct date via defaults.
-            drilling_no = "train" + str(drilling.id) + "_completed_date"
-            meeting_drill, created_drill = annual_drill_driver.objects.get_or_create(
-                user=driver, defaults={drilling_no: date}
-            )
-            if not created_drill:
-                setattr(meeting_drill, drilling_no, date)
-                meeting_drill.save()
-            # If created_drill is True, get_or_create already saved the record with the correct date via defaults.
-            driver_view_url = reverse("driverview", args=[D_ID])
-            return HttpResponseRedirect(driver_view_url)
-        else:
-            context = {"driver": driver, "drills": drills, "training": training}
-            return render(request, "training/add_training.html", context)
-    except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
-        return redirect(request.path)
 
+    if request.method == "POST":
+        train_id = request.POST.get("train")
+        drill_id = request.POST.get("drill")
+        completed_date = request.POST.get("date")
+
+        training_obj = get_object_or_404(annual_training, pk=train_id)
+        drill_obj = get_object_or_404(annual_drill, pk=drill_id)
+
+        DriverTrainingCompletion.objects.update_or_create(
+            driver=driver,
+            training=training_obj,
+            defaults={"completed_date": completed_date},
+        )
+        DriverDrillCompletion.objects.update_or_create(
+            driver=driver,
+            drill=drill_obj,
+            defaults={"completed_date": completed_date},
+        )
+
+        return HttpResponseRedirect(reverse("driverview", args=[D_ID]))
+
+    return render(request, "training/add_training.html", {
+        "driver": driver,
+        "drills": drills,
+        "training": training,
+    })
 
 @transaction.atomic
 def add_tbm(request, D_ID):
@@ -688,6 +683,18 @@ def driver_view(request, driver_id):
         "Leave_Date": driver.Leave_Date,
         "Leave_Resume": driver.Leave_Resume,
     }
+    training_completions = (
+        DriverTrainingCompletion.objects
+        .filter(driver=driver)
+        .select_related("training")
+        .order_by("training__id")
+    )
+    drill_completions = (
+        DriverDrillCompletion.objects
+        .filter(driver=driver)
+        .select_related("drill")
+        .order_by("drill__id")
+    )
 
     # Calculate the status messages for each date field and add them to the driver object
     for field_name, field_date in date_fields.items():
@@ -710,6 +717,9 @@ def driver_view(request, driver_id):
         "annual_drill_data": annual_drill_data,
         "driver_attendance": attendance_data,
         "tbm_data": tbm_data,
+        "drill_completions": drill_completions,
+        "training_completions": training_completions,
+
     }
     return render(request, "driver/driver_view.html", context)
 

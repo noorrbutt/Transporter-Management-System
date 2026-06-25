@@ -333,108 +333,27 @@
                   <div class="panel-content">
                     <div class="modern-table">
                       <table class="table table-bordered">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Month</th>
-                            <th>Training Topic</th>
-                            <th>Drill Exercise</th>
-                            <th>Completion Date</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        {% with drill=driver_attendance.first %}
-                        {% if drill %}
-                            <tr>
-                              <td>1</td>
-                              <td>January</td>
-                              <td>Company Policies</td>
-                              <td>First Aid</td>
-                              <td>{{ drill.train1_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>2</td>
-                              <td>February</td>
-                              <td>Product Knowledge</td>
-                              <td>Fire Drill</td>
-                              <td>{{ drill.train2_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>3</td>
-                              <td>March</td>
-                              <td>Vehicle Inspection</td>
-                              <td>Law and Order Situation</td>
-                              <td>{{ drill.train3_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>4</td>
-                              <td>April</td>
-                              <td>Journey Management</td>
-                              <td>Breakdown Maintenance</td>
-                              <td>{{ drill.train4_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>5</td>
-                              <td>May</td>
-                              <td>Emergency Response</td>
-                              <td>Fire Evacuation</td>
-                              <td>{{ drill.train5_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>6</td>
-                              <td>June</td>
-                              <td>Internal DDC</td>
-                              <td>Road Accident</td>
-                              <td>{{ drill.train6_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>7</td>
-                              <td>July</td>
-                              <td>Vehicle Roll Over Prevention</td>
-                              <td>Heat Stroke</td>
-                              <td>{{ drill.train7_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>8</td>
-                              <td>August</td>
-                              <td>ABS Brake System</td>
-                              <td>Spill</td>
-                              <td>{{ drill.train8_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>9</td>
-                              <td>September</td>
-                              <td>Loading and Unloading</td>
-                              <td>Heart Attack</td>
-                              <td>{{ drill.train9_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>10</td>
-                              <td>October</td>
-                              <td>First Aid Induction</td>
-                              <td>Tyre Burst</td>
-                              <td>{{ drill.train10_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>11</td>
-                              <td>November</td>
-                              <td>Fatigue Management</td>
-                              <td>Bomb Threat</td>
-                              <td>{{ drill.train11_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                            <tr>
-                              <td>12</td>
-                              <td>December</td>
-                              <td>Fire Extinguisher Use</td>
-                              <td>Mega Drill</td>
-                              <td>{{ drill.train12_completed_date|default:"Not Completed" }}</td>
-                            </tr>
-                        {% else %}
-                            <tr><td colspan="5" class="text-center text-muted">No training records found.</td></tr>
-                        {% endif %}
-                        {% endwith %}
-                        </tbody>
-                      </table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Training</th>
+            <th>Month</th>
+            <th>Completed Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for completion in training_completions %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ completion.training.train_name }}</td>
+            <td>{{ completion.training.training_month }}</td>
+            <td>{{ completion.completed_date }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="4" class="text-center text-muted">No training records found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
                     </div>
                   </div>
                 </div>
