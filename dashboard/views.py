@@ -714,8 +714,6 @@ def driver_view(request, driver_id):
 
     context = {
         "driver": driver,
-        "annual_drill_data": annual_drill_data,
-        "driver_attendance": attendance_data,
         "tbm_data": tbm_data,
         "drill_completions": drill_completions,
         "training_completions": training_completions,
@@ -1120,39 +1118,6 @@ def allusers(request):
 
     context = {"user_data": user_data}
     return render(request, "user/users.html", context)
-
-
-def get_tppl(request):
-
-    vehicles = Vehicle.objects.all()
-
-    def get_date_status(date, field_name):
-        current_date = datetime.now().date()
-        days_remaining = (date - current_date).days
-        if days_remaining <= 0:
-            return f"Expired"
-        elif days_remaining <= 90:
-            return f"Close to Expiry"
-        else:
-            return f"Valid"
-
-    for vehicle in vehicles:
-        date_fields = {
-            "tax_expiry": vehicle.TAX_PAID_Date,
-            "fitness_expiry": vehicle.FITNISSE_Date,
-            "road_insurance": vehicle.INSURANCE_Date,
-            "Dip_Chart": vehicle.DIP_CHART_Date,
-            "Q_Fom": vehicle.Q_FOM_Date,
-            "Route": vehicle.Route_Permit_Date,
-        }
-
-        for field_name, field_date in date_fields.items():
-            if field_date:
-                status_message = get_date_status(field_date, field_name)
-                setattr(vehicle, f"{field_name}_status", status_message)
-
-    context = {"vehicles": vehicles}
-    return render(request, "vehicle/vehicle.html", context)
 
 
 def get_procedures(request):
