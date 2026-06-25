@@ -25,8 +25,6 @@ from dashboard.models import (
     User_Image,
     annual_training,
     annual_drill,
-    annual_drill_driver,
-    annual_training_driver,
     Violations,
     Driver_Violation,
     tool_box_meeting_topics,
@@ -702,11 +700,6 @@ def driver_view(request, driver_id):
             status_message = get_date_status(field_date, field_name)
             setattr(driver, f"{field_name}_status", status_message)
 
-    # Retrieve training name and training month for the driver from annual_drill
-    annual_drill_data = annual_drill.objects.all()
-
-    # Retrieve the driver's attendance data
-    attendance_data = annual_training_driver.objects.filter(user=driver)
     tbm = driver_tool_box_meeting_attended.objects.filter(
         meeting_attended_by=driver_id
     ).values_list("no_of_times_meeting_attended", flat=True)
