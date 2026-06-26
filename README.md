@@ -37,7 +37,7 @@ The HGGC Transporter Management System is designed to streamline transport opera
 
 ### Installation
 1. **Clone the repository:**
-- git clone https://github.com/buttawb/HGGC-WebApp.git
+- git
 - cd HGGC-WebApp
 
 2. **Install Python dependencies:**
