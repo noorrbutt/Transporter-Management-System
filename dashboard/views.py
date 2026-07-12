@@ -37,6 +37,8 @@ from dashboard.models import (
 
 @transaction.atomic
 def add_driver_training(request, D_ID):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     driver = get_object_or_404(Driver, D_ID=D_ID)
     drills = annual_drill.objects.all()
     training = annual_training.objects.all()
@@ -70,6 +72,8 @@ def add_driver_training(request, D_ID):
 
 @transaction.atomic
 def add_tbm(request, D_ID):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     driver = get_object_or_404(Driver, D_ID=D_ID)
     tbm = tool_box_meeting_topics.objects.all()
     try:
@@ -101,6 +105,8 @@ def add_tbm(request, D_ID):
 
 @transaction.atomic
 def add_driver_violation(request, D_ID):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     driver = get_object_or_404(Driver, D_ID=D_ID)
     violation = Violations.objects.all()
     try:
@@ -128,6 +134,8 @@ def add_driver_violation(request, D_ID):
 
 @transaction.atomic
 def delete_company(request, company_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method != "POST":
         return redirect("/company")
     entry = get_object_or_404(Company, cid=company_id)
@@ -137,6 +145,8 @@ def delete_company(request, company_id):
 
 @transaction.atomic
 def add_maker(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     try:
         if request.method == "POST":
             vehicle = VehicleMaker()
@@ -152,6 +162,8 @@ def add_maker(request):
 
 @transaction.atomic
 def edit_maker(request, maker_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     maker = get_object_or_404(VehicleMaker, VMid=maker_id)
     try:
         if request.method == "POST":
@@ -168,6 +180,8 @@ def edit_maker(request, maker_id):
 
 @transaction.atomic
 def delete_maker(request, maker_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method != "POST":
         return HttpResponseRedirect("/makers")
     try:
@@ -180,6 +194,8 @@ def delete_maker(request, maker_id):
 
 @transaction.atomic
 def add_owner(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     try:
         if request.method == "POST":
             owner = VehicleOwner()
@@ -196,6 +212,8 @@ def add_owner(request):
 
 @transaction.atomic
 def edit_owner(request, owner_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     owner = get_object_or_404(VehicleOwner, VO_id=owner_id)
     try:
         if request.method == "POST":
@@ -212,6 +230,8 @@ def edit_owner(request, owner_id):
 
 @transaction.atomic
 def delete_owner(request, owner_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method != "POST":
         return HttpResponseRedirect("/owners")
     try:
@@ -224,6 +244,8 @@ def delete_owner(request, owner_id):
 
 @transaction.atomic
 def add_driver(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     omcc = Company.objects.all()
     locc = Location.objects.all()
     try:
@@ -334,6 +356,8 @@ def add_driver(request):
 
 @transaction.atomic
 def add_vehicle(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     vehicle_makers = VehicleMaker.objects.all()
     vehicle_owners = VehicleOwner.objects.all()
     company = Company.objects.all()
@@ -395,6 +419,8 @@ def add_vehicle(request):
 
 @transaction.atomic
 def edit_vehicle(request, vehicle_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     vehicle_makers = VehicleMaker.objects.all()
     vehicle_owners = VehicleOwner.objects.all()
     company = Company.objects.all()
@@ -459,6 +485,8 @@ def edit_vehicle(request, vehicle_id):
 
 @transaction.atomic
 def delete_vehicle(request, vehicle_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method != "POST":
         return redirect("/vehicles/all/")
     try:
@@ -471,6 +499,8 @@ def delete_vehicle(request, vehicle_id):
 
 @transaction.atomic
 def edit_driver(request, driver_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     driver = get_object_or_404(Driver, D_ID=driver_id)
     omcc = Company.objects.all()
     locc = Location.objects.all()
@@ -586,6 +616,8 @@ def edit_driver(request, driver_id):
 
 @transaction.atomic
 def delete_driver(request, driver_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method != "POST":
         return redirect("/drivers")
     try:
@@ -604,6 +636,8 @@ def get_violation(request):
 
 @transaction.atomic
 def add_violation(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     try:
         if request.method == "POST":
             violation_type = request.POST.get("violation_type")
