@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
+from django.utils import timezone
 
 
 from dashboard.models import (
@@ -139,7 +140,13 @@ def delete_company(request, company_id):
     if request.method != "POST":
         return redirect("/company")
     entry = get_object_or_404(Company, cid=company_id)
-    entry.delete()
+    try:
+        entry.is_deleted = True
+        entry.deleted_at = timezone.now()
+        entry.deleted_by = request.user
+        entry.save()
+    except Exception:
+        pass
     return redirect("/company")
 
 
@@ -186,7 +193,10 @@ def delete_maker(request, maker_id):
         return HttpResponseRedirect("/makers")
     try:
         maker = get_object_or_404(VehicleMaker, VMid=maker_id)
-        maker.delete()
+        maker.is_deleted = True
+        maker.deleted_at = timezone.now()
+        maker.deleted_by = request.user
+        maker.save()
         return HttpResponseRedirect("/makers")
     except Exception:
         return HttpResponseRedirect("/makers")
@@ -236,7 +246,10 @@ def delete_owner(request, owner_id):
         return HttpResponseRedirect("/owners")
     try:
         owner = get_object_or_404(VehicleOwner, VO_id=owner_id)
-        owner.delete()
+        owner.is_deleted = True
+        owner.deleted_at = timezone.now()
+        owner.deleted_by = request.user
+        owner.save()
         return HttpResponseRedirect("/owners")
     except Exception:
         return HttpResponseRedirect("/owners")
@@ -491,7 +504,10 @@ def delete_vehicle(request, vehicle_id):
         return redirect("/vehicles/all/")
     try:
         vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
-        vehicle.delete()
+        vehicle.is_deleted = True
+        vehicle.deleted_at = timezone.now()
+        vehicle.deleted_by = request.user
+        vehicle.save()
     except Exception:
         pass
     return redirect("/vehicles/all/")
@@ -622,7 +638,10 @@ def delete_driver(request, driver_id):
         return redirect("/drivers")
     try:
         driver = get_object_or_404(Driver, D_ID=driver_id)
-        driver.delete()
+        driver.is_deleted = True
+        driver.deleted_at = timezone.now()
+        driver.deleted_by = request.user
+        driver.save()
     except Exception:
         pass
     return redirect("/drivers")
@@ -787,7 +806,9 @@ def get_driver(request):
 
     # Query the database to get all drivers with Oil Marketing Company preloaded
     drivers = (
-        Driver.objects.select_related("Oil_Marketing_Company").all().order_by("D_Name")
+        Driver.objects.select_related("Oil_Marketing_Company")
+        .filter(is_deleted=False)
+        .order_by("D_Name")
     )
     for driver in drivers:
         # Define a dictionary to store the date fields and their corresponding status messages
@@ -823,7 +844,7 @@ def get_vehicle(request, filter):
     if filter == "apl":
         apl_company = Company.objects.filter(cabb__iexact="APL").first()
         vehicles = (
-            Vehicle.objects.filter(OMC=apl_company)
+            Vehicle.objects.filter(OMC=apl_company, is_deleted=False)
             if apl_company
             else Vehicle.objects.none()
         )
@@ -831,7 +852,7 @@ def get_vehicle(request, filter):
     elif filter == "pso":
         pso_company = Company.objects.filter(cabb__iexact="PSO").first()
         vehicles = (
-            Vehicle.objects.filter(OMC=pso_company)
+            Vehicle.objects.filter(OMC=pso_company, is_deleted=False)
             if pso_company
             else Vehicle.objects.none()
         )
@@ -839,7 +860,7 @@ def get_vehicle(request, filter):
     elif filter == "go":
         go_company = Company.objects.filter(cabb__iexact="GO").first()
         vehicles = (
-            Vehicle.objects.filter(OMC=go_company)
+            Vehicle.objects.filter(OMC=go_company, is_deleted=False)
             if go_company
             else Vehicle.objects.none()
         )
@@ -847,13 +868,13 @@ def get_vehicle(request, filter):
     elif filter == "tppl":
         tppl_companies = Company.objects.filter(cabb__iexact="TPPL")
         vehicles = (
-            Vehicle.objects.filter(OMC__in=tppl_companies)
+            Vehicle.objects.filter(OMC__in=tppl_companies, is_deleted=False)
             if tppl_companies.exists()
             else Vehicle.objects.none()
         )
         image = "/static/images/total-logo.png"
     elif filter == "all":
-        vehicles = Vehicle.objects.all()
+        vehicles = Vehicle.objects.filter(is_deleted=False)
         image = ""
 
     for vehicle in vehicles:
@@ -879,21 +900,21 @@ def get_vehicle(request, filter):
 
 def get_vehicle_maker(request):
 
-    vehicle_makers = VehicleMaker.objects.all()
+    vehicle_makers = VehicleMaker.objects.filter(is_deleted=False)
     context = {"vehicle_makers": vehicle_makers}
     return render(request, "vehicle_maker/vehicle_makers.html", context)
 
 
 def get_vehicle_owner(request):
 
-    vehicle_owners = VehicleOwner.objects.all()
+    vehicle_owners = VehicleOwner.objects.filter(is_deleted=False)
     context = {"vehicle_owners": vehicle_owners}
     return render(request, "vehicle_owner/vehicle_owner.html", context)
 
 
 def get_company(request):
 
-    companies = Company.objects.all()
+    companies = Company.objects.filter(is_deleted=False)
     context = {
         "companies": companies,
     }
@@ -907,7 +928,7 @@ def logout_user(request):
 
 def dashboard(request):
 
-    total_vehicles = Vehicle.objects.all().count()
+    total_vehicles = Vehicle.objects.filter(is_deleted=False).count()
     today = date.today()
 
     expired_cnic_list = []
@@ -915,7 +936,7 @@ def dashboard(request):
     expired_htv_license_list = []
     expired_general_list = []
 
-    drivers = Driver.objects.all()
+    drivers = Driver.objects.filter(is_deleted=False)
 
     for driver in drivers:
         if driver.CNIC_Validity and driver.CNIC_Validity < today:
