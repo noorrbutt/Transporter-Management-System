@@ -3,6 +3,8 @@ from datetime import date, datetime
 from io import BytesIO
 from PIL import Image
 
+Image.MAX_IMAGE_PIXELS = 20_000_000
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -32,7 +34,6 @@ from dashboard.models import (
     driver_tool_box_meeting_attended,
     DriverTrainingCompletion,
     DriverDrillCompletion,
-
 )
 
 
@@ -65,11 +66,16 @@ def add_driver_training(request, D_ID):
 
         return HttpResponseRedirect(reverse("driverview", args=[D_ID]))
 
-    return render(request, "training/add_training.html", {
-        "driver": driver,
-        "drills": drills,
-        "training": training,
-    })
+    return render(
+        request,
+        "training/add_training.html",
+        {
+            "driver": driver,
+            "drills": drills,
+            "training": training,
+        },
+    )
+
 
 @transaction.atomic
 def add_tbm(request, D_ID):
@@ -300,7 +306,15 @@ def add_driver(request):
             omc_obj = Company.objects.get(cname=oil_market)
             htv_obj = Location.objects.get(Lname=htc_license)
             if user_image:
+                allowed_ext = (".jpg", ".jpeg", ".png")
+                if not user_image.name.lower().endswith(allowed_ext):
+                    messages.error(request, "Only JPG or PNG images are allowed.")
+                    return redirect(request.path)
+                if user_image.size > 5 * 1024 * 1024:
+                    messages.error(request, "Image must be smaller than 5MB.")
+                    return redirect(request.path)
                 image = Image.open(user_image)
+
                 width, height = image.size
                 new_size = min(width, height)
                 left = (width - new_size) / 2
@@ -563,6 +577,13 @@ def edit_driver(request, driver_id):
             htv_obj = Location.objects.get(Lname=htc_license)
 
             if user_image:
+                allowed_ext = (".jpg", ".jpeg", ".png")
+                if not user_image.name.lower().endswith(allowed_ext):
+                    messages.error(request, "Only JPG or PNG images are allowed.")
+                    return redirect(request.path)
+                if user_image.size > 5 * 1024 * 1024:
+                    messages.error(request, "Image must be smaller than 5MB.")
+                    return redirect(request.path)
                 image = Image.open(user_image)
 
                 width, height = image.size
@@ -735,14 +756,12 @@ def driver_view(request, driver_id):
         "Leave_Resume": driver.Leave_Resume,
     }
     training_completions = (
-        DriverTrainingCompletion.objects
-        .filter(driver=driver)
+        DriverTrainingCompletion.objects.filter(driver=driver)
         .select_related("training")
         .order_by("training__id")
     )
     drill_completions = (
-        DriverDrillCompletion.objects
-        .filter(driver=driver)
+        DriverDrillCompletion.objects.filter(driver=driver)
         .select_related("drill")
         .order_by("drill__id")
     )
@@ -763,7 +782,6 @@ def driver_view(request, driver_id):
         "tbm_data": tbm_data,
         "drill_completions": drill_completions,
         "training_completions": training_completions,
-
     }
     return render(request, "driver/driver_view.html", context)
 
@@ -1023,6 +1041,14 @@ def adduser(request):
         user_image = request.FILES.get("user_image")
         if user_image:
             user_image_obj = User_Image(user=user)
+
+            allowed_ext = (".jpg", ".jpeg", ".png")
+            if not user_image.name.lower().endswith(allowed_ext):
+                messages.error(request, "Only JPG or PNG images are allowed.")
+                return redirect(request.path)
+            if user_image.size > 5 * 1024 * 1024:
+                messages.error(request, "Image must be smaller than 5MB.")
+                return redirect(request.path)
             image = Image.open(user_image)
 
             width, height = image.size
@@ -1049,7 +1075,6 @@ def deleteuser(request, id):
     if not request.user.is_superuser:
         raise PermissionDenied
     if request.method != "POST":
-
         return redirect("/allusers")
     user = get_object_or_404(User, id=id)
     user.delete()
@@ -1097,6 +1122,13 @@ def edituser(request, id):
             if flag:
                 user_image_obj.delete()
 
+            allowed_ext = (".jpg", ".jpeg", ".png")
+            if not user_image.name.lower().endswith(allowed_ext):
+                messages.error(request, "Only JPG or PNG images are allowed.")
+                return redirect(request.path)
+            if user_image.size > 5 * 1024 * 1024:
+                messages.error(request, "Image must be smaller than 5MB.")
+                return redirect(request.path)
             image = Image.open(user_image)
 
             # Convert the image to 'RGB' mode (removes transparency)
