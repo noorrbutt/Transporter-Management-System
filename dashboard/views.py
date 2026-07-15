@@ -16,7 +16,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.utils import timezone
+import logging
 
+logger = logging.getLogger(__name__)
 
 from dashboard.models import (
     Company,
@@ -106,7 +108,10 @@ def add_tbm(request, D_ID):
             context = {"driver": driver, "tbms": tbm}
             return render(request, "tbm/add_tbm.html", context)
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
 
 
@@ -135,7 +140,10 @@ def add_driver_violation(request, D_ID):
             context = {"driver": driver, "violations": violation}
             return render(request, "violation/add_driver_violation.html", context)
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
 
 
@@ -169,7 +177,10 @@ def add_maker(request):
         else:
             return render(request, "vehicle_maker/add_vm.html", {"action": "Add"})
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
 
 
@@ -184,7 +195,10 @@ def edit_maker(request, maker_id):
             maker.save()
             return HttpResponseRedirect("/makers")
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
     return render(
         request, "vehicle_maker/add_vm.html", {"maker": maker, "action": "Edit"}
@@ -222,7 +236,10 @@ def add_owner(request):
         else:
             return render(request, "vehicle_owner/add_vo.html", {"action": "Add"})
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
 
 
@@ -237,11 +254,14 @@ def edit_owner(request, owner_id):
             owner.save()
             return HttpResponseRedirect("/owners")
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
-    return render(
-        request, "vehicle_owner/add_vo.html", {"owner": owner, "action": "Edit"}
-    )
+        return render(
+            request, "vehicle_owner/add_vo.html", {"owner": owner, "action": "Edit"}
+        )
 
 
 @transaction.atomic
@@ -431,7 +451,10 @@ def add_vehicle(request):
             new_vehicle.save()
             return HttpResponseRedirect("/vehicleview/" + str(new_vehicle.id) + "/")
         except Exception as e:
-            messages.error(request, f"Operation failed: {str(e)}")
+            logger.exception("Operation failed in %s", request.path)
+            messages.error(
+                request, "Something went wrong. Please check your input and try again."
+            )
             return redirect(request.path)
 
     context = {
@@ -496,7 +519,10 @@ def edit_vehicle(request, vehicle_id):
 
             return HttpResponseRedirect("/vehicleview/" + str(vehicle.id) + "/")
         except Exception as e:
-            messages.error(request, f"Operation failed: {str(e)}")
+            logger.exception("Operation failed in %s", request.path)
+            messages.error(
+                request, "Something went wrong. Please check your input and try again."
+            )
             return redirect(request.path)
 
     context = {
@@ -647,7 +673,10 @@ def edit_driver(request, driver_id):
             context = {"driver": driver, "omc": omcc, "loc": locc, "action": "Edit"}
             return render(request, "driver/add_driver.html", context)
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
 
 
@@ -708,7 +737,10 @@ def add_company(request):
         else:
             return render(request, "company/add_company.html", {"action": "Add"})
     except Exception as e:
-        messages.error(request, f"Operation failed: {str(e)}")
+        logger.exception("Operation failed in %s", request.path)
+        messages.error(
+            request, "Something went wrong. Please check your input and try again."
+        )
         return redirect(request.path)
 
 
