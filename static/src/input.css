@@ -167,6 +167,22 @@
     @apply px-3 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-500;
   }
 
+  /* Nested submenu — connector line with a dot per item (used for 2nd/3rd level nav) */
+  .nav-submenu-nested {
+    @apply relative ml-[19px] pl-5 border-l border-white/10;
+  }
+  .nav-submenu-nested .side-link {
+    @apply relative;
+  }
+  .nav-submenu-nested .side-link::before {
+    content: '';
+    @apply absolute -left-[22px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-ink-500 transition-colors;
+  }
+  .nav-submenu-nested .side-link.is-active::before,
+  .nav-submenu-nested .side-link:hover::before {
+    @apply bg-accent-400;
+  }
+
   /* Form field */
   .field-label {
     @apply block text-sm font-medium text-ink-700 mb-1.5;

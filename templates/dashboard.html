@@ -210,11 +210,15 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block page_scripts %}
 <script>
-  const tbm_data = JSON.parse('{{ tbm_data|escapejs }}');
+  const tbm_data = {{ tbm_data|safe }};
+  const tbm_labels = {{ tbm_labels|safe }};
 
   const data = {
-    labels: ['Syndicate Sessions', 'Heat Stress Management', 'Pre-load Inspection', 'Safe Decantation at Retail Site', 'Roll Over Prevention', 'Fatigue Management', 'Defensive Driving', 'Unauthorized Passenger', 'Loading & Unloading', '360 Walkabout Process', 'Vehicle Fitness', 'Emergency Response', 'PPE Compliance', 'Duty & Driving Hours', 'On-Road Distraction', 'Security Awareness', 'Manual Handling', 'Working at Height', 'Adverse Weather Condition', 'Static Charge', 'Driver Behavior on Road', 'Foggy Weather', 'Sugarcane Trolleys Hazards and Controls', 'NMPI Reporting', 'Black Spots'],
+    labels: tbm_labels,
     datasets: [
       {
         label: 'Meeting attended by Drivers',
@@ -241,10 +245,8 @@
       },
       y: {
         beginAtZero: true,
-        stepSize: 10,
-        max: 150,
         grid: { color: 'rgba(15,23,42,0.05)' },
-        ticks: { color: '#64748B', font: { size: 11 } }
+        ticks: { color: '#64748B', font: { size: 11 }, precision: 0 }
       }
     },
     plugins: {

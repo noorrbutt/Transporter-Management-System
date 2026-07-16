@@ -1,4 +1,5 @@
 import calendar
+import json
 from datetime import date, datetime
 from io import BytesIO
 from PIL import Image
@@ -1028,6 +1029,7 @@ def dashboard(request):
         meeting.driver_tool_box_meeting_attended_set.count()
         for meeting in meetings_data
     ]
+    tbm_labels = [meeting.meeting_topic for meeting in meetings_data]
 
     context = {
         "total_drivers": drivers.count(),
@@ -1038,7 +1040,8 @@ def dashboard(request):
         "expired_ddc_list": expired_ddc_list,
         "expired_htv_license_list": expired_htv_license_list,
         "expired_general_list": expired_general_list,
-        "tbm_data": tbm_data,
+        "tbm_data": json.dumps(tbm_data),
+        "tbm_labels": json.dumps(tbm_labels),
         "total_tbm_sessions": sum(tbm_data),
         "total_tbm_participants": driver_tool_box_meeting_attended.objects.count(),
     }
