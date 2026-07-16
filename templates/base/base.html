@@ -223,19 +223,13 @@
       });
       overlay?.addEventListener('click', closeSidebar);
 
-      // Collapsible nav groups (state persisted so it survives full page loads)
-      document.querySelectorAll('.nav-toggle').forEach((btn, i) => {
-        const submenu = btn.nextElementSibling;
-        if (!submenu.id) submenu.id = 'nav-submenu-' + i;
+      // Collapsible nav groups
+      document.querySelectorAll('.nav-toggle').forEach((btn) => {
         btn.addEventListener('click', () => {
+          const submenu = btn.nextElementSibling;
           const icon = btn.querySelector('.fa-chevron-down');
-          const nowOpen = submenu.classList.toggle('hidden') === false;
-          icon.classList.toggle('rotate-180', nowOpen);
-          const openIds = JSON.parse(sessionStorage.getItem('nav-open') || '[]');
-          const idx = openIds.indexOf(submenu.id);
-          if (nowOpen && idx === -1) openIds.push(submenu.id);
-          if (!nowOpen && idx !== -1) openIds.splice(idx, 1);
-          sessionStorage.setItem('nav-open', JSON.stringify(openIds));
+          submenu.classList.toggle('hidden');
+          icon.classList.toggle('rotate-180');
         });
       });
 
@@ -244,15 +238,6 @@
         const toggle = el.previousElementSibling;
         toggle?.querySelector('.fa-chevron-down')?.classList.add('rotate-180');
       }
-
-      // Restore previously-open groups from earlier navigations
-      (function () {
-        const openIds = JSON.parse(sessionStorage.getItem('nav-open') || '[]');
-        openIds.forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) expandSubmenu(el);
-        });
-      })();
 
       // Active link highlighting + auto-expand ancestor groups
       (function () {
