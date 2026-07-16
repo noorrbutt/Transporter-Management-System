@@ -12,6 +12,7 @@ module.exports = {
         // Sidebar / chrome — deep slate, not pure black
         ink: {
           950: '#0B1220',
+          50: '#F8FAFC',
           900: '#0F172A',
           800: '#1E293B',
           700: '#334155',
@@ -58,5 +59,7 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

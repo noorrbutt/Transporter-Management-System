@@ -1,43 +1,36 @@
 {% extends 'base/base.html' %}
+
 {% block title %}Violations{% endblock %}
+
 {% block content %}
-<div class="right_col" role="main">
-  <div class="page-title">
-    <div class="title_left"><h3>Violation Types</h3></div>
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-lg font-semibold text-ink-900">Violation Types</h1>
+    <a href="/addviolation" class="btn-accent">
+      <i class="fa fa-plus"></i> Add Violation Type
+    </a>
   </div>
-  <div class="clearfix"></div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="x_panel">
-        <div class="x_title">
-          <a href="/addviolation">
-            <button type="button" class="btn custom-button float-right">
-              <i class="fa fa-plus m-right-xs"></i> Add Violation Type
-            </button>
-          </a>
-          <div class="clearfix"></div>
-        </div>
-        <div class="x_content">
-          <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Violation Type</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for v in violations %}
-              <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ v.violation_type }}</td>
-              </tr>
-              {% empty %}
-              <tr><td colspan="2" class="text-center">No violation types defined yet.</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
+
+  <div class="card">
+    <div class="data-table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Violation Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in violations %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ v.violation_type }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="2" class="text-center text-ink-400 py-6">No violation types defined yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
