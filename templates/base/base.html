@@ -1,437 +1,264 @@
 {% load custom_tags %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" href="images/favicon.ico" type="image/ico" />
+    <link rel="icon" href="/static/images/favicon.ico" type="image/ico">
 
-    <title>{% block title %}HGGC{% endblock %}</title>
+    <title>{% block title %}TMS{% endblock %} · TMS</title>
 
-    <!-- Bootstrap -->
-    <link href="/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome (icons only — no theme CSS depends on it) -->
     <link href="/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="/static/vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- iCheck -->
-    <link href="/static/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-	
-    <!-- bootstrap-progressbar -->
-    <link href="/static/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
-    <!-- JQVMap -->
-    <link href="/static/vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
-    <!-- bootstrap-daterangepicker -->
-    <link href="/static/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
-    <!-- Custom Theme Style -->
-    <link href="/static/build/css/custom.min.css" rel="stylesheet">
-    <link href="/static/css/app-overrides.css" rel="stylesheet">
+    <!-- Tailwind build (compiled from static/src/input.css via tailwind.config.js) -->
+    <link href="/static/build/css/tailwind.css" rel="stylesheet">
 
-     <!-- Datatables -->
-     <link href="/static/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-     <link href="/static/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-     <link href="/static/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-     <link href="/static/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-     <link href="/static/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
-
-
-
+    {% block extra_css %}{% endblock %}
   </head>
 
-  <body class="nav-md">
-    <div class="container body">
-      <div class="main_container">
-        <div class="col-md-3 left_col noprint">
-          <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="/" class="site_title"><img style="border-radius: 50%;
-                max-width: 45px;" class="logo-abbr" src="/static/images/logo.png" alt="" /><span> TMS</span></a>
-            </div>
+  <body class="h-full bg-canvas text-ink-800 font-sans">
+    <div class="flex h-full min-h-screen">
 
-            <div class="clearfix"></div>
+      <!-- Sidebar -->
+      <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-ink-900 flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-200 noprint">
+        <a href="/" class="flex items-center gap-3 px-5 h-16 border-b border-white/10 shrink-0">
+          <img src="/static/images/logo.png" alt="" class="w-8 h-8 rounded-full object-cover">
+          <span class="text-white font-semibold tracking-wide">TMS</span>
+        </a>
 
-            <!-- menu profile quick info -->
-            <div class="profile clearfix">
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-white/10 shrink-0">
+          <img src="{% user_profile_image user %}" alt="{{ user.first_name }}'s profile picture" class="w-10 h-10 rounded-full object-cover border border-white/10">
+          <div class="min-w-0">
+            <p class="text-[11px] text-ink-400 leading-none mb-1">Welcome,</p>
+            <p class="text-sm font-medium text-white truncate">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+          </div>
+        </div>
 
-              <div class="profile_pic">
-                
-                <img src="{% user_profile_image user %}" alt="{{ user.first_name }}'s Profile Picture" class="img-circle profile_img" style="width: 60px; height:60px;">
+        <nav id="sidebar-menu" class="flex-1 overflow-y-auto px-2 py-2">
+          <p class="side-section-label">Dashboard</p>
+          <a href="/" class="side-link" data-href="/"><i class="fa fa-home w-4 text-center"></i> Home</a>
 
-            </div>
-            
-              <div class="profile_info">
-                <span>Welcome,</span>
-                <h2>{{ request.user.first_name }} {{ request.user.last_name }}</h2>
-              </div>
-            </div>
-            <!-- /menu profile quick info -->
+          <p class="side-section-label">Main</p>
 
-            <br />
-
-            <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-              <div class="menu_section">
-                <h3>Dashboard</h3>
-                <ul class="nav side-menu">
-                  <li><a href="/"><i class="fa fa-home"></i> Home </a>
-                  </li>
-              </div>
-
-                
-
-                <div class="menu_section">
-                  <h3>Main</h3>
-                    <ul class="nav side-menu">
-
-                      <li><a><i class="fa fa-briefcase"></i>System of Work<span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                          <li><a href="/policies">Policies</a></li>
-                          <li><a>Procedures<span class="fa fa-chevron-down"></span></a>
-                              <ul class="nav child_menu">
-                              <li><a href="{% url 'get_procedures' %}">All Procedures</a></li>
-                              <li><a href="{% url 'get_dm' %}">Driver Management</a></li>
-                              <li><a href="{% url 'get_hsep' %}">HSE</a></li>
-                              <li><a href="{% url 'get_vm' %}">Vehicle Management</a></li>
-                              <li><a href="{% url 'get_op' %}">Operation Procedure</a></li>
-                            </ul>
-                          </li>
-                        </ul>
-                      </li>
-
-                  <li><a><i class="fa fa-users"></i> Drivers <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="{% url 'get_drivers' %}">All Drivers</a></li>
-                      <li><a href="{% url 'add_driver' %}">Add Driver</a></li>
-                    </ul>
-                  </li>
-
-                  <li><a><i class="fa fa-car"></i> Vehicle <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        
-                        <li><a>Vehicles<span class="fa fa-chevron-down"></span></a>
-                          <ul class="nav child_menu">
-                           
-                            <li><a href="{% url 'get_vehicles' filter='all' %}">All Vehicles</a>
-                            </li>
-                            
-                            <li><a href="{% url 'get_tppl' filter='tppl' %}">All TPPL Vehicles</a>
-                            </li>
-                            <li><a href="{% url 'get_go' filter='go' %}">All GO Vehicles</a>
-                            </li>
-                            <li><a href="{% url 'get_apl' filter='apl' %}">All APL Vehicles</a>
-                            </li>
-                            <li><a href="{% url 'get_pso' filter='pso' %}">All PSO Vehicles</a>
-                            </li>
-
-                            <li><a href="{% url 'add_vehicle' %}">Add Vehicle</a>
-                            </li>
-                          </ul>
-
-                       
-                            <li><a>Owners<span class="fa fa-chevron-down"></span></a>
-                          <ul class="nav child_menu">
-                            
-                            <li><a href="{% url 'get_owners' %}">All Owners</a>
-                            </li>
-                            <li><a href="{% url 'add_owner' %}">Add Owner</a>
-                            </li>
-                          </ul>
-                        </li>
-
-                        <li><a>Maker<span class="fa fa-chevron-down"></span></a>
-                          <ul class="nav child_menu">
-                            
-                            <li><a href="{% url 'get_makers' %}">All Makers</a>
-                            </li>
-                            <li><a href="{% url 'add_maker' %}">Add Maker</a>
-                            </li>
-                          </ul>
-                        </li>
-
-                        <li><a>Companies<span class="fa fa-chevron-down"></span></a>
-                          <ul class="nav child_menu">
-                           
-                            <li><a href="{% url 'get_company' %}">All Companies</a>
-                            </li>
-                            <li><a href="{% url 'add_company' %}">Add Company</a>
-                            </li>
-                          </ul>
-                        </li>
-
-                       
-                    </ul>
-                  </li>                  
-
-
-                  {% comment %} <li><a><i class="fa fa-building"></i> Companies <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="{% url 'get_company' %}">All Companies</a></li>
-                      <li><a href="{% url 'add_company' %}">Add Company</a></li>
-                    </ul>
-                  </li> {% endcomment %}
-                
-
-
-                  <!-- Removed empty placeholder sections: Operations, Vehicle Tracking, Maintenance -->
-                  
+          <div class="nav-group">
+            <button type="button" class="side-link w-full justify-between nav-toggle">
+              <span class="flex items-center gap-3"><i class="fa fa-briefcase w-4 text-center"></i> System of Work</span>
+              <i class="fa fa-chevron-down text-xs transition-transform"></i>
+            </button>
+            <div class="nav-submenu pl-4 hidden">
+              <a href="/policies" class="side-link" data-href="/policies">Policies</a>
+              <div class="nav-group">
+                <button type="button" class="side-link w-full justify-between nav-toggle">
+                  <span>Procedures</span>
+                  <i class="fa fa-chevron-down text-xs transition-transform"></i>
+                </button>
+                <div class="nav-submenu pl-4 hidden">
+                  <a href="{% url 'get_procedures' %}" class="side-link" data-href="{% url 'get_procedures' %}">All Procedures</a>
+                  <a href="{% url 'get_dm' %}" class="side-link" data-href="{% url 'get_dm' %}">Driver Management</a>
+                  <a href="{% url 'get_hsep' %}" class="side-link" data-href="{% url 'get_hsep' %}">HSE</a>
+                  <a href="{% url 'get_vm' %}" class="side-link" data-href="{% url 'get_vm' %}">Vehicle Management</a>
+                  <a href="{% url 'get_op' %}" class="side-link" data-href="{% url 'get_op' %}">Operation Procedure</a>
                 </div>
+              </div>
+            </div>
+          </div>
 
-          
-              <div class="menu_section">
-                <h3>Registration</h3>
-                <ul class="nav side-menu">
+          <div class="nav-group">
+            <button type="button" class="side-link w-full justify-between nav-toggle">
+              <span class="flex items-center gap-3"><i class="fa fa-users w-4 text-center"></i> Drivers</span>
+              <i class="fa fa-chevron-down text-xs transition-transform"></i>
+            </button>
+            <div class="nav-submenu pl-4 hidden">
+              <a href="{% url 'get_drivers' %}" class="side-link" data-href="{% url 'get_drivers' %}">All Drivers</a>
+              <a href="{% url 'add_driver' %}" class="side-link" data-href="{% url 'add_driver' %}">Add Driver</a>
+            </div>
+          </div>
 
-                  <li><a><i class="fa fa-sitemap"></i> Users <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="/allusers">All Users</a></li>
-                      <li><a href="/adduser">Add User</a></li>
+          <div class="nav-group">
+            <button type="button" class="side-link w-full justify-between nav-toggle">
+              <span class="flex items-center gap-3"><i class="fa fa-truck w-4 text-center"></i> Vehicle</span>
+              <i class="fa fa-chevron-down text-xs transition-transform"></i>
+            </button>
+            <div class="nav-submenu pl-4 hidden">
 
-                    </ul>
-                  </li>
-                 
-                </ul>
+              <div class="nav-group">
+                <button type="button" class="side-link w-full justify-between nav-toggle">
+                  <span>Vehicles</span>
+                  <i class="fa fa-chevron-down text-xs transition-transform"></i>
+                </button>
+                <div class="nav-submenu pl-4 hidden">
+                  <a href="{% url 'get_vehicles' filter='all' %}" class="side-link" data-href="{% url 'get_vehicles' filter='all' %}">All Vehicles</a>
+                  <a href="{% url 'get_tppl' filter='tppl' %}" class="side-link" data-href="{% url 'get_tppl' filter='tppl' %}">All TPPL Vehicles</a>
+                  <a href="{% url 'get_go' filter='go' %}" class="side-link" data-href="{% url 'get_go' filter='go' %}">All GO Vehicles</a>
+                  <a href="{% url 'get_apl' filter='apl' %}" class="side-link" data-href="{% url 'get_apl' filter='apl' %}">All APL Vehicles</a>
+                  <a href="{% url 'get_pso' filter='pso' %}" class="side-link" data-href="{% url 'get_pso' filter='pso' %}">All PSO Vehicles</a>
+                  <a href="{% url 'add_vehicle' %}" class="side-link" data-href="{% url 'add_vehicle' %}">Add Vehicle</a>
+                </div>
+              </div>
+
+              <div class="nav-group">
+                <button type="button" class="side-link w-full justify-between nav-toggle">
+                  <span>Owners</span>
+                  <i class="fa fa-chevron-down text-xs transition-transform"></i>
+                </button>
+                <div class="nav-submenu pl-4 hidden">
+                  <a href="{% url 'get_owners' %}" class="side-link" data-href="{% url 'get_owners' %}">All Owners</a>
+                  <a href="{% url 'add_owner' %}" class="side-link" data-href="{% url 'add_owner' %}">Add Owner</a>
+                </div>
+              </div>
+
+              <div class="nav-group">
+                <button type="button" class="side-link w-full justify-between nav-toggle">
+                  <span>Maker</span>
+                  <i class="fa fa-chevron-down text-xs transition-transform"></i>
+                </button>
+                <div class="nav-submenu pl-4 hidden">
+                  <a href="{% url 'get_makers' %}" class="side-link" data-href="{% url 'get_makers' %}">All Makers</a>
+                  <a href="{% url 'add_maker' %}" class="side-link" data-href="{% url 'add_maker' %}">Add Maker</a>
+                </div>
+              </div>
+
+              <div class="nav-group">
+                <button type="button" class="side-link w-full justify-between nav-toggle">
+                  <span>Companies</span>
+                  <i class="fa fa-chevron-down text-xs transition-transform"></i>
+                </button>
+                <div class="nav-submenu pl-4 hidden">
+                  <a href="{% url 'get_company' %}" class="side-link" data-href="{% url 'get_company' %}">All Companies</a>
+                  <a href="{% url 'add_company' %}" class="side-link" data-href="{% url 'add_company' %}">Add Company</a>
+                </div>
               </div>
 
             </div>
-            <!-- /sidebar menu -->
+          </div>
 
-            <!-- /menu footer buttons -->
-            <div class="sidebar-footer hidden-small">
-             
-              <a title="Logout" href="{% url 'logout' %}">
-                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
+          <p class="side-section-label">Registration</p>
+          <div class="nav-group">
+            <button type="button" class="side-link w-full justify-between nav-toggle">
+              <span class="flex items-center gap-3"><i class="fa fa-sitemap w-4 text-center"></i> Users</span>
+              <i class="fa fa-chevron-down text-xs transition-transform"></i>
+            </button>
+            <div class="nav-submenu pl-4 hidden">
+              <a href="/allusers" class="side-link" data-href="/allusers">All Users</a>
+              <a href="/adduser" class="side-link" data-href="/adduser">Add User</a>
             </div>
-            <!-- /menu footer buttons -->
           </div>
-        </div>
+        </nav>
 
-        <!-- top navigation -->
-        <div class="top_nav noprint">
-          <div class="nav_menu">
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
-              <nav class="nav navbar-nav">
-              <ul class=" navbar-right">
-                <li class="nav-item" style="padding-left: 15px;">
-                  <a href="{% url 'logout' %}" class="logout-icon" title="Logout">
-                    <i class="fa fa-sign-out"></i>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
+        <div class="px-5 py-4 border-t border-white/10 shrink-0">
+          <a href="{% url 'logout' %}" class="side-link !text-ink-400" title="Logout">
+            <i class="fa fa-sign-out w-4 text-center"></i> Logout
+          </a>
         </div>
-        <!-- /top navigation -->
+      </aside>
+
+      <!-- Mobile overlay -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-ink-950/50 z-30 hidden lg:hidden"></div>
+
+      <!-- Main column -->
+      <div class="flex-1 flex flex-col min-w-0 lg:pl-64">
+
+        <!-- Topbar -->
+        <header class="sticky top-0 z-20 h-16 bg-surface border-b border-ink-100 flex items-center justify-between px-4 sm:px-6 noprint">
+          <button id="menu_toggle" type="button" class="w-9 h-9 flex items-center justify-center rounded-lg border border-ink-200 text-ink-600 hover:bg-ink-50 lg:hidden">
+            <i class="fa fa-bars"></i>
+          </button>
+          <div class="hidden lg:block"></div>
+          <a href="{% url 'logout' %}" class="w-9 h-9 flex items-center justify-center rounded-lg border border-ink-200 text-ink-500 hover:bg-status-bad-bg hover:text-status-bad hover:border-status-bad-border transition-colors" title="Logout">
+            <i class="fa fa-sign-out"></i>
+          </a>
+        </header>
 
         {% if messages %}
-          <div class="container mt-3">
+          <div class="px-4 sm:px-6 pt-4 space-y-2">
             {% for message in messages %}
-              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+              <div class="flex items-start justify-between gap-4 rounded-lg border px-4 py-3 text-sm
+                          {% if message.tags == 'error' %}bg-status-bad-bg border-status-bad-border text-status-bad
+                          {% elif message.tags == 'warning' %}bg-status-warn-bg border-status-warn-border text-status-warn
+                          {% elif message.tags == 'success' %}bg-status-good-bg border-status-good-border text-status-good
+                          {% else %}bg-status-info-bg border-status-info-border text-status-info{% endif %}">
+                <span>{{ message }}</span>
+                <button type="button" class="opacity-60 hover:opacity-100" onclick="this.closest('div.flex').remove()" aria-label="Close">&times;</button>
               </div>
             {% endfor %}
           </div>
         {% endif %}
 
+        <main class="flex-1 px-4 sm:px-6 py-6">
+          {% block content %}{% endblock %}
+        </main>
 
-
-
-
-        {% block content %}{% endblock %}
-
-        
-
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            Designed and Developed by <strong>AWB</strong>
-          </div>
-          <div class="clearfix"></div>
+        <footer class="px-4 sm:px-6 py-4 text-xs text-ink-400 text-right noprint">
+          Designed and Developed by <strong class="text-ink-500">AWB</strong>
         </footer>
-
-
-       
-          
-        </div>
       </div>
-  
-      <!-- jQuery -->
-      <script src="/static/vendors/jquery/dist/jquery.min.js"></script>
-      <!-- Bootstrap -->
-      <script src="/static/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-      <!-- FastClick -->
-      <script src="/static/vendors/fastclick/lib/fastclick.js"></script>
-      <!-- NProgress -->
-      <script src="/static/vendors/nprogress/nprogress.js"></script>
-      <!-- Chart.js -->
-      <script src="/static/vendors/Chart.js/dist/Chart.min.js"></script>
-      <!-- gauge.js -->
-      <script src="/static/vendors/gauge.js/dist/gauge.min.js"></script>
-      <!-- bootstrap-progressbar -->
-      <script src="/static/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-      <!-- iCheck -->
-      <script src="/static/vendors/iCheck/icheck.min.js"></script>
-      <!-- Skycons -->
-      <script src="/static/vendors/skycons/skycons.js"></script>
-      <!-- Flot -->
-      <script src="/static/vendors/Flot/jquery.flot.js"></script>
-      <script src="/static/vendors/Flot/jquery.flot.pie.js"></script>
-      <script src="/static/vendors/Flot/jquery.flot.time.js"></script>
-      <script src="/static/vendors/Flot/jquery.flot.stack.js"></script>
-      <script src="/static/vendors/Flot/jquery.flot.resize.js"></script>
-      <!-- Flot plugins -->
-      <script src="/static/vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
-      <script src="/static/vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
-      <script src="/static/vendors/flot.curvedlines/curvedLines.js"></script>
-      <!-- DateJS -->
-      <script src="/static/vendors/DateJS/build/date.js"></script>
-      <!-- JQVMap -->
-      <script src="/static/vendors/jqvmap/dist/jquery.vmap.js"></script>
-      <script src="/static/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-      <script src="/static/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-      <!-- bootstrap-daterangepicker -->
-      <script src="/static/vendors/moment/min/moment.min.js"></script>
-      <script src="/static/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-  
-      <!-- Custom Theme Scripts -->
-      <script src="/static/build/js/custom.min.js"></script>
+    </div>
 
-     
-    <!-- Datatables -->
-    <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="/static/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="/static/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="/static/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="/static/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="/static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-    <script src="/static/vendors/jszip/dist/jszip.min.js"></script>
-    <script src="/static/vendors/pdfmake/build/pdfmake.min.js"></script>
-    <script src="/static/vendors/pdfmake/build/vfs_fonts.js"></script>
+    <!-- jQuery (still required by DataTables / Flot / morris.js / daterangepicker on pages that use them) -->
+    <script src="/static/vendors/jquery/dist/jquery.min.js"></script>
 
+    {% block extra_js %}{% endblock %}
 
-    <script src="/static/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
-    <script src="/static/vendors/raphael/raphael.min.js"></script>
-    <script src="/static/vendors/morris.js/morris.min.js"></script>
-
-    <!-- Navigation Active State Script -->
     <script>
-        $(document).ready(function() {
-            // Get current page URL
-            var currentUrl = window.location.pathname;
-            
-            // Remove ALL existing active classes completely
-            $('.nav.side-menu li').removeClass('active current-page current-active-only');
-            $('.nav.child_menu li').removeClass('active current-page current-child-active');
-            
-            var foundExactMatch = false;
-            
-            // First, try to find EXACT matches only
-            $('.nav.side-menu a, .nav.child_menu a').each(function() {
-                var linkUrl = $(this).attr('href');
-                
-                // Only exact matches or very close matches
-                if (linkUrl && currentUrl === linkUrl) {
-                    foundExactMatch = true;
-                    
-                    // Check if this is a child menu item
-                    if ($(this).closest('.nav.child_menu').length > 0) {
-                        // It's a child menu item - only highlight the child
-                        $(this).closest('li').addClass('current-child-active');
-                        
-                        // Show the parent menu but DON'T highlight the parent
-                        var parentMenu = $(this).closest('.nav.child_menu').closest('li');
-                        if (parentMenu.length > 0) {
-                            parentMenu.find('.nav.child_menu').show();
-                            // DON'T add active class to parent - just show the submenu
-                        }
-                    } else {
-                        // It's a main menu item - highlight only this one
-                        $(this).closest('li').addClass('current-active-only');
-                    }
-                }
-            });
-            
-            // Handle homepage specifically
-            if ((currentUrl === '/' || currentUrl === '/dashboard' || currentUrl === '') && !foundExactMatch) {
-                $('.nav.side-menu a[href="/"]').closest('li').addClass('current-active-only');
-            }
-            
-            // Enhanced hover effects - remove any blue conflicts
-            $('.nav.side-menu > li > a').hover(
-                function() {
-                    // Remove any existing bootstrap or theme classes that might interfere
-                    $(this).removeClass('btn-primary btn-info');
-                    $(this).css({
-                        'transform': 'translateX(5px)',
-                        'background-color': '#f7d794 !important',
-                        'background': '#f7d794 !important',
-                        'color': '#2c3e50 !important',
-                        'border-radius': '8px',
-                        'margin': '2px 8px',
-                        'border': 'none !important',
-                        'box-shadow': 'none !important'
-                    });
-                },
-                function() {
-                    // Only reset if not currently active
-                    if (!$(this).closest('li').hasClass('current-active-only')) {
-                        $(this).css({
-                            'transform': 'translateX(0)',
-                            'background-color': '',
-                            'background': '',
-                            'color': '',
-                            'border-radius': '',
-                            'margin': '',
-                            'border': '',
-                            'box-shadow': ''
-                        });
-                    }
-                }
-            );
-            
-            // Child menu hover effects
-            $('.nav.child_menu li a').hover(
-                function() {
-                    $(this).closest('li').css({
-                        'background-color': '#f7d794 !important',
-                        'border-radius': '6px'
-                    });
-                    $(this).css({
-                        'color': '#2c3e50 !important'
-                    });
-                },
-                function() {
-                    if (!$(this).closest('li').hasClass('current-child-active')) {
-                        $(this).closest('li').css({
-                            'background-color': '',
-                            'border-radius': ''
-                        });
-                        $(this).css({
-                            'color': ''
-                        });
-                    }
-                }
-            );
+      // Sidebar toggle (mobile)
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const menuToggle = document.getElementById('menu_toggle');
+      function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      }
+      function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      }
+      menuToggle?.addEventListener('click', () => {
+        sidebar.classList.contains('-translate-x-full') ? openSidebar() : closeSidebar();
+      });
+      overlay?.addEventListener('click', closeSidebar);
+
+      // Collapsible nav groups
+      document.querySelectorAll('.nav-toggle').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const submenu = btn.nextElementSibling;
+          const icon = btn.querySelector('.fa-chevron-down');
+          submenu.classList.toggle('hidden');
+          icon.classList.toggle('rotate-180');
         });
+      });
+
+      // Active link highlighting + auto-expand ancestor groups
+      (function () {
+        const currentUrl = window.location.pathname;
+        const links = document.querySelectorAll('#sidebar-menu a[data-href]');
+        let matched = null;
+        links.forEach((a) => {
+          if (a.getAttribute('data-href') === currentUrl) matched = a;
+        });
+        if (!matched && (currentUrl === '/' || currentUrl === '/dashboard')) {
+          matched = document.querySelector('#sidebar-menu a[data-href="/"]');
+        }
+        if (matched) {
+          matched.classList.add('is-active');
+          let el = matched;
+          while (el && el.id !== 'sidebar-menu') {
+            if (el.classList.contains('nav-submenu')) {
+              el.classList.remove('hidden');
+              const toggle = el.previousElementSibling;
+              toggle?.querySelector('.fa-chevron-down')?.classList.add('rotate-180');
+            }
+            el = el.parentElement;
+          }
+        }
+      })();
     </script>
 
-
-
-    </body>
-  </html>
-  
+    {% block page_scripts %}{% endblock %}
+  </body>
+</html>

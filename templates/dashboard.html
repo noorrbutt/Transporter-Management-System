@@ -1,243 +1,233 @@
 {% extends 'base/base.html' %}
 
-{% block title %}
-  Dashboard
+{% block title %}Dashboard{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}
 
 {% block content %}
+<div class="space-y-6">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Overview -->
+  <div>
+    <h1 class="text-lg font-semibold text-ink-900 mb-4">System overview</h1>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
 
-<!-- page content -->
-<div class="right_col page-dashboard" role="main">
-  
-  <!-- Modern Stats Section -->
-  <div class="dashboard-stats">
-    <h2 style="margin-bottom: 15px; font-weight: 300; font-size: 1.3rem;">System Overview</h2>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">
+      <div class="card p-4">
+        <div class="w-9 h-9 rounded-lg bg-ink-900 text-white flex items-center justify-center mb-3">
           <i class="fa fa-users"></i>
         </div>
-          <div class="stat-number">{{ total_manpower }}</div>
-          <div class="stat-label">Total Man Power</div>
-        <div class="stat-change">+4% from last week</div>
+        <p class="text-2xl font-semibold text-ink-900 leading-none">{{ total_manpower }}</p>
+        <p class="text-xs text-ink-500 mt-1">Total man power</p>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">
+
+      <div class="card p-4">
+        <div class="w-9 h-9 rounded-lg bg-ink-900 text-white flex items-center justify-center mb-3">
           <i class="fa fa-user"></i>
         </div>
-        <div class="stat-number">{{ total_drivers }}</div>
-        <div class="stat-label">Total Drivers</div>
-        <div class="stat-change">+3% from last week</div>
+        <p class="text-2xl font-semibold text-ink-900 leading-none">{{ total_drivers }}</p>
+        <p class="text-xs text-ink-500 mt-1">Total drivers</p>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">
+
+      <div class="card p-4">
+        <div class="w-9 h-9 rounded-lg bg-ink-900 text-white flex items-center justify-center mb-3">
           <i class="fa fa-truck"></i>
         </div>
-        <div class="stat-number">{{ total_vehicles }}</div>
-        <div class="stat-label">Total Vehicles</div>
-        <div class="stat-change">+34% from last week</div>
+        <p class="text-2xl font-semibold text-ink-900 leading-none">{{ total_vehicles }}</p>
+        <p class="text-xs text-ink-500 mt-1">Total vehicles</p>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">
+
+      <div class="card p-4">
+        <div class="w-9 h-9 rounded-lg bg-ink-900 text-white flex items-center justify-center mb-3">
           <i class="fa fa-briefcase"></i>
         </div>
-        <div class="stat-number">{{ man_days_work }}</div>
-        <div class="stat-label">Man Days Worked</div>
-        <div class="stat-change" style="background: #ffe8e8; color: #e74c3c;">-12% from last week</div>
+        <p class="text-2xl font-semibold text-ink-900 leading-none">{{ man_days_work }}</p>
+        <p class="text-xs text-ink-500 mt-1">Man days worked</p>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">
+
+      <div class="card p-4">
+        <div class="w-9 h-9 rounded-lg bg-status-bad text-white flex items-center justify-center mb-3">
           <i class="fa fa-exclamation-triangle"></i>
         </div>
-        <div class="stat-number">0</div>
-        <div class="stat-label">Man Days Lost</div>
-        <div class="stat-change">+0% from last week</div>
+        <p class="text-2xl font-semibold text-ink-900 leading-none">0</p>
+        <p class="text-xs text-ink-500 mt-1">Man days lost</p>
       </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon">
+
+      <div class="card p-4">
+        <div class="w-9 h-9 rounded-lg bg-status-bad text-white flex items-center justify-center mb-3">
           <i class="fa fa-ban"></i>
         </div>
-        <div class="stat-number">0</div>
-        <div class="stat-label">Total Incidents</div>
-        <div class="stat-change">+0% from last week</div>
+        <p class="text-2xl font-semibold text-ink-900 leading-none">0</p>
+        <p class="text-xs text-ink-500 mt-1">Total incidents</p>
       </div>
     </div>
   </div>
 
-  <!-- Tool Box Meeting Chart -->
-  <div class="chart-container">
-    <div class="chart-header">
+  <!-- Tool Box Meeting chart -->
+  <div class="card">
+    <div class="card-header">
       <div>
-        <h3 class="chart-title">Tool Box Meeting Sessions</h3>
-        <p style="color: #666; margin: 0;">Training participation overview</p>
+        <h2 class="card-title">Tool box meeting sessions</h2>
+        <p class="text-xs text-ink-500 mt-0.5">Training participation overview</p>
       </div>
-      {% comment %} <div id="reportrange" class="btn" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 8px 16px;">
-        <i class="fa fa-calendar"></i>
-        <span>December 30, 2024 - January 28, 2025</span> <i class="fa fa-caret-down"></i>
-      </div> {% endcomment %}
     </div>
-    <div style="position: relative; height: 300px;">
-      <canvas id="barChart"></canvas>
+    <div class="card-body">
+      <div class="relative h-[300px]">
+        <canvas id="barChart"></canvas>
+      </div>
     </div>
   </div>
 
-  <!-- Summary Cards -->
-  <div class="summary-cards">
-    <div class="summary-card">
-      <div class="stat-icon" style="color: white; margin-bottom: 8px; font-size: 1.5rem;">
+  <!-- Summary cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="rounded-card bg-ink-900 text-white p-5 flex items-center gap-4">
+      <div class="w-11 h-11 rounded-lg bg-accent-500/20 text-accent-400 flex items-center justify-center text-lg shrink-0">
         <i class="fa fa-caret-square-o-right"></i>
       </div>
-      <div style="font-size: 1.8rem; font-weight: bold; margin-bottom: 3px;">{{ total_tbm_sessions }}</div>
-      <div style="font-size: 0.9rem;">Total Sessions</div>
+      <div>
+        <p class="text-2xl font-semibold leading-none">{{ total_tbm_sessions }}</p>
+        <p class="text-xs text-ink-300 mt-1">Total sessions</p>
+      </div>
     </div>
-    
-    <div class="summary-card">
-      <div class="stat-icon" style="color: white; margin-bottom: 8px; font-size: 1.5rem;">
+    <div class="rounded-card bg-ink-900 text-white p-5 flex items-center gap-4">
+      <div class="w-11 h-11 rounded-lg bg-accent-500/20 text-accent-400 flex items-center justify-center text-lg shrink-0">
         <i class="fa fa-check-square-o"></i>
       </div>
-      <div style="font-size: 1.8rem; font-weight: bold; margin-bottom: 3px;">{{ total_tbm_participants }}</div>
-      <div style="font-size: 0.9rem;">Participants</div>
-    </div>
-  </div>
-
-  <!-- Expired Documents Section -->
-  <div class="expired-sections">
-    <div class="expired-card">
-      <div class="expired-header">
-        <i class="fa fa-id-card" style="margin-right: 10px;"></i>
-        Expired CNIC
-      </div>
-      <div class="expired-content">
-        {% for driver in expired_cnic_list %}
-          <div class="expired-item">
-            <div class="expired-avatar">
-              <i class="fa fa-user"></i>
-            </div>
-            <div class="expired-details">
-              <h6><a href="{% url 'driverview' driver_id=driver.D_ID %}" style="text-decoration: none; color: #2c3e50;">{{ driver.D_Name }}</a></h6>
-              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.CNIC_Validity }}</p>
-            </div>
-            <span class="danger-badge">Expired</span>
-          </div>
-        {% empty %}
-          <div style="text-align: center; color: #666; padding: 20px;">
-            <i class="fa fa-check-circle" style="font-size: 1.5rem; color: #27ae60; margin-bottom: 8px;"></i>
-            <p style="margin: 0; font-size: 0.8rem;">No expired CNICs</p>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <div class="expired-card">
-      <div class="expired-header">
-        <i class="fa fa-certificate" style="margin-right: 10px;"></i>
-        Expired DDC
-      </div>
-      <div class="expired-content">
-        {% for driver in expired_ddc_list %}
-          <div class="expired-item">
-            <div class="expired-avatar">
-              <i class="fa fa-user"></i>
-            </div>
-            <div class="expired-details">
-              <h6><a href="{% url 'driverview' driver_id=driver.D_ID %}" style="text-decoration: none; color: #2c3e50;">{{ driver.D_Name }}</a></h6>
-              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.DDC_Expiry_Date }}</p>
-            </div>
-            <span class="danger-badge">Expired</span>
-          </div>
-        {% empty %}
-          <div style="text-align: center; color: #666; padding: 20px;">
-            <i class="fa fa-check-circle" style="font-size: 1.5rem; color: #27ae60; margin-bottom: 8px;"></i>
-            <p style="margin: 0; font-size: 0.8rem;">No expired DDCs</p>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <div class="expired-card">
-      <div class="expired-header">
-        <i class="fa fa-heartbeat" style="margin-right: 10px;"></i>
-        Expired Medical
-      </div>
-      <div class="expired-content">
-        {% for driver in expired_general_list %}
-          <div class="expired-item">
-            <div class="expired-avatar">
-              <i class="fa fa-user"></i>
-            </div>
-            <div class="expired-details">
-              <h6><a href="{% url 'driverview' driver_id=driver.D_ID %}" style="text-decoration: none; color: #2c3e50;">{{ driver.D_Name }}</a></h6>
-              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.Expiry_Date }}</p>
-            </div>
-            <span class="danger-badge">Expired</span>
-          </div>
-        {% empty %}
-          <div style="text-align: center; color: #666; padding: 20px;">
-            <i class="fa fa-check-circle" style="font-size: 1.5rem; color: #27ae60; margin-bottom: 8px;"></i>
-            <p style="margin: 0; font-size: 0.8rem;">No expired medical certificates</p>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-
-    <div class="expired-card">
-      <div class="expired-header">
-        <i class="fa fa-id-badge" style="margin-right: 10px;"></i>
-        Expired HTV License
-      </div>
-      <div class="expired-content">
-        {% for driver in expired_htv_license_list %}
-          <div class="expired-item">
-            <div class="expired-avatar">
-              <i class="fa fa-user"></i>
-            </div>
-            <div class="expired-details">
-              <h6><a href="{% url 'driverview' driver_id=driver.D_ID %}" style="text-decoration: none; color: #2c3e50;">{{ driver.D_Name }}</a></h6>
-              <p><strong>{{ driver.D_Number }}</strong> | {{ driver.HTV_License_Expiry_Date }}</p>
-            </div>
-            <span class="danger-badge">Expired</span>
-          </div>
-        {% empty %}
-          <div style="text-align: center; color: #666; padding: 20px;">
-            <i class="fa fa-check-circle" style="font-size: 1.5rem; color: #27ae60; margin-bottom: 8px;"></i>
-            <p style="margin: 0; font-size: 0.8rem;">No expired HTV licenses</p>
-          </div>
-        {% endfor %}
+      <div>
+        <p class="text-2xl font-semibold leading-none">{{ total_tbm_participants }}</p>
+        <p class="text-xs text-ink-300 mt-1">Participants</p>
       </div>
     </div>
   </div>
 
+  <!-- Expired documents -->
+  <div>
+    <h2 class="text-sm font-semibold text-ink-900 mb-3">Expiring compliance documents</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title flex items-center gap-2"><i class="fa fa-id-card text-ink-400"></i> Expired CNIC</span>
+        </div>
+        <div class="card-body space-y-2 max-h-72 overflow-y-auto">
+          {% for driver in expired_cnic_list %}
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-ink-50">
+              <div class="w-8 h-8 rounded-full bg-ink-100 text-ink-500 flex items-center justify-center shrink-0">
+                <i class="fa fa-user text-xs"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <a href="{% url 'driverview' driver_id=driver.D_ID %}" class="text-sm font-medium text-ink-900 hover:text-accent-600 truncate block">{{ driver.D_Name }}</a>
+                <p class="text-xs text-ink-500 truncate">{{ driver.D_Number }} · {{ driver.CNIC_Validity }}</p>
+              </div>
+              <span class="status-pill is-bad shrink-0">Expired</span>
+            </div>
+          {% empty %}
+            <div class="text-center py-6">
+              <i class="fa fa-check-circle text-status-good text-xl mb-2"></i>
+              <p class="text-xs text-ink-500">No expired CNICs</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title flex items-center gap-2"><i class="fa fa-certificate text-ink-400"></i> Expired DDC</span>
+        </div>
+        <div class="card-body space-y-2 max-h-72 overflow-y-auto">
+          {% for driver in expired_ddc_list %}
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-ink-50">
+              <div class="w-8 h-8 rounded-full bg-ink-100 text-ink-500 flex items-center justify-center shrink-0">
+                <i class="fa fa-user text-xs"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <a href="{% url 'driverview' driver_id=driver.D_ID %}" class="text-sm font-medium text-ink-900 hover:text-accent-600 truncate block">{{ driver.D_Name }}</a>
+                <p class="text-xs text-ink-500 truncate">{{ driver.D_Number }} · {{ driver.DDC_Expiry_Date }}</p>
+              </div>
+              <span class="status-pill is-bad shrink-0">Expired</span>
+            </div>
+          {% empty %}
+            <div class="text-center py-6">
+              <i class="fa fa-check-circle text-status-good text-xl mb-2"></i>
+              <p class="text-xs text-ink-500">No expired DDCs</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title flex items-center gap-2"><i class="fa fa-heartbeat text-ink-400"></i> Expired medical</span>
+        </div>
+        <div class="card-body space-y-2 max-h-72 overflow-y-auto">
+          {% for driver in expired_general_list %}
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-ink-50">
+              <div class="w-8 h-8 rounded-full bg-ink-100 text-ink-500 flex items-center justify-center shrink-0">
+                <i class="fa fa-user text-xs"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <a href="{% url 'driverview' driver_id=driver.D_ID %}" class="text-sm font-medium text-ink-900 hover:text-accent-600 truncate block">{{ driver.D_Name }}</a>
+                <p class="text-xs text-ink-500 truncate">{{ driver.D_Number }} · {{ driver.Expiry_Date }}</p>
+              </div>
+              <span class="status-pill is-bad shrink-0">Expired</span>
+            </div>
+          {% empty %}
+            <div class="text-center py-6">
+              <i class="fa fa-check-circle text-status-good text-xl mb-2"></i>
+              <p class="text-xs text-ink-500">No expired medical certificates</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title flex items-center gap-2"><i class="fa fa-id-badge text-ink-400"></i> Expired HTV license</span>
+        </div>
+        <div class="card-body space-y-2 max-h-72 overflow-y-auto">
+          {% for driver in expired_htv_license_list %}
+            <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-ink-50">
+              <div class="w-8 h-8 rounded-full bg-ink-100 text-ink-500 flex items-center justify-center shrink-0">
+                <i class="fa fa-user text-xs"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <a href="{% url 'driverview' driver_id=driver.D_ID %}" class="text-sm font-medium text-ink-900 hover:text-accent-600 truncate block">{{ driver.D_Name }}</a>
+                <p class="text-xs text-ink-500 truncate">{{ driver.D_Number }} · {{ driver.HTV_License_Expiry_Date }}</p>
+              </div>
+              <span class="status-pill is-bad shrink-0">Expired</span>
+            </div>
+          {% empty %}
+            <div class="text-center py-6">
+              <i class="fa fa-check-circle text-status-good text-xl mb-2"></i>
+              <p class="text-xs text-ink-500">No expired HTV licenses</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <script>
-  const tbm_data = JSON.parse('{{ tbm_data|escapejs }}')
-  
-  // Modern color palette for bars
-  const colorPalette = ['rgb(108, 122, 224)']
-  
-  // Chart data
+  const tbm_data = JSON.parse('{{ tbm_data|escapejs }}');
+
   const data = {
     labels: ['Syndicate Sessions', 'Heat Stress Management', 'Pre-load Inspection', 'Safe Decantation at Retail Site', 'Roll Over Prevention', 'Fatigue Management', 'Defensive Driving', 'Unauthorized Passenger', 'Loading & Unloading', '360 Walkabout Process', 'Vehicle Fitness', 'Emergency Response', 'PPE Compliance', 'Duty & Driving Hours', 'On-Road Distraction', 'Security Awareness', 'Manual Handling', 'Working at Height', 'Adverse Weather Condition', 'Static Charge', 'Driver Behavior on Road', 'Foggy Weather', 'Sugarcane Trolleys Hazards and Controls', 'NMPI Reporting', 'Black Spots'],
     datasets: [
       {
         label: 'Meeting attended by Drivers',
         data: tbm_data,
-        backgroundColor: 'rgba(108, 122, 224, 0.8)',
-        borderColor: 'rgba(108, 122, 224, 1)',
+        backgroundColor: 'rgba(15, 23, 42, 0.85)',
+        borderColor: '#0F172A',
         borderWidth: 1,
-        borderRadius: 8,
+        borderRadius: 6,
         borderSkipped: false,
       }
     ]
-  }
-  
+  };
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -246,59 +236,34 @@
         beginAtZero: true,
         maxRotation: 45,
         minRotation: 0,
-        grid: {
-          display: false
-        },
-        ticks: {
-          color: '#666',
-          font: {
-            size: 11
-          }
-        }
+        grid: { display: false },
+        ticks: { color: '#64748B', font: { size: 11 } }
       },
       y: {
         beginAtZero: true,
         stepSize: 10,
         max: 150,
-        grid: {
-          color: 'rgba(0,0,0,0.05)'
-        },
-        ticks: {
-          color: '#666',
-          font: {
-            size: 11
-          }
-        }
+        grid: { color: 'rgba(15,23,42,0.05)' },
+        ticks: { color: '#64748B', font: { size: 11 } }
       }
     },
     plugins: {
-      legend: {
-        display: false
-      },
+      legend: { display: false },
       tooltip: {
         enabled: true,
         mode: 'index',
         intersect: false,
-        backgroundColor: 'rgba(0,0,0,0.8)',
+        backgroundColor: '#0F172A',
         titleColor: 'white',
         bodyColor: 'white',
-        borderColor: '#6c7ae0',
+        borderColor: '#EA580C',
         borderWidth: 1
       }
     },
-    animation: {
-      duration: 2000,
-      easing: 'easeOutQuart'
-    }
-  }
-  
-  // Create a bar chart
-  const ctx = document.getElementById('barChart').getContext('2d')
-  const myBarChart = new Chart(ctx, {
-    type: 'bar',
-    data: data,
-    options: options
-  })
-</script>
+    animation: { duration: 800, easing: 'easeOutQuart' }
+  };
 
+  const ctx = document.getElementById('barChart').getContext('2d');
+  new Chart(ctx, { type: 'bar', data, options });
+</script>
 {% endblock %}
