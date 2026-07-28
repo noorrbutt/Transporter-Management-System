@@ -3,7 +3,7 @@
 
 ## Overview
 
-The HGGC Transporter Management System is designed to streamline transport operations for HGGC Transporters. This system facilitates the logistical requirements of procuring fuel from various oil marketing companies such as Total Parco, Go, and others, and distributing it to pumps nationwide. The primary focus of the project includes managing drivers, vehicles, oil marketing companies, vehicle manufacturers, trip records, and expenses.
+The Transporter Management System is designed to streamline transport operations for Heavy Vehicle Transporters. This system facilitates the logistical requirements of procuring fuel from various oil marketing companies such as Total Parco, Go, and others, and distributing it to pumps nationwide. The primary focus of the project includes managing drivers, vehicles, oil marketing companies, vehicle manufacturers, trip records, and expenses.
 
 ## Project Details
 
