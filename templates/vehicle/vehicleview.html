@@ -1,269 +1,126 @@
 {% extends 'base/base.html' %}
 
-{% block title %}
-  View
-{% endblock %}
+{% block title %}{{ vehicle.TL_Number }}{% endblock %}
 
 {% block content %}
+<div class="space-y-6">
 
-<body class="watermark page-vehicle-view">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- page content -->
-  <div class="right_col" role="main">
-
-      <div class="row">
-        <div class="col-md-12 col-sm-12">
-          <div class="hggc-box">
-            <div class="hggc-header">
-                {% comment %} <img src="/static/images/hggc-logo.png" alt="" /> {% endcomment %}
-                {% if vehicle.OMC.cname == "Attock Petroleum Limited" %}
-                    <img src="/static/images/attock-logo.png" alt="" />
-                {% elif vehicle.OMC.cname == 'GO' %}
-                    <img src="/static/images/go.png" alt="" />
-                {% elif vehicle.OMC.cname == 'Pakistan State Oil' %}
-                    <img src="/static/images/pso-logo.png" alt="" />
-                {% else %}
-                    <img src="/static/images/total-logo.png" alt="" />
-                {% endif %}
-
-            </div>
-            <div class="hggc-body">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="user-box">
-                    <img class="img-responsive avatar-view" 
-                      src="/static/images/truck.png" 
-                      alt="Vehicle" />
-                      <div class="user-content">
-                        <h5>{{ vehicle.TL_Number }}</h5>
-                        <p>{{ vehicle.OMC }}</p>
-                        <p>{{ vehicle.Status }}</p>
-                      </div>
-                  </div>
-                </div>
-                <div class="col-md-6 text-right" style="display: flex; flex-direction: column; justify-content: space-between;">
-                  <div class="btns noprint">
-                     
-                        {% comment %} <button type="button" class="btn btn-outline-danger">
-                            <i class="fa fa-print m-right-xs"></i> Print as PDF
-                        </button> {% endcomment %}
-                      </a>
-                      <a href="{% url 'edit_vehicle' vehicle_id=vehicle.id %}">
-                        <button type="button" class="btn custom-button">
-                            <i class="fa fa-edit m-right-xs"></i> Edit Vehicle
-                        </button>
-                      </a>
-                  </div>
-                  <div class="user-header-info">
-                    <div class="user-items">
-                      <div class="items">
-                        <p>Capacity</p>
-                        <h5>{{ vehicle.Capacity }}</h5>
-                      </div>
-                      <div class="items">
-                        <p>Make</p>
-                        <h5>{{ vehicle.Make }}</h5>
-                      </div>
-                      <div class="items">
-                        <p>Model</p>
-                        <h5>{{ vehicle.Model }}</h5>
-                      </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!--Personal Information-->
-            <div class="row mt-4">
-              <div class="col-md-12">
-                <div class="hggc-panel x_panel">
-                  <!--Title-->
-                  <div class="x_title">
-                    <h2 class="m-0"></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li>
-                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                    </ul>
-                  </div>
-                  <!--Content-->
-                  <div class="x_content mt-0">
-                    <!--Item Row-->
-                    <div class="row mb-3">
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Engine Number</p>
-                          <h5>{{ vehicle.Engine_Number }}</h5>
-                        </div>
-                      </div>
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Chassis Number</p>
-                          <h5>{{ vehicle.Chassis_Number }}</h5>
-                        </div>
-                      </div>
-                      <!--Item-->
-                      
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Type</p>
-                          <h5>{{ vehicle.Type }}</h5>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Standard</p>
-                          <h5>{{ vehicle.Status }}</h5>
-                        </div>
-                      </div>
-                    </div>
-                    
-
-                    <div class="row mb-3">
-                       <!--Item-->
-                       <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Trailer ID</p>
-                          <h5>{{ vehicle.Trailer_ID }}</h5>
-                        </div>
-                      </div>
-                        <!--Item-->
-                    <div class="col-md-3">
-                      <div class="data-items">
-                        <p>Brand</p>
-                        <h5>{{ vehicle.Brand }}</h5>
-                      </div>
-                    </div>
-                   
-
-                    <div class="col-md-3">
-                        <div class="data-items">
-                          <p>NHA Configuration Class</p>
-                          <h5>{{ vehicle.NHA_Configuration_Class }}</h5>
-                        </div>
-                      </div>
-              
-
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Gross Empty Trailer Weight</p>
-                          <h5>{{ vehicle.Gross_Empty_Trailer_Weight }}</h5>
-                        </div>
-                      </div>
-                      </div>
-
-                      <div class="row">
-                        <!--Item-->
-                        <div class="col-md-3">
-                         <div class="data-items">
-                           <p>Lease Company</p>
-                           <h5>{{ vehicle.LEASE_COMPANY }}</h5>
-                         </div>
-                       </div>
-
-                       <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Lease Bank</p>
-                          <h5>{{ vehicle.LEASE_BANK }}</h5>
-                        </div>
-                      </div>
-
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Chambers</p>
-                          <h5>{{ vehicle.Chambers }}</h5>
-                        </div>
-                      </div>
-
-
-
-                      </div>
-
-
-
-                      
-
-                    <br>
-                    <br>
-                    <!--Seperation-->
-                    <div class="row seperation"></div>
-
-                    <!--Item Row-->
-                    
-
-                    <!--Item Row-->
-                    <div class="row mb-3">
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>DIP Chart Expiry</p>
-                          <h5>{{ vehicle.DIP_CHART_Date }}</h5>
-                        </div>
-                      </div>
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Insurance Expiry</p>
-                          <h5>{{ vehicle.INSURANCE_Date }}</h5>
-                        </div>
-                      </div>
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>TAX Expiry</p>
-                       
-                           <h5> {{ vehicle.TAX_PAID_Date }}</h5>
-                         
-                        </div>
-                      </div>
-                    </div>
-
-                    <!--Item Row-->
-                    <div class="row mb-3">
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Fitness Expiry</p>
-                          <h5>{{ vehicle.FITNISSE_Date }}</h5>
-                        </div>
-                      </div>
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Q FOM Expiry</p>
-                          <h5>{{ vehicle.Q_FOM_Date }}</h5>
-                        </div>
-                      </div>
-                      <!--Item-->
-                      <div class="col-md-3">
-                        <div class="data-items">
-                          <p>Route Permit Expiry</p>
-                          <h5>{{ vehicle.Route_Permit_Date }}</h5>
-                        </div>
-                      </div>
-                       <!--Item-->
-                       
-                    </div>
-
-
-
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            
-
-          </div>
-          </div>
-          
-       
+  <!-- Profile header -->
+  <div class="card p-5">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <img src="/static/images/truck.png" alt="" class="w-20 h-20 rounded-full object-cover border border-ink-200 shrink-0 bg-ink-50">
+        <div>
+          <h1 class="text-xl font-semibold text-ink-900">{{ vehicle.TL_Number }}</h1>
+          <p class="text-sm text-ink-500 mt-1">{{ vehicle.OMC }}</p>
+          <span class="status-pill is-good mt-1">{{ vehicle.Status }}</span>
+        </div>
       </div>
+
+      <div class="flex flex-col items-start md:items-end gap-4">
+        <a href="{% url 'edit_vehicle' vehicle_id=vehicle.id %}" class="btn-ghost noprint">
+          <i class="fa fa-edit"></i> Edit Vehicle
+        </a>
+        <div class="flex gap-6">
+          <div class="text-center md:text-right">
+            <p class="text-lg font-semibold text-ink-900 leading-none">{{ vehicle.Capacity }}</p>
+            <p class="text-xs text-ink-500 mt-1">Capacity</p>
+          </div>
+          <div class="text-center md:text-right">
+            <p class="text-lg font-semibold text-ink-900 leading-none">{{ vehicle.Make }}</p>
+            <p class="text-xs text-ink-500 mt-1">Make</p>
+          </div>
+          <div class="text-center md:text-right">
+            <p class="text-lg font-semibold text-ink-900 leading-none">{{ vehicle.Model }}</p>
+            <p class="text-xs text-ink-500 mt-1">Model</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</body>
-  <!-- /page content -->
+
+  <!-- Vehicle specs -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Vehicle Specifications</span></div>
+    <div class="card-body">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div><p class="text-xs text-ink-500 mb-1">Engine Number</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Engine_Number }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Chassis Number</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Chassis_Number }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Type</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Type }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Standard</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Status }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Trailer ID</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Trailer_ID }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Brand</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Brand }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">NHA Configuration Class</p><p class="text-sm font-medium text-ink-900">{{ vehicle.NHA_Configuration_Class }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Gross Empty Trailer Weight</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Gross_Empty_Trailer_Weight }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Lease Company</p><p class="text-sm font-medium text-ink-900">{{ vehicle.LEASE_COMPANY }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Lease Bank</p><p class="text-sm font-medium text-ink-900">{{ vehicle.LEASE_BANK }}</p></div>
+        <div><p class="text-xs text-ink-500 mb-1">Chambers</p><p class="text-sm font-medium text-ink-900">{{ vehicle.Chambers }}</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compliance documents -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Compliance Documents</span></div>
+    <div class="card-body">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <div class="timeline-item">
+          <div class="timeline-icon"><i class="fa fa-tachometer"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink-900">DIP Chart</p>
+            <p class="text-xs text-ink-500 mt-1">Expires: {{ vehicle.DIP_CHART_Date }}</p>
+          </div>
+          <span class="status-pill shrink-0 {% if vehicle.Dip_Chart_status == 'Close to Expiry' %}is-warn{% elif vehicle.Dip_Chart_status == 'Expired' %}is-bad{% else %}is-good{% endif %}">{{ vehicle.Dip_Chart_status|default:"—" }}</span>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-icon"><i class="fa fa-shield"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink-900">Insurance</p>
+            <p class="text-xs text-ink-500 mt-1">Expires: {{ vehicle.INSURANCE_Date }}</p>
+          </div>
+          <span class="status-pill shrink-0 {% if vehicle.road_insurance_status == 'Close to Expiry' %}is-warn{% elif vehicle.road_insurance_status == 'Expired' %}is-bad{% else %}is-good{% endif %}">{{ vehicle.road_insurance_status|default:"—" }}</span>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-icon"><i class="fa fa-money"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink-900">Tax</p>
+            <p class="text-xs text-ink-500 mt-1">Expires: {{ vehicle.TAX_PAID_Date }}</p>
+          </div>
+          <span class="status-pill shrink-0 {% if vehicle.tax_expiry_status == 'Close to Expiry' %}is-warn{% elif vehicle.tax_expiry_status == 'Expired' %}is-bad{% else %}is-good{% endif %}">{{ vehicle.tax_expiry_status|default:"—" }}</span>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-icon"><i class="fa fa-check-circle"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink-900">Fitness</p>
+            <p class="text-xs text-ink-500 mt-1">Expires: {{ vehicle.FITNISSE_Date }}</p>
+          </div>
+          <span class="status-pill shrink-0 {% if vehicle.fitness_expiry_status == 'Close to Expiry' %}is-warn{% elif vehicle.fitness_expiry_status == 'Expired' %}is-bad{% else %}is-good{% endif %}">{{ vehicle.fitness_expiry_status|default:"—" }}</span>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-icon"><i class="fa fa-file-text"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink-900">Q FOM</p>
+            <p class="text-xs text-ink-500 mt-1">Expires: {{ vehicle.Q_FOM_Date }}</p>
+          </div>
+          <span class="status-pill shrink-0 {% if vehicle.Q_Fom_status == 'Close to Expiry' %}is-warn{% elif vehicle.Q_Fom_status == 'Expired' %}is-bad{% else %}is-good{% endif %}">{{ vehicle.Q_Fom_status|default:"—" }}</span>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-icon"><i class="fa fa-road"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-ink-900">Route Permit</p>
+            <p class="text-xs text-ink-500 mt-1">Expires: {{ vehicle.Route_Permit_Date }}</p>
+          </div>
+          <span class="status-pill shrink-0 {% if vehicle.Route_status == 'Close to Expiry' %}is-warn{% elif vehicle.Route_status == 'Expired' %}is-bad{% else %}is-good{% endif %}">{{ vehicle.Route_status|default:"—" }}</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

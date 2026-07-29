@@ -1,173 +1,142 @@
 {% extends "base/base.html" %}
 
-
-{% block title %}All Drivers {% endblock %}
-
+{% block title %}All Drivers{% endblock %}
 
 {% block content %}
+<div class="space-y-4">
 
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="page-heading">Drivers</h1>
+    <a href="/adddriver" class="btn-accent">
+      <i class="fa fa-plus"></i> Add Driver
+    </a>
+  </div>
 
-        <!-- page content -->
-        <div class="right_col" role="main">
-            <div class="">
-              <div class="page-title">
-                <div class="title_left">
-                  <h3>Drivers<small></small></h3>
-                </div>
-  
-                
+  <div class="relative w-full sm:w-72">
+    <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-ink-400 text-xs"></i>
+    <input type="text" id="driver-search" class="table-search" placeholder="Search drivers...">
+  </div>
+
+  <div class="card">
+    <div class="data-table-wrap max-h-[70vh]">
+      <table class="data-table" id="driver-table">
+        <thead>
+          <tr>
+            <th>Driver</th>
+            <th>Action</th>
+            <th>Driver #</th>
+            <th>OMC</th>
+            <th>Name</th>
+            <th>Father Name</th>
+            <th>CNIC</th>
+            <th>CNIC Validity</th>
+            <th>Cell Phone</th>
+            <th>Date of Birth</th>
+            <th>Age</th>
+            <th>License Type</th>
+            <th>DDC Issue Date</th>
+            <th>Address</th>
+            <th>License #</th>
+            <th>HTV Authority</th>
+            <th>HTV Issue Date</th>
+            <th>HTV Expiry</th>
+            <th>DDC Expiry</th>
+            <th>Education</th>
+            <th>Medical Date</th>
+            <th>Lab Name</th>
+            <th>Medical Expiry</th>
+            <th>Blood Group</th>
+            <th>Medical Health</th>
+            <th>Joining Date</th>
+            <th>Experience (yrs)</th>
+            <th>On Leave</th>
+            <th>Previous Company</th>
+            <th>Tank Lorry</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for driver in drivers %}
+          <tr>
+            <td>
+              <a href="{% url 'driverview' driver_id=driver.D_ID %}" class="block w-9 h-9 rounded-full overflow-hidden border border-ink-200 bg-ink-50">
+                {% if driver.D_Image %}
+                  <img src="{{ driver.D_Image.url }}" alt="" class="w-full h-full object-cover">
+                {% else %}
+                  <img src="/static/images/user.png" alt="" class="w-full h-full object-cover">
+                {% endif %}
+              </a>
+            </td>
+            <td>
+              <div class="flex items-center gap-3">
+                <a href="{% url 'editdriver' driver_id=driver.D_ID %}" class="row-action"><i class="fa fa-edit"></i> Edit</a>
+                <form method="post" action="{% url 'delete_driver' driver_id=driver.D_ID %}">
+                  {% csrf_token %}
+                  <button type="submit" class="row-action is-danger"><i class="fa fa-trash"></i> Delete</button>
+                </form>
               </div>
-  
-              <div class="clearfix"></div>
-  
-              <div class="row">
-   
-<div class="col-md-12 col-sm-12 ">
-    <div class="x_panel">
-      <div class="x_title">
-        <a href="/adddriver">
-          <button type="button" class="btn custom-button float-right">
-              <i class="fa fa-plus m-right-xs"></i> Add Driver
-          </button>
-        </a>
-       
-        <div class="clearfix"></div>
-        
-      </div>
-      <div class="x_content">
-          <div class="row">
-              <div class="col-sm-12">
-                <div class="card-box table-responsive">
-        <p class="text-muted font-13 m-b-30">
-        </p>
-        <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    {% comment %} <th>Serial Number</th> {% endcomment %}
-                    <th>Avatar</th>
-                    <th>Action</th>
-                    <th>Driver Number</th>
-                    <th>Oil Marketing Company</th>
-                    <th>Driver Name</th>
-                    <th>Father Name</th>
-                    <th>CNIC</th>
-                    <th>CNIC Validity Date</th>
-                    <th>Cell Phone Number</th>
-                    <th>Date of Birth</th>
-                    <th>Driver Age</th>
-                    <th>License Type</th>
-                    
-                    <th>DDC Issue Date</th>
-                    <th>Address</th>
-                    <th>License Number</th>
-                    <th>HTV License Authority</th>
-                    <th>HTV License Issue Date</th>
-                    <th>HTV License Expiry Date</th>
-                    <th>DDC Expiry Date</th>
-                    <th>Education</th>
-                    
-                    <th>Medical Date</th>
-                    <th>Lab Name</th>
-                    <th>Medical Expiry Date</th>
-                    <th>Blood Group</th>
-                    <th>Medical Health</th>
-                    <th>Joining Date</th>
-                   
-                    <th>Experience (years)</th>
-                    <th>On Leave</th>
-                    
-                   
-                    <th>Previous Company</th>
-                    <th>Tank Lorry</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for driver in drivers %}
-                    <tr>
-                        {% comment %} <td>{{ forloop.counter }}</a></td> {% endcomment %}
-                        <td>
-                          <a href="{% url 'driverview' driver_id=driver.D_ID %}">
-                          <ul class="list-inline">
-                            <li>
-                              
-                              {% if driver.D_Image %}
-                              <img src="{{ driver.D_Image.url }} " alt="avatar" class="avatar">
-                              {% else %}
-                              <img src="/static/images/user.png" alt="avatar" class="avatar">
-                              {% endif %}
-                            </li>
-                          </ul>
-                          </a>
-                          <a href="{% url 'editdriver' driver_id=driver.D_ID %}"><i class="fa fa-edit"></i>Edit</a>
-                          
-                         
-                          <form method="post" action="{% url 'delete_driver' driver_id=driver.D_ID %}" style="display:inline; margin-left: 8px;">
-                              {% csrf_token %}
-                              <button type="submit" class="btn btn-danger btn-xs">Delete</button>
-                          </form>
-
-                        </td>
-                        <td><a href="{% url 'driverview' driver_id=driver.D_ID %}">{{ driver.D_Number }}</a></td>
-                        <td>{{ driver.Oil_Marketing_Company }}</td>
-                        <td>{{ driver.D_Name }}</td>
-                        <td>{{ driver.Father_Name }}</td>
-                        <td>{{ driver.CNIC }}</td>
-                        
-                        <td > {{ driver.CNIC_Validity }}
-                          <span class="badge {% if driver.CNIC_Validity_status == 'Close to Expiry' %}badge-warning{% elif driver.CNIC_Validity_status == 'Expired' %}badge-danger{% elif driver.CNIC_Validity_status == 'Valid' %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                            {{ driver.CNIC_Validity_status }}
-                        </span>
-                        
-                      </td>
-                        <td>{{ driver.Cell_Phone_Num }}</td>
-                        <td>{{ driver.DOB }}</td>
-                        <td>{{ driver.age }}</td>
-                        <td>{{ driver.DL_Status }}</td>
-                       
-                        <td>{{ driver.DDC_Issue_Date }}</td>
-                        <td>{{ driver.Address }}</td>
-                        <td>{{ driver.License_No }}</td>
-                        <td>{{ driver.HTV_License_Authority }}</td>
-                        <td>{{ driver.HTV_License_Issue_Date }}</td>
-
-                        <td>{{ driver.HTV_License_Expiry_Date }}
-                          <span class="badge {% if driver.HTV_License_Expiry_Date_status == 'Close to Expiry' %}badge-warning{% elif driver.HTV_License_Expiry_Date_status == 'Expired' %}badge-danger{% elif driver.HTV_License_Expiry_Date_status == 'Valid' %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                            {{ driver.HTV_License_Expiry_Date_status}}
-                        </span>
-                        </td>
-                        <td>{{ driver.DDC_Expiry_Date }}
-                          <span class="badge {% if driver.DDC_Date_status == 'Close to Expiry' %}badge-warning{% elif driver.DDC_Date_status == 'Expired' %}badge-danger{% elif driver.DDC_Date_status == 'Valid' %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                            {{ driver.DDC_Date_status }}
-                        </span>
-                        </td>
-                        <td>{{ driver.Education }}</td>
-                        
-                        <td>{{ driver.Report_Date }}</td>
-                        <td>{{ driver.Lab_Name }}</td>
-                        <td>{{ driver.Expiry_Date }}
-                          <span class="badge {% if driver.Expiry_Date_status == 'Close to Expiry' %}badge-warning{% elif driver.Expiry_Date_status == 'Expired' %}badge-danger{% elif driver.Expiry_Date_status == 'Valid' %}badge-success{% endif %}" style="font-size: 0.9em; padding: 0.5em;">
-                            {{ driver.Expiry_Date_status }}
-                        </span>
-                        </td>
-                        <td>{{ driver.Blood_Group }}</td>
-                        <td>{{ driver.Medical_Health }}</td>
-                        <td>{{ driver.Joining_Date }}</td>
-                        
-                        <td>{{ driver.Experience }}</td>
-                        <td>From {{ driver.Leave_Date }} To {{ driver.Leave_Resume }}</td>
-                        
-                        
-                        <td>{{ driver.Previous_Company }}</td>
-                        <td>{{ driver.Tank_Lorry }}</td>
-                    </tr>
-                    
-                {% endfor %}
-            </tbody>
-        </table>
-      </div>
+            </td>
+            <td><a href="{% url 'driverview' driver_id=driver.D_ID %}" class="font-medium text-ink-900 hover:text-accent-600">{{ driver.D_Number }}</a></td>
+            <td>{{ driver.Oil_Marketing_Company }}</td>
+            <td>{{ driver.D_Name }}</td>
+            <td>{{ driver.Father_Name }}</td>
+            <td>{{ driver.CNIC }}</td>
+            <td>
+              <div class="flex flex-col gap-1">
+                <span>{{ driver.CNIC_Validity }}</span>
+                <span class="status-pill {% if driver.CNIC_Validity_status == 'Close to Expiry' %}is-warn{% elif driver.CNIC_Validity_status == 'Expired' %}is-bad{% elif driver.CNIC_Validity_status == 'Valid' %}is-good{% endif %}">{{ driver.CNIC_Validity_status }}</span>
+              </div>
+            </td>
+            <td>{{ driver.Cell_Phone_Num }}</td>
+            <td>{{ driver.DOB }}</td>
+            <td>{{ driver.age }}</td>
+            <td>{{ driver.DL_Status }}</td>
+            <td>{{ driver.DDC_Issue_Date }}</td>
+            <td>{{ driver.Address }}</td>
+            <td>{{ driver.License_No }}</td>
+            <td>{{ driver.HTV_License_Authority }}</td>
+            <td>{{ driver.HTV_License_Issue_Date }}</td>
+            <td>
+              <div class="flex flex-col gap-1">
+                <span>{{ driver.HTV_License_Expiry_Date }}</span>
+                <span class="status-pill {% if driver.HTV_License_Expiry_Date_status == 'Close to Expiry' %}is-warn{% elif driver.HTV_License_Expiry_Date_status == 'Expired' %}is-bad{% elif driver.HTV_License_Expiry_Date_status == 'Valid' %}is-good{% endif %}">{{ driver.HTV_License_Expiry_Date_status }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="flex flex-col gap-1">
+                <span>{{ driver.DDC_Expiry_Date }}</span>
+                <span class="status-pill {% if driver.DDC_Date_status == 'Close to Expiry' %}is-warn{% elif driver.DDC_Date_status == 'Expired' %}is-bad{% elif driver.DDC_Date_status == 'Valid' %}is-good{% endif %}">{{ driver.DDC_Date_status }}</span>
+              </div>
+            </td>
+            <td>{{ driver.Education }}</td>
+            <td>{{ driver.Report_Date }}</td>
+            <td>{{ driver.Lab_Name }}</td>
+            <td>
+              <div class="flex flex-col gap-1">
+                <span>{{ driver.Expiry_Date }}</span>
+                <span class="status-pill {% if driver.Expiry_Date_status == 'Close to Expiry' %}is-warn{% elif driver.Expiry_Date_status == 'Expired' %}is-bad{% elif driver.Expiry_Date_status == 'Valid' %}is-good{% endif %}">{{ driver.Expiry_Date_status }}</span>
+              </div>
+            </td>
+            <td>{{ driver.Blood_Group }}</td>
+            <td>{{ driver.Medical_Health }}</td>
+            <td>{{ driver.Joining_Date }}</td>
+            <td>{{ driver.Experience }}</td>
+            <td>From {{ driver.Leave_Date }} To {{ driver.Leave_Resume }}</td>
+            <td>{{ driver.Previous_Company }}</td>
+            <td>{{ driver.Tank_Lorry }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
 
-
+<script>
+  document.getElementById('driver-search')?.addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('#driver-table tbody tr').forEach((row) => {
+      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+</script>
 {% endblock %}

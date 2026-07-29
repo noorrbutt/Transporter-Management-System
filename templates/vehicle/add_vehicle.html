@@ -1,270 +1,150 @@
 {% extends 'base/base.html' %}
 
-{% block title %}
-  {{ action }} Vehicle
-{% endblock %}
+{% block title %}{{ action }} Vehicle{% endblock %}
 
 {% block content %}
-  <div class="right_col" role="main">
-    <div class="">
-      <div class="page-title">
-        <div class="title_left">
-          <h3>{{ action }} Vehicle</h3>
-        </div>
-
-       
-      </div>
-      <div class="clearfix"></div>
-      <div class="row">
-        <div class="col-md-12 col-sm-12">
-          <div class="x_panel">
-            <div class="x_title">
-              <h2><small></small></h2>
-              <ul class="nav navbar-right panel_toolbox"></ul>
-              <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-              <br />
-              <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tank Lorry Number <span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="tl_number" value="{{ vehicle.TL_Number }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Capacity<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="number" name="capacity" value="{{ vehicle.Capacity }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Chambers<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="chambers" value="{{ vehicle.Chambers }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-               
-
-                <div class="form-group row">
-                  <label class="control-label col-md-3 col-sm-3 label-align">Oil Marketing Company<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="omc">
-                      {% for company in company %}
-                      <option value="{{ company }}" {% if company == vehicle.OMC %}selected{% endif %}>
-                        {{ company }}
-                      </option>
-                  {% endfor %}
-                   
-                    </select>
-                  </div>
-                </div>
-
-
-
-
-                
-
-
-
-
-                <div class="form-group row">
-                  <label class="control-label col-md-3 col-sm-3 label-align">Maker<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="vmake">
-                        {% for maker in vehicle_makers %}
-                        <option value="{{ maker }}" {% if maker == vehicle.Make %}selected{% endif %}>
-                          {{ maker }}
-                        </option>
-                        
-                        {% endfor %}
-                    </select>
-                    
-                  </div>
-                </div>
-
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Model<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="number" name="model" value="{{ vehicle.Model }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Engine Number<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="engine_number" value="{{ vehicle.Engine_Number }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Chassis Number<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="chassis_number" value="{{ vehicle.Chassis_Number }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-
-                <div class="form-group row">
-                  <label class="control-label col-md-3 col-sm-3 label-align">Lease Company<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="lease_company">
-                      {% for owner in vehicle_owners %}
-                      <option value="{{ owner }}" {% if owner == vehicle.LEASE_COMPANY %}selected{% endif %}>
-                        {{ owner }}
-                      </option>
-                  {% endfor %}
-                   
-                    </select>
-                  </div>
-                </div>
-
-
-                <div class="form-group row">
-                  <label class="control-label col-md-3 col-sm-3 label-align">Lease Bank<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="lease_bank">
-                      {% for owner in vehicle_owners %}
-                      <option value="{{ owner }}" {% if owner == vehicle.LEASE_BANK %}selected{% endif %}>
-                        {{ owner }}
-                      </option>
-                  {% endfor %}
-                   
-                    </select>
-                  </div>
-                </div>
-
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Status<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="status" value="{{ vehicle.Status }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Type<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="type" value="{{ vehicle.Type }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Trailer ID<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="trailer" name="trailer_id" value="{{ vehicle.Trailer_ID }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Brand<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="brand" value="{{ vehicle.Brand }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">NHA Configuration Class<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="nha" value="{{ vehicle.NHA_Configuration_Class }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-                <div class="item form-group">
-                  <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Gross Empty Trailer Weight<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6">
-                    <input type="text" name="gross" value="{{ vehicle.Gross_Empty_Trailer_Weight }}" id="first-name" required="required" class="form-control" />
-                  </div>
-                </div>
-
-
-
-                
-
-                <div class="field item form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-3 label-align">DIP Chart Expiry Date<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6 col-xs-6">
-                    <input class="form-control" value="{{ vehicle.DIP_CHART_Date|date:'Y-m-d' }}" type="date" id="violation-date" name="vd_ed" required="required">
-                  </div>
-                </div>
-
-
-
-
-                <div class="field item form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-3 label-align">Road Insurance Expiry Date<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6 col-xs-6">
-                    <input class="form-control" value="{{ vehicle.INSURANCE_Date|date:'Y-m-d' }}" type="date" id="violation-date" name="vr_ed" required="required">
-                  </div>
-                </div>
-
-
-
-
-                
-                
-
-                
-                <div class="field item form-group">
-                  <label class="control-label col-md-3 col-sm-3 col-xs-3 label-align">Tax Expiry Date<span class="required">*</span></label>
-                  <div class="col-md-6 col-sm-6 col-xs-6">
-                    <input class="form-control" value="{{ vehicle.TAX_PAID_Date|date:'Y-m-d' }}" type="date" id="violation-date" name="vt_ed" required="required">
-                  </div>
-                </div>
-
-                <div class="field item form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-3 label-align">Fitness Expiry Date<span class="required">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                      <input type="date" name="vf_ed" value="{{ vehicle.FITNISSE_Date|date:'Y-m-d' }}" class="form-control"/>
-                    </div>
-                  </div>
-
-                  
-
-                  <div class="field item form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-3 label-align">Q Fom Expiry Date<span class="required">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                      <input type="date" name="vq_ed" value="{{ vehicle.Q_FOM_Date|date:'Y-m-d' }}" class="form-control"/>
-                    </div>
-                  </div>
-
-                  <div class="field item form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-3 label-align">Route Permit Expiry Date<span class="required">*</span></label>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                      <input type="date" name="vrp_ed" value="{{ vehicle.Route_Permit_Date|date:'Y-m-d' }}" class="form-control"/>
-                    </div>
-                  </div>
-
-
-                
-
-                  
-
-                <div class="ln_solid"></div>
-                <div class="item form-group">
-                  <div class="col-md-6 col-sm-6 offset-md-3">
-                    {% if 'edit' not in request.path %}
-                      <button class="btn btn-primary" type="reset">Reset</button>
-                    {% endif %}
-                    <button type="submit" class="btn btn-success">Submit</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="form-card !max-w-4xl">
+  <div class="form-card-header">
+    <span class="form-card-icon"><i class="fa fa-plus"></i></span>
+    <h1 class="form-card-title">{{ action }} Vehicle</h1>
   </div>
-  <!-- /page content -->
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-card-body grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-5">
 
-  <!-- jquery.inputmask -->
-  <script src="/static//vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js"></script>
+      <div>
+        <label class="field-label">Tank Lorry Number <span class="text-accent-600">*</span></label>
+        <input type="text" name="tl_number" value="{{ vehicle.TL_Number }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Capacity <span class="text-accent-600">*</span></label>
+        <input type="number" name="capacity" value="{{ vehicle.Capacity }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Chambers <span class="text-accent-600">*</span></label>
+        <input type="text" name="chambers" value="{{ vehicle.Chambers }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Oil Marketing Company <span class="text-accent-600">*</span></label>
+        <select name="omc" class="field-input">
+          {% for c in company %}
+          <option value="{{ c }}" {% if c == vehicle.OMC %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="field-label">Maker <span class="text-accent-600">*</span></label>
+        <select name="vmake" class="field-input">
+          {% for maker in vehicle_makers %}
+          <option value="{{ maker }}" {% if maker == vehicle.Make %}selected{% endif %}>{{ maker }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="field-label">Model <span class="text-accent-600">*</span></label>
+        <input type="number" name="model" value="{{ vehicle.Model }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Engine Number <span class="text-accent-600">*</span></label>
+        <input type="text" name="engine_number" value="{{ vehicle.Engine_Number }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Chassis Number <span class="text-accent-600">*</span></label>
+        <input type="text" name="chassis_number" value="{{ vehicle.Chassis_Number }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Lease Company <span class="text-accent-600">*</span></label>
+        <select name="lease_company" class="field-input">
+          {% for owner in vehicle_owners %}
+          <option value="{{ owner }}" {% if owner == vehicle.LEASE_COMPANY %}selected{% endif %}>{{ owner }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="field-label">Lease Bank <span class="text-accent-600">*</span></label>
+        <select name="lease_bank" class="field-input">
+          {% for owner in vehicle_owners %}
+          <option value="{{ owner }}" {% if owner == vehicle.LEASE_BANK %}selected{% endif %}>{{ owner }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="field-label">Status <span class="text-accent-600">*</span></label>
+        <input type="text" name="status" value="{{ vehicle.Status }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Type <span class="text-accent-600">*</span></label>
+        <input type="text" name="type" value="{{ vehicle.Type }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Trailer ID <span class="text-accent-600">*</span></label>
+        <input type="text" name="trailer_id" value="{{ vehicle.Trailer_ID }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Brand <span class="text-accent-600">*</span></label>
+        <input type="text" name="brand" value="{{ vehicle.Brand }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">NHA Configuration Class <span class="text-accent-600">*</span></label>
+        <input type="text" name="nha" value="{{ vehicle.NHA_Configuration_Class }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Gross Empty Trailer Weight <span class="text-accent-600">*</span></label>
+        <input type="text" name="gross" value="{{ vehicle.Gross_Empty_Trailer_Weight }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">DIP Chart Expiry Date <span class="text-accent-600">*</span></label>
+        <input type="date" name="vd_ed" value="{{ vehicle.DIP_CHART_Date|date:'Y-m-d' }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Road Insurance Expiry Date <span class="text-accent-600">*</span></label>
+        <input type="date" name="vr_ed" value="{{ vehicle.INSURANCE_Date|date:'Y-m-d' }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Tax Expiry Date <span class="text-accent-600">*</span></label>
+        <input type="date" name="vt_ed" value="{{ vehicle.TAX_PAID_Date|date:'Y-m-d' }}" required class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Fitness Expiry Date</label>
+        <input type="date" name="vf_ed" value="{{ vehicle.FITNISSE_Date|date:'Y-m-d' }}" class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Q Fom Expiry Date</label>
+        <input type="date" name="vq_ed" value="{{ vehicle.Q_FOM_Date|date:'Y-m-d' }}" class="field-input">
+      </div>
+
+      <div>
+        <label class="field-label">Route Permit Expiry Date</label>
+        <input type="date" name="vrp_ed" value="{{ vehicle.Route_Permit_Date|date:'Y-m-d' }}" class="field-input">
+      </div>
+
+    </div>
+    <div class="form-card-footer">
+      <button type="submit" class="btn-accent">Submit</button>
+      {% if 'edit' not in request.path %}
+      <button type="reset" class="btn-ghost">Reset</button>
+      {% endif %}
+    </div>
+  </form>
+</div>
 {% endblock %}

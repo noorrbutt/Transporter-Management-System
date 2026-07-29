@@ -3,96 +3,47 @@
 {% block title %}Add Training & Drill for {{ driver.D_Name }}{% endblock %}
 
 {% block content %}
-
-<div class="right_col" role="main">
-    <div class="">
-        <div class="page-title">
-            <div class="title_left">
-                <h3>Add Drill &amp; Training</h3>
-            </div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2><small></small></h2>
-                        <ul class="nav navbar-right panel_toolbox"></ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <br />
-                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" method="post">
-                            {% csrf_token %}
-
-                            <div class="item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="driver-id">
-                                    Driver ID<span class="required">*</span>
-                                </label>
-                                <div class="col-md-6 col-sm-6">
-                                    <input type="text" readonly value="{{ driver.D_Number }}" id="driver-id" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="full-name">
-                                    Full Name<span class="required">*</span>
-                                </label>
-                                <div class="col-md-6 col-sm-6">
-                                    <input type="text" readonly value="{{ driver.D_Name }}" id="full-name" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="control-label col-md-3 col-sm-3 label-align" for="select-training">
-                                    Select Training
-                                </label>
-                                <div class="col-md-6 col-sm-6">
-                                    {# value is the PK — view uses get_object_or_404(annual_training, pk=train_id) #}
-                                    <select class="form-control" id="select-training" name="train" required>
-                                        {% for t in training %}
-                                        <option value="{{ t.id }}">{{ t.train_name }} ({{ t.training_month }})</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="control-label col-md-3 col-sm-3 label-align" for="select-drill">
-                                    Select Drill
-                                </label>
-                                <div class="col-md-6 col-sm-6">
-                                    {# value is the PK — view uses get_object_or_404(annual_drill, pk=drill_id) #}
-                                    <select class="form-control" id="select-drill" name="drill" required>
-                                        {% for d in drills %}
-                                        <option value="{{ d.id }}">{{ d.drill_name }} ({{ d.drilling_month }})</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="completion-date">
-                                    Completion Date<span class="required">*</span>
-                                </label>
-                                <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" type="date" id="completion-date" name="date" required>
-                                </div>
-                            </div>
-
-                            <div class="item form-group">
-                                <div class="col-md-6 col-sm-6 offset-md-3">
-                                    <button class="btn btn-primary" type="reset">Reset</button>
-                                    <button type="submit" class="btn btn-success">Submit</button>
-                                </div>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="form-card">
+  <div class="form-card-header">
+    <span class="form-card-icon"><i class="fa fa-plus"></i></span>
+    <h1 class="form-card-title">Add Drill &amp; Training</h1>
+  </div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-card-body">
+      <div>
+        <label class="field-label" for="driver-id">Driver ID <span class="text-accent-600">*</span></label>
+        <input type="text" readonly value="{{ driver.D_Number }}" id="driver-id" class="field-input bg-ink-50 text-ink-500">
+      </div>
+      <div>
+        <label class="field-label" for="full-name">Full Name <span class="text-accent-600">*</span></label>
+        <input type="text" readonly value="{{ driver.D_Name }}" id="full-name" class="field-input bg-ink-50 text-ink-500">
+      </div>
+      <div>
+        <label class="field-label" for="select-training">Select Training</label>
+        <select id="select-training" name="train" required class="field-input">
+          {% for t in training %}
+          <option value="{{ t.id }}">{{ t.train_name }} ({{ t.training_month }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="field-label" for="select-drill">Select Drill</label>
+        <select id="select-drill" name="drill" required class="field-input">
+          {% for d in drills %}
+          <option value="{{ d.id }}">{{ d.drill_name }} ({{ d.drilling_month }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="field-label" for="completion-date">Completion Date <span class="text-accent-600">*</span></label>
+        <input type="date" id="completion-date" name="date" required class="field-input">
+      </div>
     </div>
+    <div class="form-card-footer">
+      <button type="submit" class="btn-accent">Submit</button>
+      <button type="reset" class="btn-ghost">Reset</button>
+    </div>
+  </form>
 </div>
-
 {% endblock %}

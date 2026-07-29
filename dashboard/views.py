@@ -1,4 +1,5 @@
 import calendar
+import json
 from datetime import date, datetime
 from io import BytesIO
 from PIL import Image
@@ -259,9 +260,9 @@ def edit_owner(request, owner_id):
             request, "Something went wrong. Please check your input and try again."
         )
         return redirect(request.path)
-        return render(
-            request, "vehicle_owner/add_vo.html", {"owner": owner, "action": "Edit"}
-        )
+    return render(
+        request, "vehicle_owner/add_vo.html", {"owner": owner, "action": "Edit"}
+    )
 
 
 @transaction.atomic
@@ -811,7 +812,7 @@ def driver_view(request, driver_id):
 
     context = {
         "driver": driver,
-        "tbm_data": tbm_data,
+        "tbm_data": json.dumps(tbm_data),
         "drill_completions": drill_completions,
         "training_completions": training_completions,
     }
@@ -821,6 +822,19 @@ def driver_view(request, driver_id):
 def vehicle_view(request, vehicle_id):
 
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
+
+    date_fields = {
+        "tax_expiry": vehicle.TAX_PAID_Date,
+        "fitness_expiry": vehicle.FITNISSE_Date,
+        "road_insurance": vehicle.INSURANCE_Date,
+        "Dip_Chart": vehicle.DIP_CHART_Date,
+        "Q_Fom": vehicle.Q_FOM_Date,
+        "Route": vehicle.Route_Permit_Date,
+    }
+    for field_name, field_date in date_fields.items():
+        if field_date:
+            status_message = get_date_status(field_date, field_name)
+            setattr(vehicle, f"{field_name}_status", status_message)
 
     context = {"vehicle": vehicle}
     return render(request, "vehicle/vehicleview.html", context)
@@ -1028,6 +1042,7 @@ def dashboard(request):
         meeting.driver_tool_box_meeting_attended_set.count()
         for meeting in meetings_data
     ]
+    tbm_labels = [meeting.meeting_topic for meeting in meetings_data]
 
     context = {
         "total_drivers": drivers.count(),
@@ -1038,7 +1053,8 @@ def dashboard(request):
         "expired_ddc_list": expired_ddc_list,
         "expired_htv_license_list": expired_htv_license_list,
         "expired_general_list": expired_general_list,
-        "tbm_data": tbm_data,
+        "tbm_data": json.dumps(tbm_data),
+        "tbm_labels": json.dumps(tbm_labels),
         "total_tbm_sessions": sum(tbm_data),
         "total_tbm_participants": driver_tool_box_meeting_attended.objects.count(),
     }

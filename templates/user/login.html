@@ -1,84 +1,63 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TMS - Transporter Management System</title>
 
-    <title>TMS - Transporter Managment System</title>
-
-    <!-- Bootstrap -->
-    <link href="/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- NProgress -->
-    <link href="/static/vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- Animate.css -->
-    <link href="/static/vendors/animate.css/animate.min.css" rel="stylesheet">
-
-    <!-- Custom Theme Style -->
-    <link href="/static/build/css/custom.min.css" rel="stylesheet">
+    <link href="/static/build/css/tailwind.css" rel="stylesheet">
   </head>
 
-  <body class="login">
-    <div>
-      <a class="hiddenanchor" id="signup"></a>
-      <a class="hiddenanchor" id="signin"></a>
-
-      <div class="login_wrapper">
-        <div class="animate form login_form">
-          <section class="login_content">
-            <div class="alert">
-              <h4> {{ error_head }} </h4>
-                <br>
-              <h5> {{log}} </h5>
-    
-              </div>
-
-            <form method="post" action="/loginuser">
-                {% csrf_token %}
-                <h1>Login Form</h1>
-
-              
-                    {% if messages %}
-                <div class="alert alert-danger">
-                    <ul>
-                        {% for message in messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-
-            
-                <div>
-                    <input type="text" class="form-control" name="username" placeholder="Username" required />
-                </div>
-                <div>
-                    <input type="password" class="form-control" name="password" placeholder="Password" required />
-                </div>
-                <div>
-                    <button type="submit" class="btn btn-default submit">Log in</button>
-                </div>
-            </form>
-
-                <div>
-                  <h1><i class="fa fa-paw"></i> HGGC</h1>
-                  <p>©2023 All Rights Reserved.</p>
-                </div>
-              </div>
- 
-          </section>
-        </div>
-
-        
-            </form>
-          </section>
-        </div>
+  <body class="h-full bg-ink-900 font-sans flex items-center justify-center px-4">
+    <div class="w-full max-w-sm">
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <img src="/static/images/logo.png" alt="" class="w-9 h-9 rounded-full object-cover">
+        <span class="text-white font-semibold tracking-wide text-lg">TMS</span>
       </div>
+
+      <div class="card p-6">
+        <h1 class="text-lg font-semibold text-ink-900 mb-1">Sign in</h1>
+        <p class="text-sm text-ink-500 mb-6">Transporter Management System</p>
+
+        {% if error_head or log %}
+          <div class="mb-4 rounded-lg border border-status-bad-border bg-status-bad-bg text-status-bad px-4 py-3 text-sm">
+            {% if error_head %}<p class="font-medium">{{ error_head }}</p>{% endif %}
+            {% if log %}<p class="mt-0.5">{{ log }}</p>{% endif %}
+          </div>
+        {% endif %}
+
+        {% if messages %}
+          <div class="mb-4 space-y-2">
+            {% for message in messages %}
+              <div class="rounded-lg border border-status-bad-border bg-status-bad-bg text-status-bad px-4 py-3 text-sm">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" action="/loginuser" class="space-y-4">
+          {% csrf_token %}
+          <div>
+            <label class="field-label" for="username">Username</label>
+            <input type="text" id="username" name="username" class="field-input" placeholder="Username" required>
+          </div>
+          <div>
+            <label class="field-label" for="password">Password</label>
+            <input type="password" id="password" name="password" class="field-input" placeholder="Password" required>
+          </div>
+          <button type="submit" class="btn-accent w-full justify-center">
+            <i class="fa fa-sign-in"></i> Log in
+          </button>
+        </form>
+      </div>
+
+      <p class="text-center text-xs text-ink-400 mt-6">
+        <i class="fa fa-paw"></i> HGGC · &copy;2023 All Rights Reserved.
+      </p>
     </div>
   </body>
 </html>
