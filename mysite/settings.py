@@ -13,6 +13,18 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
+
+def get_required_env_var(name):
+    value = os.environ.get(name)
+    if not value:
+        raise ImproperlyConfigured(
+            f"Set the {name} environment variable before starting the server."
+        )
+    return value
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,10 +33,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# WARNING: Set the DJANGO_SECRET_KEY environment variable in production. Never deploy with the fallback value.
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY", "django-insecure-local-dev-fallback-replace-in-production"
-)
+# The DJANGO_SECRET_KEY environment variable is required and has no fallback.
+SECRET_KEY = get_required_env_var("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # WARNING: Set DEBUG=False and configure ALLOWED_HOSTS before any deployment.
