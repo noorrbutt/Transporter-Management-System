@@ -1,10 +1,12 @@
 from django.contrib.auth.models import AnonymousUser, User
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.test import Client, RequestFactory, SimpleTestCase, TestCase
 from django.urls import reverse
 
 from dashboard.middleware import LoginRequiredMiddleware
 from dashboard.models import Driver
+from dashboard.views import superuser_required
 
 
 class SoftDeleteRegressionTest(TestCase):
@@ -31,6 +33,36 @@ class SoftDeleteRegressionTest(TestCase):
 
         resp = client.get("/drivers")
         self.assertNotIn(driver, resp.context["drivers"])
+
+
+class SuperuserRequiredDecoratorTests(TestCase):
+    def test_non_superuser_authenticated_request_is_denied(self):
+        @superuser_required
+        def sample_view(request):
+            return HttpResponse("ok")
+
+        request = RequestFactory().get("/")
+        request.user = User.objects.create_user(username="staff", password="pass")
+        request.user.is_superuser = False
+        request.user.save()
+
+        with self.assertRaises(PermissionDenied):
+            sample_view(request)
+
+    def test_superuser_authenticated_request_is_allowed(self):
+        @superuser_required
+        def sample_view(request):
+            return HttpResponse("ok")
+
+        request = RequestFactory().get("/")
+        request.user = User.objects.create_user(username="admin", password="pass")
+        request.user.is_superuser = True
+        request.user.save()
+
+        response = sample_view(request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b"ok")
 
 
 class LoginRequiredMiddlewareTests(SimpleTestCase):
