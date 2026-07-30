@@ -3,6 +3,7 @@ import json
 from datetime import date, datetime
 from io import BytesIO
 from PIL import Image
+from .models import Procedure
 
 Image.MAX_IMAGE_PIXELS = 20_000_000
 
@@ -1248,25 +1249,26 @@ def allusers(request):
     return render(request, "user/users.html", context)
 
 
-def get_procedures(request):
-    return render(request, "static_content/procedures.html")
-
+def get_procedures(request, category=None):
+    procedures = Procedure.objects.all()
+    if category:
+        procedures = procedures.filter(category=category)
+    return render(request, "static_content/procedures.html", {
+        "procedures": procedures,
+        "active_category": category,
+    })
 
 def get_dm(request):
-    return render(request, "static_content/dm.html")
-
-
-def get_hsep(request):
-    return render(request, "static_content/hsep.html")
-
+    return get_procedures(request, category="dm")
 
 def get_vm(request):
-    return render(request, "static_content/vm.html")
+    return get_procedures(request, category="vm")
 
+def get_hsep(request):
+    return get_procedures(request, category="hse")
 
 def get_op(request):
-    return render(request, "static_content/op.html")
-
+    return get_procedures(request, category="op")
 
 def get_policies(request):
     return render(request, "static_content/policies.html")
