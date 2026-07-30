@@ -11,11 +11,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
 from django.db import transaction
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.urls import reverse
 from django.utils import timezone
 import logging
@@ -1079,6 +1080,17 @@ def adduser(request):
         is_superuser = 1 if access_level == "Full Access" else 0
         is_active = 1 if status == "Active" else 0
 
+        if not password:
+            messages.error(request, "Password cannot be blank.")
+            return redirect(request.path)
+
+        try:
+            validate_password(password, user=None)
+        except ValidationError as exc:
+            for message in exc.messages:
+                messages.error(request, message)
+            return redirect(request.path)
+
         # Create a new user
         user = User.objects.create_user(username=username, password=password)
         user.first_name = first_name
@@ -1163,6 +1175,12 @@ def edituser(request, id):
         user.is_superuser = is_superuser
         user.is_active = is_active
         if password:
+            try:
+                validate_password(password, user)
+            except ValidationError as exc:
+                for message in exc.messages:
+                    messages.error(request, message)
+                return redirect(request.path)
             user.set_password(password)
         user.save()
 
