@@ -3,7 +3,7 @@ import json
 from datetime import date, datetime
 from functools import wraps
 from io import BytesIO
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 from .models import Procedure
 
 Image.MAX_IMAGE_PIXELS = 20_000_000
@@ -23,6 +23,39 @@ from django.utils import timezone
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _prepare_uploaded_image(request, uploaded_file):
+    if not uploaded_file:
+        return None
+
+    try:
+        uploaded_file.file.seek(0)
+        with Image.open(uploaded_file.file) as image:
+            image.verify()
+
+        uploaded_file.file.seek(0)
+        with Image.open(uploaded_file.file) as image:
+            if image.format not in {"JPEG", "PNG"}:
+                raise UnidentifiedImageError("Unsupported image format")
+
+            image.load()
+            width, height = image.size
+            new_size = min(width, height)
+            left = (width - new_size) / 2
+            top = (height - new_size) / 2
+            right = (width + new_size) / 2
+            bottom = (height + new_size) / 2
+            image = image.crop((left, top, right, bottom))
+            image = image.resize((200, 200), Image.LANCZOS)
+
+            image_data = BytesIO()
+            image.save(image_data, format="JPEG")
+            image_data.seek(0)
+            return ContentFile(image_data.getvalue(), name=uploaded_file.name)
+    except (UnidentifiedImageError, OSError, Image.DecompressionBombError):
+        messages.error(request, "Uploaded file is not a valid image.")
+        return None
 
 
 def superuser_required(view_func):
@@ -1095,28 +1128,15 @@ def adduser(request):
         if user_image:
             user_image_obj = User_Image(user=user)
 
-            allowed_ext = (".jpg", ".jpeg", ".png")
-            if not user_image.name.lower().endswith(allowed_ext):
-                messages.error(request, "Only JPG or PNG images are allowed.")
-                return redirect(request.path)
             if user_image.size > 5 * 1024 * 1024:
                 messages.error(request, "Image must be smaller than 5MB.")
                 return redirect(request.path)
-            image = Image.open(user_image)
 
-            width, height = image.size
-            new_size = min(width, height)
+            image_file = _prepare_uploaded_image(request, user_image)
+            if image_file is None:
+                return redirect(request.path)
 
-            left = (width - new_size) / 2
-            top = (height - new_size) / 2
-            right = (width + new_size) / 2
-            bottom = (height + new_size) / 2
-            image = image.crop((left, top, right, bottom))
-            image = image.resize((200, 200), Image.LANCZOS)
-
-            image_data = BytesIO()
-            image.save(image_data, format="JPEG")
-            user_image_obj.img.save(user_image.name, ContentFile(image_data.getvalue()))
+            user_image_obj.img.save(user_image.name, image_file)
             user_image_obj.save()
 
         return redirect("/allusers")
@@ -1176,36 +1196,18 @@ def edituser(request, id):
 
         user_image = request.FILES.get("user_image")
         if user_image:
-            if flag:
-                user_image_obj.delete()
-
-            allowed_ext = (".jpg", ".jpeg", ".png")
-            if not user_image.name.lower().endswith(allowed_ext):
-                messages.error(request, "Only JPG or PNG images are allowed.")
-                return redirect(request.path)
             if user_image.size > 5 * 1024 * 1024:
                 messages.error(request, "Image must be smaller than 5MB.")
                 return redirect(request.path)
-            image = Image.open(user_image)
 
-            # Convert the image to 'RGB' mode (removes transparency)
-            if image.mode == "RGBA":
-                image = image.convert("RGB")
+            image_file = _prepare_uploaded_image(request, user_image)
+            if image_file is None:
+                return redirect(request.path)
 
-            width, height = image.size
-            new_size = min(width, height)
+            if flag:
+                user_image_obj.delete()
 
-            left = (width - new_size) / 2
-            top = (height - new_size) / 2
-            right = (width + new_size) / 2
-            bottom = (height + new_size) / 2
-            image = image.crop((left, top, right, bottom))
-            image = image.resize((200, 200), Image.LANCZOS)
-
-            image_data = BytesIO()
-            image.save(image_data, format="JPEG")
-
-            user_image_obj.img.save(user_image.name, ContentFile(image_data.getvalue()))
+            user_image_obj.img.save(user_image.name, image_file)
             user_image_obj.save()
 
         # Redirect to a success page or return a response
