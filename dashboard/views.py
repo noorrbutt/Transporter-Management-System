@@ -21,6 +21,8 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.urls import reverse
 from django.utils import timezone
 import logging
+from ratelimit.decorators import ratelimit
+from ratelimit.exceptions import Ratelimited
 
 logger = logging.getLogger(__name__)
 
@@ -868,6 +870,20 @@ def vehicle_view(request, vehicle_id):
     return render(request, "vehicle/vehicleview.html", context)
 
 
+def _ratelimit_catch(view_func):
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        try:
+            return view_func(request, *args, **kwargs)
+        except Ratelimited:
+            messages.error(request, "Too many attempts. Try again later.")
+            return render(request, "user/login.html", status=429)
+
+    return _wrapped
+
+
+@_ratelimit_catch
+@ratelimit(key="ip", rate="5/m", method="POST", block=True)
 def login_user(request):
     if request.method == "POST":
         username = request.POST["username"]

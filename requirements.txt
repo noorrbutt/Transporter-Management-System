@@ -3,3 +3,4 @@ Django==5.0.10
 Pillow==10.4.0
 # pandas==2.2.3  # Not used in this project
 # xhtml2pdf==0.2.11  # Uncomment if PDF export is implemented
+django-ratelimit
