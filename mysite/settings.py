@@ -44,6 +44,13 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
+# Vercel sets VERCEL_URL to the current deployment's unique hostname
+# (different for every deploy/preview). Auto-trust it so you don't have
+# to manually add every preview URL to DJANGO_ALLOWED_HOSTS.
+VERCEL_URL = os.environ.get("VERCEL_URL")
+if VERCEL_URL:
+    ALLOWED_HOSTS.append(VERCEL_URL)
+
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_SSL_REDIRECT = not DEBUG
