@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
 from django.db import transaction
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.urls import reverse
@@ -968,6 +968,8 @@ def get_vehicle(request, filter):
     elif filter == "all":
         vehicles = Vehicle.objects.filter(is_deleted=False)
         image = ""
+    else:
+        raise Http404("Unknown vehicle filter")
 
     for vehicle in vehicles:
         # Define a dictionary to store the date fields and their corresponding status messages
