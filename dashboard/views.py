@@ -23,6 +23,7 @@ from django.urls import reverse
 from django.utils import timezone
 import logging
 from django_ratelimit.decorators import ratelimit
+from django_ratelimit.exceptions import Ratelimited
 
 logger = logging.getLogger(__name__)
 
