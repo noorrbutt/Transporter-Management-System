@@ -1,6 +1,7 @@
 # mysqlclient==2.2.6  # Uncomment and install libmysqlclient-dev on your OS if switching to MySQL
 Django==5.0.10
-Pillow==10.4.0
+Pillow==12.3.0
 # pandas==2.2.3  # Not used in this project
 # xhtml2pdf==0.2.11  # Uncomment if PDF export is implemented
 django-ratelimit
+python-dotenv

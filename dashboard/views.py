@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.core.files.base import ContentFile
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -21,8 +22,7 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.urls import reverse
 from django.utils import timezone
 import logging
-from ratelimit.decorators import ratelimit
-from ratelimit.exceptions import Ratelimited
+from django_ratelimit.decorators import ratelimit
 
 logger = logging.getLogger(__name__)
 
@@ -918,6 +918,9 @@ def get_driver(request):
         .filter(is_deleted=False)
         .order_by("D_Name")
     )
+    paginator = Paginator(drivers, 50)
+    drivers = paginator.get_page(request.GET.get("page"))
+
     for driver in drivers:
         # Define a dictionary to store the date fields and their corresponding status messages
         date_fields = {
@@ -942,6 +945,7 @@ def get_driver(request):
 
     context = {
         "drivers": drivers,
+        "page_obj": drivers,
     }
 
     return render(request, "driver/driver.html", context)
@@ -987,6 +991,9 @@ def get_vehicle(request, filter):
     else:
         raise Http404("Unknown vehicle filter")
 
+    paginator = Paginator(vehicles, 50)
+    vehicles = paginator.get_page(request.GET.get("page"))
+
     for vehicle in vehicles:
         # Define a dictionary to store the date fields and their corresponding status messages
         date_fields = {
@@ -1004,7 +1011,7 @@ def get_vehicle(request, filter):
                 status_message = get_date_status(field_date, field_name)
                 setattr(vehicle, f"{field_name}_status", status_message)
 
-    context = {"vehicles": vehicles, "image": image}
+    context = {"vehicles": vehicles, "page_obj": vehicles, "image": image}
     return render(request, "vehicle/vehicle.html", context)
 
 
@@ -1041,27 +1048,11 @@ def dashboard(request):
     total_vehicles = Vehicle.objects.filter(is_deleted=False).count()
     today = date.today()
 
-    expired_cnic_list = []
-    expired_ddc_list = []
-    expired_htv_license_list = []
-    expired_general_list = []
-
     drivers = Driver.objects.filter(is_deleted=False)
-
-    for driver in drivers:
-        if driver.CNIC_Validity and driver.CNIC_Validity < today:
-            expired_cnic_list.append(driver)
-        if driver.DDC_Expiry_Date and driver.DDC_Expiry_Date < today:
-            expired_ddc_list.append(driver)
-        if driver.HTV_License_Expiry_Date and driver.HTV_License_Expiry_Date < today:
-            expired_htv_license_list.append(driver)
-        if driver.Expiry_Date and driver.Expiry_Date < today:
-            expired_general_list.append(driver)
-
-    expired_cnic_list = sorted(expired_cnic_list, key=lambda x: x.D_Name)
-    expired_ddc_list = sorted(expired_ddc_list, key=lambda x: x.D_Name)
-    expired_htv_license_list = sorted(expired_htv_license_list, key=lambda x: x.D_Name)
-    expired_general_list = sorted(expired_general_list, key=lambda x: x.D_Name)
+    expired_cnic_list = drivers.filter(CNIC_Validity__lt=today).order_by("D_Name")
+    expired_ddc_list = drivers.filter(DDC_Expiry_Date__lt=today).order_by("D_Name")
+    expired_htv_license_list = drivers.filter(HTV_License_Expiry_Date__lt=today).order_by("D_Name")
+    expired_general_list = drivers.filter(Expiry_Date__lt=today).order_by("D_Name")
 
     today = date.today()
     year = today.year
@@ -1261,6 +1252,8 @@ def allusers(request):
 
     # Get all users
     users = User.objects.all()
+    paginator = Paginator(users, 50)
+    users = paginator.get_page(request.GET.get("page"))
     user_data = []
 
     for user in users:
@@ -1273,7 +1266,7 @@ def allusers(request):
         }
         user_data.append(user_info)
 
-    context = {"user_data": user_data}
+    context = {"user_data": user_data, "users": users, "page_obj": users}
     return render(request, "user/users.html", context)
 
 

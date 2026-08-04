@@ -128,6 +128,20 @@
       </table>
     </div>
   </div>
+
+  {% if page_obj.has_other_pages %}
+  <div class="flex items-center justify-between gap-3">
+    <span class="text-sm text-ink-500">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    <div class="flex items-center gap-2">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="btn-ghost">Previous</a>
+      {% endif %}
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="btn-ghost">Next</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
 </div>
 
 <script>
