@@ -199,6 +199,7 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+WHITENOISE_MANIFEST_STRICT = False
 
 LOGGING = {
     "version": 1,
