@@ -202,21 +202,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"
-        if CLOUDINARY_URL
-        else "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
-# django-cloudinary-storage overrides the collectstatic command and checks
-# the legacy STATICFILES_STORAGE setting directly (it doesn't know about
-# Django's newer STORAGES dict), so it must be set explicitly here or
-# collectstatic crashes with AttributeError on every file.
-STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
+# Using the legacy-style storage settings (DEFAULT_FILE_STORAGE /
+# STATICFILES_STORAGE) instead of the newer STORAGES dict on purpose:
+# django-cloudinary-storage's collectstatic override reads
+# settings.STATICFILES_STORAGE directly, and Django refuses to let both
+# the legacy settings and STORAGES be defined at the same time
+# ("STATICFILES_STORAGE/STORAGES are mutually exclusive").
+DEFAULT_FILE_STORAGE = (
+    "cloudinary_storage.storage.MediaCloudinaryStorage"
+    if CLOUDINARY_URL
+    else "django.core.files.storage.FileSystemStorage"
+)
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 # Note: not using whitenoise.storage.CompressedStaticFilesStorage here —
 # its collectstatic-time compression runs on a background thread pool and
 # has a known race when two files hash to identical content (the dedup'd
