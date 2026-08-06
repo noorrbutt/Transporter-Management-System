@@ -212,6 +212,11 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+# django-cloudinary-storage overrides the collectstatic command and checks
+# the legacy STATICFILES_STORAGE setting directly (it doesn't know about
+# Django's newer STORAGES dict), so it must be set explicitly here or
+# collectstatic crashes with AttributeError on every file.
+STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
 # Note: not using whitenoise.storage.CompressedStaticFilesStorage here —
 # its collectstatic-time compression runs on a background thread pool and
 # has a known race when two files hash to identical content (the dedup'd
