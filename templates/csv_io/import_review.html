@@ -1,0 +1,172 @@
+{% extends "base/base.html" %}
+{% load custom_tags %}
+
+{% block title %}Import {{ entity.label_plural }} — Review{% endblock %}
+
+{% block content %}
+<div class="space-y-4">
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="page-heading">Import {{ entity.label_plural }} — Review Before Import</h1>
+    <div class="flex items-center gap-2">
+      <a href="{% url 'csv_import_map' entity_key=entity_key %}" class="btn-ghost">
+        <i class="fa fa-arrow-left"></i> Back to Mapping
+      </a>
+      <a href="{% url 'csv_import_cancel' entity_key=entity_key %}" class="btn-ghost">
+        <i class="fa fa-times"></i> Cancel
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary counts -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Total Rows</p>
+      <p class="text-2xl font-semibold text-ink-900">{{ total_rows }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Will Import OK</p>
+      <p class="text-2xl font-semibold text-status-good">{{ results.created|add:results.updated }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Rows With a Field Dropped</p>
+      <p class="text-2xl font-semibold text-status-warn">{{ results.warned_rows }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Rows Skipped Entirely</p>
+      <p class="text-2xl font-semibold text-status-bad">{{ results.skipped }}</p>
+    </div></div>
+  </div>
+
+  <!-- What's not being imported at all: unmapped fields / ignored CSV columns -->
+  {% if mapping_summary.unmapped_optional or mapping_summary.ignored_columns %}
+  <div class="card">
+    <div class="card-header"><span class="card-title">Fields / columns not being imported</span></div>
+    <div class="card-body space-y-3">
+      {% if mapping_summary.unmapped_optional %}
+      <div>
+        <p class="text-xs font-medium text-ink-500 mb-1">{{ entity.label }} fields left blank for every row (not mapped to any CSV column):</p>
+        <div class="flex flex-wrap gap-2">
+          {% for label in mapping_summary.unmapped_optional %}
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-warn-bg text-status-warn border border-status-warn-border">{{ label }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% if mapping_summary.ignored_columns %}
+      <div>
+        <p class="text-xs font-medium text-ink-500 mb-1">CSV columns that will be ignored:</p>
+        <div class="flex flex-wrap gap-2">
+          {% for header in mapping_summary.ignored_columns %}
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-info-bg text-status-info border border-status-info-border">{{ header }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Per-row field drops: which specific values in which rows will be skipped -->
+  {% if results.field_error_counts %}
+  <div class="card">
+    <div class="card-header"><span class="card-title">Values that will be dropped (row still imports, just without that field)</span></div>
+    <div class="card-body">
+      <div class="flex flex-wrap gap-2 mb-4">
+        {% for label, count in results.field_error_counts.items %}
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-warn-bg text-status-warn border border-status-warn-border">{{ label }} — {{ count }} row{{ count|pluralize }}</span>
+        {% endfor %}
+      </div>
+      <div class="data-table-wrap max-h-72">
+        <table class="data-table">
+          <thead><tr><th>CSV Row #</th><th>Field(s) dropped &amp; why</th></tr></thead>
+          <tbody>
+            {% for row in results.row_details %}
+              {% if row.status == "warning" %}
+              <tr>
+                <td>{{ row.row_number }}</td>
+                <td>
+                  {% for label, reason in row.dropped_fields %}
+                    <div><span class="font-medium">{{ label }}</span>: {{ reason }}</div>
+                  {% endfor %}
+                </td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Rows skipped entirely -->
+  {% if results.errors %}
+  <div class="card">
+    <div class="card-header"><span class="card-title">Rows that will be skipped entirely</span></div>
+    <div class="card-body">
+      <div class="data-table-wrap max-h-72">
+        <table class="data-table">
+          <thead><tr><th>CSV Row #</th><th>Reason</th></tr></thead>
+          <tbody>
+            {% for row_num, message in results.errors %}
+            <tr><td>{{ row_num }}</td><td>{{ message }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Preview of rows that will be created/updated -->
+  {% if results.created or results.updated %}
+  <div class="card">
+    <div class="card-header"><span class="card-title">Preview of data that will be saved</span></div>
+    <div class="card-body">
+      <div class="data-table-wrap max-h-96">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Row #</th>
+              <th>Action</th>
+              {% for label in mapping_summary.mapped_fields %}<th>{{ label.label }}</th>{% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in results.row_details %}
+              {% if row.status == "ok" or row.status == "warning" %}
+              <tr>
+                <td>{{ row.row_number }}</td>
+                <td>
+                  {% if row.action == "create" %}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-good-bg text-status-good border border-status-good-border">New</span>{% else %}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-info-bg text-status-info border border-status-info-border">Update</span>{% endif %}
+                </td>
+                {% for field in mapping_summary.mapped_fields %}
+                <td>{{ row.preview|get_item:field.label|default:"—" }}</td>
+                {% endfor %}
+              </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Actions -->
+  <div class="flex items-center gap-3 pt-2">
+    <form method="post" action="{% url 'csv_import_confirm' entity_key=entity_key %}">
+      {% csrf_token %}
+      <button type="submit" class="btn-accent" {% if not results.created and not results.updated %}disabled{% endif %}>
+        <i class="fa fa-check"></i> OK, Import {{ results.created|add:results.updated }} Row{{ results.created|add:results.updated|pluralize }}
+      </button>
+    </form>
+    <a href="{% url 'csv_import_map' entity_key=entity_key %}" class="btn-ghost">
+      <i class="fa fa-pencil"></i> Edit Mapping
+    </a>
+    <a href="{% url 'csv_import_cancel' entity_key=entity_key %}" class="btn-ghost">Cancel</a>
+  </div>
+
+</div>
+{% endblock %}

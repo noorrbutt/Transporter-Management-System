@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from dashboard import views
+from dashboard import csv_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -83,6 +84,33 @@ urlpatterns = [
     path("hseprocedures/", views.get_hsep, name="get_hsep"),
     path("operationprocedures/", views.get_op, name="get_op"),
     path("policies", views.get_policies),
+    # # CSV import / export (Drivers & Vehicles)
+    path("csv/<str:entity_key>/export/", csv_views.csv_export, name="csv_export"),
+    path(
+        "csv/<str:entity_key>/import/upload/",
+        csv_views.csv_import_upload,
+        name="csv_import_upload",
+    ),
+    path(
+        "csv/<str:entity_key>/import/map/",
+        csv_views.csv_import_map,
+        name="csv_import_map",
+    ),
+    path(
+        "csv/<str:entity_key>/import/review/",
+        csv_views.csv_import_review,
+        name="csv_import_review",
+    ),
+    path(
+        "csv/<str:entity_key>/import/confirm/",
+        csv_views.csv_import_confirm,
+        name="csv_import_confirm",
+    ),
+    path(
+        "csv/<str:entity_key>/import/cancel/",
+        csv_views.csv_import_cancel,
+        name="csv_import_cancel",
+    ),
 ]
 
 if settings.DEBUG:

@@ -7,9 +7,28 @@
 
   <div class="flex flex-wrap items-center justify-between gap-3">
     <h1 class="page-heading">Drivers</h1>
-    <a href="/adddriver" class="btn-accent">
-      <i class="fa fa-plus"></i> Add Driver
-    </a>
+    <div class="flex flex-wrap items-center gap-2">
+      <div class="relative" id="driver-actions-wrap">
+        <button type="button" class="btn-ghost" onclick="toggleDriverActionsMenu()">
+          <i class="fa fa-bars"></i> Actions <i class="fa fa-caret-down ml-1"></i>
+        </button>
+        <div id="driver-actions-menu" class="hidden absolute right-0 mt-2 w-44 bg-white border border-ink-100 rounded-lg shadow-lg z-20 overflow-hidden">
+          <a href="{% url 'csv_export' entity_key='driver' %}" class="block px-4 py-2 text-sm text-ink-700 hover:bg-ink-50">
+            <i class="fa fa-download w-4"></i> Export CSV
+          </a>
+          <form action="{% url 'csv_import_upload' entity_key='driver' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="driver-csv-file" class="block px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 cursor-pointer">
+              <i class="fa fa-upload w-4"></i> Import CSV
+            </label>
+            <input type="file" id="driver-csv-file" name="csv_file" accept=".csv" class="hidden" onchange="this.form.submit()">
+          </form>
+        </div>
+      </div>
+      <a href="/adddriver" class="btn-accent">
+        <i class="fa fa-plus"></i> Add Driver
+      </a>
+    </div>
   </div>
 
   <div class="relative w-full sm:w-72">
@@ -67,11 +86,11 @@
               </a>
             </td>
             <td>
-              <div class="flex items-center gap-3">
-                <a href="{% url 'editdriver' driver_id=driver.D_ID %}" class="row-action"><i class="fa fa-edit"></i> Edit</a>
-                <form method="post" action="{% url 'delete_driver' driver_id=driver.D_ID %}">
+              <div class="flex items-center gap-1">
+                <a href="{% url 'editdriver' driver_id=driver.D_ID %}" class="row-icon-btn" title="Edit"><i class="fa fa-edit"></i></a>
+                <form method="post" action="{% url 'delete_driver' driver_id=driver.D_ID %}" onsubmit="return confirm('Delete this driver?');">
                   {% csrf_token %}
-                  <button type="submit" class="row-action is-danger"><i class="fa fa-trash"></i> Delete</button>
+                  <button type="submit" class="row-icon-btn is-danger" title="Delete"><i class="fa fa-trash"></i></button>
                 </form>
               </div>
             </td>
@@ -151,6 +170,16 @@
     document.querySelectorAll('#driver-table tbody tr').forEach((row) => {
       row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
     });
+  });
+
+  function toggleDriverActionsMenu() {
+    document.getElementById('driver-actions-menu').classList.toggle('hidden');
+  }
+  document.addEventListener('click', function (e) {
+    const wrap = document.getElementById('driver-actions-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('driver-actions-menu').classList.add('hidden');
+    }
   });
 </script>
 {% endblock %}

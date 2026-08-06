@@ -6,6 +6,7 @@
   html {
     @apply scroll-smooth;
   }
+
   body {
     @apply bg-canvas text-ink-800 antialiased;
     font-feature-settings: "tnum" 1;
@@ -13,21 +14,26 @@
 }
 
 @layer components {
+
   /* Slim dark-friendly scrollbar for the sidebar */
   #sidebar-menu {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   }
+
   #sidebar-menu::-webkit-scrollbar {
     width: 6px;
   }
+
   #sidebar-menu::-webkit-scrollbar-track {
     background: transparent;
   }
+
   #sidebar-menu::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.15);
     border-radius: 9999px;
   }
+
   #sidebar-menu::-webkit-scrollbar-thumb:hover {
     background-color: rgba(255, 255, 255, 0.25);
   }
@@ -40,21 +46,27 @@
   .form-card {
     @apply max-w-2xl mx-auto bg-surface rounded-card shadow-card border border-ink-100 overflow-hidden;
   }
+
   .form-card-header {
     @apply flex items-center gap-2.5 px-6 py-5 border-b border-ink-100;
   }
+
   .form-card-icon {
     @apply w-9 h-9 rounded-lg bg-accent-50 text-accent-600 flex items-center justify-center text-base shrink-0;
   }
+
   .form-card-title {
     @apply text-lg font-semibold text-ink-900;
   }
+
   .form-card-body {
     @apply px-6 py-6 space-y-5;
   }
+
   .form-card-footer {
     @apply flex items-center gap-3 px-6 py-5 border-t border-ink-100;
   }
+
   .form-actions {
     @apply flex items-center gap-3 pt-2;
   }
@@ -64,29 +76,43 @@
   .data-table-wrap {
     @apply overflow-x-auto rounded-card border border-ink-100;
   }
+
   .data-table {
     @apply w-full text-sm border-collapse;
   }
+
   .data-table thead th {
-    @apply sticky top-0 z-10 bg-ink-50 text-ink-600 text-xs font-semibold uppercase tracking-wide
-           px-4 py-3 text-left border-b border-ink-100 whitespace-nowrap;
+    @apply sticky top-0 z-10 bg-ink-100 text-ink-800 text-xs font-bold uppercase tracking-wider px-4 py-3 text-left border-b-2 border-ink-200 whitespace-nowrap;
   }
+
   .data-table tbody td {
     @apply px-4 py-3 border-b border-ink-100 text-ink-700 whitespace-nowrap align-middle;
   }
+
   .data-table tbody tr:hover {
     @apply bg-ink-50/60;
   }
+
   .data-table tbody tr:last-child td {
     @apply border-b-0;
   }
+
   .table-search {
-    @apply w-full sm:w-72 rounded-lg border border-ink-200 pl-9 pr-3 py-2 text-sm text-ink-900 placeholder:text-ink-400
-           focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition-colors;
+    @apply w-full sm:w-72 rounded-lg border border-ink-200 pl-9 pr-3 py-2 text-sm text-ink-900 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition-colors;
   }
+
   .row-action {
     @apply inline-flex items-center gap-1 text-ink-500 hover:text-ink-900 transition-colors;
   }
+
+  .row-icon-btn {
+    @apply inline-flex items-center justify-center w-8 h-8 rounded-lg text-ink-500 hover:bg-ink-100 hover:text-ink-900 transition-colors border-0 bg-transparent;
+  }
+
+  .row-icon-btn.is-danger {
+    @apply hover:bg-status-bad-bg hover:text-status-bad;
+  }
+
   .row-action.is-danger {
     @apply text-status-bad hover:text-status-bad;
   }
@@ -95,18 +121,23 @@
   .step-dot {
     @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 border-2 transition-colors;
   }
+
   .step-item.is-active .step-dot {
     @apply bg-ink-900 border-ink-900 text-white;
   }
+
   .step-item.is-complete .step-dot {
     @apply bg-status-good border-status-good text-white;
   }
+
   .step-item:not(.is-active):not(.is-complete) .step-dot {
     @apply bg-surface border-ink-200 text-ink-400;
   }
+
   .step-item.is-active .step-label {
     @apply text-ink-900 font-medium;
   }
+
   .step-item:not(.is-active) .step-label {
     @apply text-ink-400;
   }
@@ -115,12 +146,15 @@
   .card {
     @apply bg-surface rounded-card shadow-card border border-ink-100;
   }
+
   .card-header {
     @apply flex items-center justify-between px-5 py-4 border-b border-ink-100;
   }
+
   .card-title {
     @apply text-sm font-semibold text-ink-900 tracking-wide;
   }
+
   .card-body {
     @apply p-5;
   }
@@ -129,40 +163,45 @@
   .status-pill {
     @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border;
   }
+
   .status-pill.is-good {
     @apply bg-status-good-bg text-status-good border-status-good-border;
   }
+
   .status-pill.is-warn {
     @apply bg-status-warn-bg text-status-warn border-status-warn-border;
   }
+
   .status-pill.is-bad {
     @apply bg-status-bad-bg text-status-bad border-status-bad-border;
   }
+
   .status-pill.is-info {
     @apply bg-status-info-bg text-status-info border-status-info-border;
   }
 
   /* Primary action button */
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink-900 text-white text-sm font-medium
-           hover:bg-ink-800 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-ink-900 text-white text-sm font-medium hover:bg-ink-800 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
   }
+
   .btn-accent {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-500 text-white text-sm font-medium
-           hover:bg-accent-600 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent-500 text-white text-sm font-medium hover:bg-accent-600 transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
   }
+
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-200 text-ink-700 text-sm font-medium
-           hover:bg-ink-50 hover:border-ink-300 transition-colors;
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-ink-200 text-ink-700 text-sm font-medium hover:bg-ink-50 hover:border-ink-300 transition-colors;
   }
 
   /* Sidebar nav link */
   .side-link {
     @apply flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-ink-300 hover:bg-white/5 hover:text-white transition-colors;
   }
+
   .side-link.is-active {
     @apply bg-accent-500/15 text-accent-400 font-medium;
   }
+
   .side-section-label {
     @apply px-3 pt-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-ink-500;
   }
@@ -171,13 +210,16 @@
   .nav-submenu-nested {
     @apply relative ml-[19px] pl-5 border-l border-white/10;
   }
+
   .nav-submenu-nested .side-link {
     @apply relative;
   }
+
   .nav-submenu-nested .side-link::before {
     content: '';
     @apply absolute -left-[22px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full bg-ink-500 transition-colors;
   }
+
   .nav-submenu-nested .side-link.is-active::before,
   .nav-submenu-nested .side-link:hover::before {
     @apply bg-accent-400;
@@ -187,8 +229,8 @@
   .field-label {
     @apply block text-sm font-medium text-ink-700 mb-1.5;
   }
+
   .field-input {
-    @apply w-full rounded-lg border border-ink-200 px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400
-           focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition-colors;
+    @apply w-full rounded-lg border border-ink-200 px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-accent-500/40 focus:border-accent-500 transition-colors;
   }
 }

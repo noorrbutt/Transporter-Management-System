@@ -12,3 +12,12 @@ def user_profile_image(user):
 
     except User_Image.DoesNotExist:
         return '/static/images/user.png'
+
+
+@register.filter
+def get_item(dictionary, key):
+    """Look up `key` in `dictionary` from a template — used for the CSV import
+    column auto-mapping, where the key is itself a template variable."""
+    if not dictionary:
+        return None
+    return dictionary.get(key)
