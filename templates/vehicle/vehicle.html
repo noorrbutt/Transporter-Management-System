@@ -79,11 +79,11 @@
               </a>
             </td>
             <td>
-              <div class="flex items-center gap-3">
-                <a href="{% url 'edit_vehicle' vehicle.id %}" class="row-action"><i class="fa fa-edit"></i> Edit</a>
-                <form method="post" action="{% url 'delete_vehicle' vehicle_id=vehicle.id %}">
+              <div class="flex items-center gap-1">
+                <a href="{% url 'edit_vehicle' vehicle.id %}" class="row-icon-btn" title="Edit"><i class="fa fa-edit"></i></a>
+                <form method="post" action="{% url 'delete_vehicle' vehicle_id=vehicle.id %}" onsubmit="return confirm('Delete this vehicle?');">
                   {% csrf_token %}
-                  <button type="submit" class="row-action is-danger"><i class="fa fa-trash"></i> Delete</button>
+                  <button type="submit" class="row-icon-btn is-danger" title="Delete"><i class="fa fa-trash"></i></button>
                 </form>
               </div>
             </td>
