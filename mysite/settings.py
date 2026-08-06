@@ -209,9 +209,16 @@ STORAGES = {
         else "django.core.files.storage.FileSystemStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+# Note: not using whitenoise.storage.CompressedStaticFilesStorage here —
+# its collectstatic-time compression runs on a background thread pool and
+# has a known race when two files hash to identical content (the dedup'd
+# file can be deleted while still queued for compression), which fails
+# collectstatic intermittently on different files each build.
+# WhiteNoiseMiddleware still serves static files with on-the-fly
+# gzip/brotli compression, so this has no real runtime cost.
 WHITENOISE_MANIFEST_STRICT = False
 
 LOGGING = {
