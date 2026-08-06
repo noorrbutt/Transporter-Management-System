@@ -1,0 +1,73 @@
+{% extends "base/base.html" %}
+{% load custom_tags %}
+
+{% block title %}Import {{ entity.label_plural }} — Map Columns{% endblock %}
+
+{% block content %}
+<div class="space-y-4">
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="page-heading">Import {{ entity.label_plural }} — Map CSV Columns</h1>
+    <a href="{% url 'csv_import_cancel' entity_key=entity_key %}" class="btn-ghost">
+      <i class="fa fa-times"></i> Cancel
+    </a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">{{ total_rows }} row{{ total_rows|pluralize }} found — match each {{ entity.label }} field to a column from your CSV</span>
+    </div>
+    <div class="card-body">
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+          {% for field in fields %}
+          <div>
+            <label class="field-label">
+              {{ field.label }}
+              {% if field.required %}<span class="text-status-bad">*</span>{% endif %}
+            </label>
+            <select name="map__{{ field.key }}" class="field-input">
+              <option value="">— Don't import —</option>
+              {% with mapped_header=auto_mapping|get_item:field.key %}
+              {% for header in headers %}
+              <option value="{{ header }}" {% if header == mapped_header %}selected{% endif %}>
+                {{ header }}
+              </option>
+              {% endfor %}
+              {% endwith %}
+            </select>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="mt-6 pt-5 border-t border-ink-100">
+          <p class="text-xs text-ink-500 mb-3">
+            Preview (first {{ preview_rows|length }} row{{ preview_rows|length|pluralize }} of your CSV):
+          </p>
+          <div class="data-table-wrap max-h-56">
+            <table class="data-table">
+              <thead>
+                <tr>{% for header in headers %}<th>{{ header }}</th>{% endfor %}</tr>
+              </thead>
+              <tbody>
+                {% for row in preview_rows %}
+                <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pt-6">
+          <button type="submit" class="btn-accent"><i class="fa fa-upload"></i> Import {{ total_rows }} Row{{ total_rows|pluralize }}</button>
+          <a href="{% url 'csv_import_cancel' entity_key=entity_key %}" class="btn-ghost">Cancel</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

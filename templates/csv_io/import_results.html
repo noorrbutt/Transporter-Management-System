@@ -1,0 +1,54 @@
+{% extends "base/base.html" %}
+
+{% block title %}Import {{ entity.label_plural }} — Results{% endblock %}
+
+{% block content %}
+<div class="space-y-4">
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="page-heading">Import {{ entity.label_plural }} — Results</h1>
+    <a href="{{ list_url }}" class="btn-accent"><i class="fa fa-arrow-left"></i> Back to {{ entity.label_plural }}</a>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Total Rows</p>
+      <p class="text-2xl font-semibold text-ink-900">{{ total_rows }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Created</p>
+      <p class="text-2xl font-semibold text-status-good">{{ results.created }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Updated</p>
+      <p class="text-2xl font-semibold text-status-info">{{ results.updated }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <p class="text-xs text-ink-500">Skipped / Errors</p>
+      <p class="text-2xl font-semibold text-status-bad">{{ results.skipped }}</p>
+    </div></div>
+  </div>
+
+  {% if results.errors %}
+  <div class="card">
+    <div class="card-header"><span class="card-title">Rows that couldn't be imported</span></div>
+    <div class="card-body">
+      <div class="data-table-wrap max-h-96">
+        <table class="data-table">
+          <thead><tr><th>CSV Row #</th><th>Reason</th></tr></thead>
+          <tbody>
+            {% for row_num, message in results.errors %}
+            <tr><td>{{ row_num }}</td><td>{{ message }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-ink-500 mt-3">
+        Fix these rows in your CSV and re-upload just those rows if you'd like them included.
+      </p>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

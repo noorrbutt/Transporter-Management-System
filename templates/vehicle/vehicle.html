@@ -7,8 +7,25 @@
 
   <div class="flex flex-wrap items-center justify-between gap-3">
     <h1 class="page-heading">Vehicles</h1>
-    <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-2">
       {% if image %}<img src="{{ image }}" class="h-10" alt="">{% endif %}
+      <div class="relative" id="vehicle-actions-wrap">
+        <button type="button" class="btn-ghost" onclick="toggleVehicleActionsMenu()">
+          <i class="fa fa-bars"></i> Actions <i class="fa fa-caret-down ml-1"></i>
+        </button>
+        <div id="vehicle-actions-menu" class="hidden absolute right-0 mt-2 w-44 bg-white border border-ink-100 rounded-lg shadow-lg z-20 overflow-hidden">
+          <a href="{% url 'csv_export' entity_key='vehicle' %}" class="block px-4 py-2 text-sm text-ink-700 hover:bg-ink-50">
+            <i class="fa fa-download w-4"></i> Export CSV
+          </a>
+          <form action="{% url 'csv_import_upload' entity_key='vehicle' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="vehicle-csv-file" class="block px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 cursor-pointer">
+              <i class="fa fa-upload w-4"></i> Import CSV
+            </label>
+            <input type="file" id="vehicle-csv-file" name="csv_file" accept=".csv" class="hidden" onchange="this.form.submit()">
+          </form>
+        </div>
+      </div>
       <a href="/addvehicle" class="btn-accent">
         <i class="fa fa-plus"></i> Add Vehicle
       </a>
@@ -150,6 +167,16 @@
     document.querySelectorAll('#vehicle-table tbody tr').forEach((row) => {
       row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
     });
+  });
+
+  function toggleVehicleActionsMenu() {
+    document.getElementById('vehicle-actions-menu').classList.toggle('hidden');
+  }
+  document.addEventListener('click', function (e) {
+    const wrap = document.getElementById('vehicle-actions-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('vehicle-actions-menu').classList.add('hidden');
+    }
   });
 </script>
 {% endblock %}
