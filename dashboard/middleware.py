@@ -13,6 +13,7 @@ class LoginRequiredMiddleware:
 
         is_public_path = (
             request.path in excluded_paths
+            or request.path.startswith("/admin/")
             or request.path.startswith(settings.STATIC_URL)
             or request.path.startswith(settings.MEDIA_URL)
         )
