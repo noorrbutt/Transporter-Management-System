@@ -139,7 +139,7 @@
               <tr>
                 <td>{{ row.row_number }}</td>
                 <td>
-                  {% if row.action == "create" %}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-good-bg text-status-good border border-status-good-border">New</span>{% else %}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-info-bg text-status-info border border-status-info-border">Update</span>{% endif %}
+                  {% if row.action == "create" %}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-good-bg text-status-good border border-status-good-border">New</span>{% elif row.action == "restore" %}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-warn-bg text-status-warn border border-status-warn-border">Will restore soft-deleted record</span>{% else %}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-info-bg text-status-info border border-status-info-border">Update</span>{% endif %}
                 </td>
                 {% for field in mapping_summary.mapped_fields %}
                 <td>{{ row.preview|get_item:field.label|default:"—" }}</td>

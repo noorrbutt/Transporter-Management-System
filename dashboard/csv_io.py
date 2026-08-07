@@ -477,17 +477,21 @@ def process_rows(entity_key, headers, rows, mapping, commit=False):
         is_new = True
         try:
             instance = None
+            is_restoring = False
             key_value = values.get(natural_key)
             if key_value:
-                instance = model.objects.filter(
-                    **{f"{natural_key}__iexact": str(key_value), "is_deleted": False}
-                ).first()
+                instance = model.objects.filter(**{f"{natural_key}__iexact": str(key_value)}).first()
+                is_restoring = bool(instance and instance.is_deleted)
 
             is_new = instance is None
 
             if commit:
                 if is_new:
                     instance = model()
+                elif is_restoring:
+                    instance.is_deleted = False
+                    instance.deleted_at = None
+                    instance.deleted_by = None
                 for field_key, value in values.items():
                     setattr(instance, field_key, value)
                 instance.save()
@@ -497,7 +501,7 @@ def process_rows(entity_key, headers, rows, mapping, commit=False):
                 "row_number": row_num,
                 "status": "warning" if dropped else "ok",
                 "errors": [], "dropped_fields": dropped, "preview": preview,
-                "action": "create" if is_new else "update",
+                "action": "create" if is_new else "restore" if is_restoring else "update",
             })
         except IntegrityError:
             logger.exception("CSV import row %s hit a uniqueness constraint", row_num)

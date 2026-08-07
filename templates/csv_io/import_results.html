@@ -29,6 +29,37 @@
     </div></div>
   </div>
 
+  {% if results.row_details %}
+  <div class="card">
+    <div class="card-header"><span class="card-title">Saved row actions</span></div>
+    <div class="card-body">
+      <div class="data-table-wrap max-h-96">
+        <table class="data-table">
+          <thead><tr><th>CSV Row #</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for row in results.row_details %}
+              {% if row.status == "ok" or row.status == "warning" %}
+              <tr>
+                <td>{{ row.row_number }}</td>
+                <td>
+                  {% if row.action == "create" %}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-good-bg text-status-good border border-status-good-border">Created</span>
+                  {% elif row.action == "restore" %}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-warn-bg text-status-warn border border-status-warn-border">Restored</span>
+                  {% else %}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-status-info-bg text-status-info border border-status-info-border">Updated</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   {% if results.errors %}
   <div class="card">
     <div class="card-header"><span class="card-title">Rows that couldn't be imported</span></div>
