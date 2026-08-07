@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from . import csv_io
+from dashboard.views import superuser_required
 
 SESSION_KEY = "csv_import_data"  # {entity, headers, rows, mapping}
 
@@ -22,6 +23,7 @@ def _list_url(config, entity_key):
 # Export
 # ---------------------------------------------------------------------------
 
+@superuser_required
 def csv_export(request, entity_key):
     """
     GET  /csv/<entity>/export/            -> full export, all columns
@@ -38,6 +40,7 @@ def csv_export(request, entity_key):
 # file input, no intermediate "choose file" page)
 # ---------------------------------------------------------------------------
 
+@superuser_required
 def csv_import_upload(request, entity_key):
     config = _get_entity_or_404(entity_key)
     list_url = _list_url(config, entity_key)
@@ -71,6 +74,7 @@ def csv_import_upload(request, entity_key):
 # Import: step 2 - map CSV columns to fields
 # ---------------------------------------------------------------------------
 
+@superuser_required
 def csv_import_map(request, entity_key):
     config = _get_entity_or_404(entity_key)
     list_url = _list_url(config, entity_key)
@@ -125,6 +129,7 @@ def csv_import_map(request, entity_key):
 # Import: step 3 - review (dry run: nothing is saved yet)
 # ---------------------------------------------------------------------------
 
+@superuser_required
 def csv_import_review(request, entity_key):
     config = _get_entity_or_404(entity_key)
     list_url = _list_url(config, entity_key)
@@ -156,6 +161,7 @@ def csv_import_review(request, entity_key):
 # Import: step 4 - confirm (actually saves valid rows)
 # ---------------------------------------------------------------------------
 
+@superuser_required
 def csv_import_confirm(request, entity_key):
     config = _get_entity_or_404(entity_key)
     list_url = _list_url(config, entity_key)
@@ -187,6 +193,7 @@ def csv_import_confirm(request, entity_key):
     return render(request, "csv_io/import_results.html", context)
 
 
+@superuser_required
 def csv_import_cancel(request, entity_key):
     config = _get_entity_or_404(entity_key)
     request.session.pop(SESSION_KEY, None)
