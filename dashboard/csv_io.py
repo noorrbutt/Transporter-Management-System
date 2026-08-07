@@ -12,10 +12,13 @@ Adding a third entity later only means adding one more `*_FIELDS` /
 """
 import csv
 import io
+import logging
 import re
 from datetime import datetime
 
 from .models import Company, Driver, Location, Vehicle, VehicleMaker, VehicleOwner
+
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -494,12 +497,13 @@ def process_rows(entity_key, headers, rows, mapping, commit=False):
                 "errors": [], "dropped_fields": dropped, "preview": preview,
                 "action": "create" if is_new else "update",
             })
-        except Exception as exc:  # noqa: BLE001 - surface any save-time error per row
-            results["errors"].append((row_num, f"Could not save row: {exc}"))
+        except Exception:  # noqa: BLE001 - surface any save-time error per row
+            logger.exception("CSV import row %s failed", row_num)
+            results["errors"].append((row_num, f"Row {row_num}: could not be saved. See server logs."))
             results["skipped"] += 1
             results["row_details"].append({
                 "row_number": row_num, "status": "error",
-                "errors": [f"Could not save row: {exc}"], "dropped_fields": dropped, "preview": preview,
+                "errors": [f"Row {row_num}: could not be saved. See server logs."], "dropped_fields": dropped, "preview": preview,
             })
 
     return results
