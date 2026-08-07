@@ -99,6 +99,13 @@ class Vehicle(models.Model):
 
     class Meta:
         verbose_name_plural = "Vehicles"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["TL_Number"],
+                condition=models.Q(is_deleted=False),
+                name="uniq_vehicle_tlnumber_active",
+            )
+        ]
 
 
 class Location(models.Model):
@@ -228,6 +235,13 @@ class Driver(models.Model):
 
     class Meta:
         verbose_name_plural = "Drivers"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["CNIC"],
+                condition=models.Q(is_deleted=False),
+                name="uniq_driver_cnic_active",
+            )
+        ]
 
 
 class User_Image(models.Model):

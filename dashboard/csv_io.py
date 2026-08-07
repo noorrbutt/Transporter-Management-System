@@ -16,6 +16,8 @@ import logging
 import re
 from datetime import datetime
 
+from django.db import IntegrityError
+
 from .models import Company, Driver, Location, Vehicle, VehicleMaker, VehicleOwner
 
 logger = logging.getLogger(__name__)
@@ -496,6 +498,16 @@ def process_rows(entity_key, headers, rows, mapping, commit=False):
                 "status": "warning" if dropped else "ok",
                 "errors": [], "dropped_fields": dropped, "preview": preview,
                 "action": "create" if is_new else "update",
+            })
+        except IntegrityError:
+            logger.exception("CSV import row %s hit a uniqueness constraint", row_num)
+            natural_label = "CNIC" if entity_key == "driver" else "TL_Number" if entity_key == "vehicle" else natural_key
+            message = f"Row {row_num}: duplicate {natural_label} already exists."
+            results["errors"].append((row_num, message))
+            results["skipped"] += 1
+            results["row_details"].append({
+                "row_number": row_num, "status": "error",
+                "errors": [message], "dropped_fields": dropped, "preview": preview,
             })
         except Exception:  # noqa: BLE001 - surface any save-time error per row
             logger.exception("CSV import row %s failed", row_num)
