@@ -1,3 +1,6 @@
+from datetime import date, timedelta
+from types import SimpleNamespace
+
 from django.contrib.auth.models import AnonymousUser, User
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
@@ -6,6 +9,10 @@ from django.urls import reverse
 
 from dashboard.middleware import LoginRequiredMiddleware
 from dashboard.models import Driver
+from dashboard.services import (
+    compute_driver_expiry_statuses,
+    compute_vehicle_expiry_statuses,
+)
 from dashboard.views import superuser_required
 
 
@@ -63,6 +70,45 @@ class SuperuserRequiredDecoratorTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b"ok")
+
+
+class ExpiryStatusServiceTests(SimpleTestCase):
+    def test_compute_driver_expiry_statuses_returns_expected_status_keys(self):
+        driver = SimpleNamespace(
+            CNIC_Validity=date.today() + timedelta(days=10),
+            DDC_Issue_Date=date.today() + timedelta(days=100),
+            HTV_License_Issue_Date=date.today() + timedelta(days=200),
+            HTV_License_Expiry_Date=date.today() - timedelta(days=1),
+            DDC_Expiry_Date=date.today() + timedelta(days=20),
+            Report_Date=date.today() + timedelta(days=30),
+            Expiry_Date=date.today() + timedelta(days=40),
+            Joining_Date=date.today() + timedelta(days=50),
+            Salary_Increment_Date=date.today() + timedelta(days=60),
+            Leave_Date=date.today() + timedelta(days=70),
+            Leave_Resume=date.today() + timedelta(days=80),
+        )
+
+        statuses = compute_driver_expiry_statuses(driver)
+
+        self.assertEqual(statuses["CNIC_Validity_status"], "Close to Expiry")
+        self.assertEqual(statuses["HTV_License_Expiry_Date_status"], "Expired")
+        self.assertEqual(statuses["DDC_Date_status"], "Close to Expiry")
+
+    def test_compute_vehicle_expiry_statuses_returns_expected_status_keys(self):
+        vehicle = SimpleNamespace(
+            TAX_PAID_Date=date.today() + timedelta(days=10),
+            FITNISSE_Date=date.today() + timedelta(days=100),
+            INSURANCE_Date=date.today() - timedelta(days=1),
+            DIP_CHART_Date=date.today() + timedelta(days=20),
+            Q_FOM_Date=date.today() + timedelta(days=30),
+            Route_Permit_Date=date.today() + timedelta(days=40),
+        )
+
+        statuses = compute_vehicle_expiry_statuses(vehicle)
+
+        self.assertEqual(statuses["tax_expiry_status"], "Close to Expiry")
+        self.assertEqual(statuses["road_insurance_status"], "Expired")
+        self.assertEqual(statuses["Route_status"], "Close to Expiry")
 
 
 class LoginRequiredMiddlewareTests(SimpleTestCase):
