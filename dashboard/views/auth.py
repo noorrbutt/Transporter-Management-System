@@ -1,3 +1,5 @@
+from dashboard.forms import UserForm
+
 from ._shared import (
     JsonResponse,
     Paginator,
@@ -46,17 +48,14 @@ def logout_user(request):
 def adduser(request):
 
     if request.method == "POST":
-        first_name = request.POST.get("first-name")
-        last_name = request.POST.get("last-name")
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        access_level = request.POST.get("access-level")
-        status = request.POST.get("status")
-        user_image = request.FILES.get("user_image")
+        form = UserForm(request.POST, request.FILES)
+        if not form.is_valid():
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+            return redirect(request.path)
 
-        is_superuser = 1 if access_level == "Full Access" else 0
-        is_active = 1 if status == "Active" else 0
-
+        password = form.cleaned_data.get("password")
         if not password:
             messages.error(request, "Password cannot be blank.")
             return redirect(request.path)
@@ -68,12 +67,7 @@ def adduser(request):
                 messages.error(request, message)
             return redirect(request.path)
 
-        user = User.objects.create_user(username=username, password=password)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.is_superuser = is_superuser
-        user.is_active = is_active
-        user.save()
+        user = form.save()
 
         user_image = request.FILES.get("user_image")
         if user_image:
@@ -119,21 +113,14 @@ def edituser(request, id):
         flag = False
 
     if request.method == "POST":
-        first_name = request.POST.get("first-name")
-        last_name = request.POST.get("last-name")
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        access_level = request.POST.get("access-level")
-        status = request.POST.get("status")
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if not form.is_valid():
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+            return redirect(request.path)
 
-        is_superuser = 1 if access_level == "Full Access" else 0
-        is_active = 1 if status == "Active" else 0
-
-        user.username = username
-        user.first_name = first_name
-        user.last_name = last_name
-        user.is_superuser = is_superuser
-        user.is_active = is_active
+        password = form.cleaned_data.get("password")
         if password:
             try:
                 validate_password(password, user)
@@ -141,8 +128,8 @@ def edituser(request, id):
                 for message in exc.messages:
                     messages.error(request, message)
                 return redirect(request.path)
-            user.set_password(password)
-        user.save()
+
+        user = form.save(instance=user)
 
         user_image = request.FILES.get("user_image")
         if user_image:

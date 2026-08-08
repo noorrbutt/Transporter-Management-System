@@ -1,3 +1,5 @@
+from dashboard.forms import CompanyForm
+
 from ._shared import (
     Company,
     get_object_or_404,
@@ -26,12 +28,14 @@ def get_company(request):
 def add_company(request):
     try:
         if request.method == "POST":
-            company = Company()
-            company.cabb = request.POST.get("cabb")
-            company.cname = request.POST.get("company_name")
-            company.save()
-
-            return HttpResponseRedirect("/company")
+            form = CompanyForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect("/company")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+            return redirect(request.path)
         else:
             return render(request, "company/add_company.html", {"action": "Add"})
     except Exception as e:
@@ -49,14 +53,14 @@ def edit_company(request, company_id):
 
     try:
         if request.method == "POST":
-            cabb = request.POST.get("cabb")
-            cname = request.POST.get("company_name")
-
-            company.cabb = cabb
-            company.cname = cname
-            company.save()
-
-            return HttpResponseRedirect("/company")
+            form = CompanyForm(request.POST)
+            if form.is_valid():
+                form.save(instance=company)
+                return HttpResponseRedirect("/company")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+            return redirect(request.path)
     except Exception as e:
         messages.error(request, f"Operation failed: {str(e)}")
         return redirect(request.path)
