@@ -21,7 +21,7 @@ from ._shared import (
     transaction,
     HttpResponseRedirect,
 )
-from .dashboard_home import get_date_status
+from dashboard.services import compute_driver_expiry_statuses
 
 
 @superuser_required
@@ -287,19 +287,6 @@ def delete_driver(request, driver_id):
 def driver_view(request, driver_id):
 
     driver = get_object_or_404(Driver, D_ID=driver_id)
-    date_fields = {
-        "CNIC_Validity": driver.CNIC_Validity,
-        "Motorway_Cissue_Date": driver.DDC_Issue_Date,
-        "HTV_License_Issue_Date": driver.HTV_License_Issue_Date,
-        "HTV_License_Expiry_Date": driver.HTV_License_Expiry_Date,
-        "DDC_Date": driver.DDC_Expiry_Date,
-        "Report_Date": driver.Report_Date,
-        "Expiry_Date": driver.Expiry_Date,
-        "Joining_Date": driver.Joining_Date,
-        "Salary_Increment_Date": driver.Salary_Increment_Date,
-        "Leave_Date": driver.Leave_Date,
-        "Leave_Resume": driver.Leave_Resume,
-    }
     training_completions = (
         DriverTrainingCompletion.objects.filter(driver=driver)
         .select_related("training")
@@ -311,10 +298,8 @@ def driver_view(request, driver_id):
         .order_by("drill__id")
     )
 
-    for field_name, field_date in date_fields.items():
-        if field_date:
-            status_message = get_date_status(field_date, field_name)
-            setattr(driver, f"{field_name}_status", status_message)
+    for field_name, status_message in compute_driver_expiry_statuses(driver).items():
+        setattr(driver, field_name, status_message)
 
     tbm = driver_tool_box_meeting_attended.objects.filter(
         meeting_attended_by=driver_id
@@ -341,24 +326,8 @@ def get_driver(request):
     drivers = paginator.get_page(request.GET.get("page"))
 
     for driver in drivers:
-        date_fields = {
-            "CNIC_Validity": driver.CNIC_Validity,
-            "Motorway_Cissue_Date": driver.DDC_Issue_Date,
-            "HTV_License_Issue_Date": driver.HTV_License_Issue_Date,
-            "HTV_License_Expiry_Date": driver.HTV_License_Expiry_Date,
-            "DDC_Date": driver.DDC_Expiry_Date,
-            "Report_Date": driver.Report_Date,
-            "Expiry_Date": driver.Expiry_Date,
-            "Joining_Date": driver.Joining_Date,
-            "Salary_Increment_Date": driver.Salary_Increment_Date,
-            "Leave_Date": driver.Leave_Date,
-            "Leave_Resume": driver.Leave_Resume,
-        }
-
-        for field_name, field_date in date_fields.items():
-            if field_date:
-                status_message = get_date_status(field_date, field_name)
-                setattr(driver, f"{field_name}_status", status_message)
+        for field_name, status_message in compute_driver_expiry_statuses(driver).items():
+            setattr(driver, field_name, status_message)
 
     context = {
         "drivers": drivers,

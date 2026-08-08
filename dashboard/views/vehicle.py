@@ -15,7 +15,7 @@ from ._shared import (
     timezone,
     transaction,
 )
-from .dashboard_home import get_date_status
+from dashboard.services import compute_vehicle_expiry_statuses
 
 
 @superuser_required
@@ -275,18 +275,8 @@ def vehicle_view(request, vehicle_id):
 
     vehicle = get_object_or_404(Vehicle, id=vehicle_id)
 
-    date_fields = {
-        "tax_expiry": vehicle.TAX_PAID_Date,
-        "fitness_expiry": vehicle.FITNISSE_Date,
-        "road_insurance": vehicle.INSURANCE_Date,
-        "Dip_Chart": vehicle.DIP_CHART_Date,
-        "Q_Fom": vehicle.Q_FOM_Date,
-        "Route": vehicle.Route_Permit_Date,
-    }
-    for field_name, field_date in date_fields.items():
-        if field_date:
-            status_message = get_date_status(field_date, field_name)
-            setattr(vehicle, f"{field_name}_status", status_message)
+    for field_name, status_message in compute_vehicle_expiry_statuses(vehicle).items():
+        setattr(vehicle, field_name, status_message)
 
     context = {"vehicle": vehicle}
     return render(request, "vehicle/vehicleview.html", context)
@@ -336,19 +326,8 @@ def get_vehicle(request, filter):
     vehicles = paginator.get_page(request.GET.get("page"))
 
     for vehicle in vehicles:
-        date_fields = {
-            "tax_expiry": vehicle.TAX_PAID_Date,
-            "fitness_expiry": vehicle.FITNISSE_Date,
-            "road_insurance": vehicle.INSURANCE_Date,
-            "Dip_Chart": vehicle.DIP_CHART_Date,
-            "Q_Fom": vehicle.Q_FOM_Date,
-            "Route": vehicle.Route_Permit_Date,
-        }
-
-        for field_name, field_date in date_fields.items():
-            if field_date:
-                status_message = get_date_status(field_date, field_name)
-                setattr(vehicle, f"{field_name}_status", status_message)
+        for field_name, status_message in compute_vehicle_expiry_statuses(vehicle).items():
+            setattr(vehicle, field_name, status_message)
 
     context = {"vehicles": vehicles, "page_obj": vehicles, "image": image}
     return render(request, "vehicle/vehicle.html", context)
