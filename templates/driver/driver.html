@@ -12,7 +12,7 @@
         <button type="button" class="btn-ghost" onclick="toggleDriverActionsMenu()">
           <i class="fa fa-bars"></i> Actions <i class="fa fa-caret-down ml-1"></i>
         </button>
-        <div id="driver-actions-menu" class="hidden absolute right-0 mt-2 w-44 bg-white border border-ink-100 rounded-lg shadow-lg z-20 overflow-hidden">
+        <div id="driver-actions-menu" class="hidden absolute right-0 mt-2 w-56 bg-white border border-ink-100 rounded-lg shadow-lg z-20 overflow-hidden">
           <a href="{% url 'csv_export' entity_key='driver' %}" class="block px-4 py-2 text-sm text-ink-700 hover:bg-ink-50">
             <i class="fa fa-download w-4"></i> Export CSV
           </a>
@@ -23,6 +23,10 @@
             </label>
             <input type="file" id="driver-csv-file" name="csv_file" accept=".csv" class="hidden" onchange="this.form.submit()">
           </form>
+          <div class="border-t border-ink-100"></div>
+          <a href="{% url 'bulk_mark_select' %}" class="block px-4 py-2 text-sm text-ink-700 hover:bg-ink-50">
+            <i class="fa fa-check-square-o w-4"></i> Bulk Mark Training/Drill/TBM
+          </a>
         </div>
       </div>
       <a href="/adddriver" class="btn-accent">

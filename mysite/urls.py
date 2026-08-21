@@ -78,6 +78,9 @@ urlpatterns = [
     path(
         "addtraining/<int:D_ID>/", views.add_driver_training, name="add_driver_training"
     ),
+    # Bulk mark Training / Drill / TBM for many drivers at once
+    path("bulkmark/", views.bulk_mark_select, name="bulk_mark_select"),
+    path("bulkmark/drivers/", views.bulk_mark_drivers, name="bulk_mark_drivers"),
     path("procedures/", views.get_procedures, name="get_procedures"),
     path("drivermanagement/", views.get_dm, name="get_dm"),
     path("vehiclemanagement/", views.get_vm, name="get_vm"),

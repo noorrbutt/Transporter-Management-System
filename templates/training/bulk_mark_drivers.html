@@ -1,0 +1,170 @@
+{% extends "base/base.html" %}
+
+{% block title %}Bulk Mark {{ kind_label }} — Select Drivers{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-card-header">
+    <span class="form-card-icon"><i class="fa fa-users"></i></span>
+    <div>
+      <h1 class="form-card-title">Select Drivers</h1>
+      <p class="text-sm text-ink-500 mt-0.5">
+        Marking <span class="font-semibold text-ink-800">{{ kind_label }}: {{ item_label }}</span>
+        {% if completed_date %}<span class="text-ink-400">&middot; {{ completed_date }}</span>{% endif %}
+      </p>
+    </div>
+  </div>
+
+  <form method="post" id="bulk-mark-form">
+    {% csrf_token %}
+    <input type="hidden" name="kind" value="{{ kind }}">
+    <input type="hidden" name="item" value="{{ item.id }}">
+    {% if completed_date %}<input type="hidden" name="date" value="{{ completed_date }}">{% endif %}
+
+    <div class="form-card-body">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div class="relative w-full sm:w-72">
+          <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-ink-400 text-xs"></i>
+          <input type="text" id="bulk-driver-search" class="table-search" placeholder="Search drivers by name, ID, CNIC...">
+        </div>
+        <div class="flex items-center gap-3 text-sm">
+          <span id="bulk-selected-count" class="text-ink-500">0 selected</span>
+          <button type="button" id="bulk-select-all" class="btn-ghost text-xs px-3 py-1.5">Select all (visible)</button>
+          <button type="button" id="bulk-clear-all" class="btn-ghost text-xs px-3 py-1.5">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="data-table-wrap max-h-[55vh]">
+          <table class="data-table" id="bulk-driver-table">
+            <thead>
+              <tr>
+                <th class="w-10">
+                  <input type="checkbox" id="bulk-header-checkbox" aria-label="Select all">
+                </th>
+                <th>Driver</th>
+                <th>Driver #</th>
+                <th>Name</th>
+                <th>Father Name</th>
+                <th>CNIC</th>
+                <th>Cell Phone</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for driver in drivers %}
+              <tr>
+                <td>
+                  <input type="checkbox" name="driver_ids" value="{{ driver.D_ID }}" class="bulk-driver-checkbox" aria-label="Select {{ driver.D_Name }}">
+                </td>
+                <td>
+                  <div class="w-9 h-9 rounded-full overflow-hidden border border-ink-200 bg-ink-50">
+                    {% if driver.D_Image %}
+                      <img src="{{ driver.D_Image.url }}" alt="" class="w-full h-full object-cover">
+                    {% else %}
+                      <img src="/static/images/user.png" alt="" class="w-full h-full object-cover">
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="font-medium text-ink-900">{{ driver.D_Number }}</td>
+                <td>{{ driver.D_Name }}</td>
+                <td>{{ driver.Father_Name }}</td>
+                <td>{{ driver.CNIC }}</td>
+                <td>{{ driver.Cell_Phone_Num }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card-footer">
+      <button type="submit" id="bulk-submit-btn" class="btn-accent" disabled>
+        <i class="fa fa-check"></i> Mark Selected Drivers
+      </button>
+      <a href="{% url 'bulk_mark_select' %}?kind={{ kind }}" class="btn-ghost">
+        <i class="fa fa-arrow-left"></i> Back
+      </a>
+    </div>
+  </form>
+</div>
+
+<script>
+  (function () {
+    const searchInput = document.getElementById('bulk-driver-search');
+    const table = document.getElementById('bulk-driver-table');
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    const headerCheckbox = document.getElementById('bulk-header-checkbox');
+    const selectAllBtn = document.getElementById('bulk-select-all');
+    const clearAllBtn = document.getElementById('bulk-clear-all');
+    const selectedCountEl = document.getElementById('bulk-selected-count');
+    const submitBtn = document.getElementById('bulk-submit-btn');
+    const form = document.getElementById('bulk-mark-form');
+
+    function visibleRows() {
+      return rows.filter((row) => row.style.display !== 'none');
+    }
+
+    function updateSelectedCount() {
+      const checked = table.querySelectorAll('.bulk-driver-checkbox:checked').length;
+      selectedCountEl.textContent = checked + ' selected';
+      submitBtn.disabled = checked === 0;
+
+      const visible = visibleRows();
+      const visibleChecked = visible.filter((row) =>
+        row.querySelector('.bulk-driver-checkbox').checked
+      );
+      headerCheckbox.checked = visible.length > 0 && visibleChecked.length === visible.length;
+      headerCheckbox.indeterminate = visibleChecked.length > 0 && visibleChecked.length < visible.length;
+    }
+
+    searchInput.addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      rows.forEach((row) => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+      updateSelectedCount();
+    });
+
+    table.addEventListener('change', function (e) {
+      if (e.target.classList.contains('bulk-driver-checkbox')) {
+        updateSelectedCount();
+      }
+    });
+
+    headerCheckbox.addEventListener('change', function () {
+      visibleRows().forEach((row) => {
+        row.querySelector('.bulk-driver-checkbox').checked = headerCheckbox.checked;
+      });
+      updateSelectedCount();
+    });
+
+    selectAllBtn.addEventListener('click', function () {
+      visibleRows().forEach((row) => {
+        row.querySelector('.bulk-driver-checkbox').checked = true;
+      });
+      updateSelectedCount();
+    });
+
+    clearAllBtn.addEventListener('click', function () {
+      rows.forEach((row) => {
+        row.querySelector('.bulk-driver-checkbox').checked = false;
+      });
+      updateSelectedCount();
+    });
+
+    form.addEventListener('submit', function (e) {
+      const checked = table.querySelectorAll('.bulk-driver-checkbox:checked').length;
+      if (checked === 0) {
+        e.preventDefault();
+        return;
+      }
+      if (!confirm('Mark this item as completed/attended for ' + checked + ' driver(s)? This cannot be undone in bulk.')) {
+        e.preventDefault();
+      }
+    });
+
+    updateSelectedCount();
+  })();
+</script>
+{% endblock %}

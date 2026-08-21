@@ -62,6 +62,10 @@
       .select2-container {
         width: 100% !important;
       }
+
+      /* Alpine.js: hide elements bound with x-cloak until Alpine initializes,
+         preventing a flash of content that isn't the current wizard step. */
+      [x-cloak] { display: none !important; }
     </style>
 
     {% block extra_css %}{% endblock %}
