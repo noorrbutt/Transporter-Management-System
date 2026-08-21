@@ -22,6 +22,7 @@ from ._shared import (
     superuser_required,
     transaction,
     HttpResponseRedirect,
+    driver_tool_box_meeting_attended,
 )
 from dashboard.forms import DriverForm
 from dashboard.services import compute_driver_expiry_statuses
