@@ -157,7 +157,14 @@ def bulk_mark_drivers(request):
     kind = request.GET.get("kind") or request.POST.get("kind")
     config = _get_kind_or_404(kind)
     item_id = request.GET.get("item") or request.POST.get("item")
-    item_obj = get_object_or_404(config["model"], pk=item_id)
+    if not item_id:
+        messages.error(request, f"Please select a {config['label']} before continuing.")
+        return redirect(reverse("bulk_mark_select") + f"?kind={kind}")
+    try:
+        item_obj = get_object_or_404(config["model"], pk=item_id)
+    except (ValueError, TypeError):
+        messages.error(request, f"Please select a valid {config['label']}.")
+        return redirect(reverse("bulk_mark_select") + f"?kind={kind}")
     completed_date = request.GET.get("date") or request.POST.get("date")
 
     if config["requires_date"] and not completed_date:
