@@ -20,6 +20,50 @@
     <!-- Tailwind build (compiled from static/src/input.css via tailwind.config.js) -->
     <link href="/static/build/css/tailwind.css" rel="stylesheet">
 
+    <!-- Select2 (searchable dropdowns) — loaded globally so any page can use .js-searchable-select -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <style>
+      /* Theme override so Select2 matches our field-input look */
+      .select2-container--default .select2-selection--single {
+        height: 44px;
+        border: 1px solid rgb(226 232 240);
+        border-radius: 0.5rem;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 0.25rem;
+      }
+      .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: rgb(30 41 59);
+        line-height: normal;
+        padding-left: 0.5rem;
+      }
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 42px;
+      }
+      .select2-container--default.select2-container--focus .select2-selection--single,
+      .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: rgb(249 115 22);
+        box-shadow: 0 0 0 1px rgb(249 115 22);
+      }
+      .select2-dropdown {
+        border-color: rgb(226 232 240);
+        border-radius: 0.5rem;
+        overflow: hidden;
+      }
+      .select2-search--dropdown .select2-search__field {
+        border: 1px solid rgb(226 232 240);
+        border-radius: 0.375rem;
+        padding: 0.4rem 0.5rem;
+      }
+      .select2-results__option--highlighted[aria-selected] {
+        background-color: rgb(249 115 22) !important;
+      }
+      .select2-container {
+        width: 100% !important;
+      }
+    </style>
+
     {% block extra_css %}{% endblock %}
   </head>
 
@@ -199,6 +243,23 @@
 
     <!-- jQuery (still required by DataTables / Flot / morris.js / daterangepicker on pages that use them) -->
     <script src="/static/vendors/jquery/dist/jquery.min.js"></script>
+
+    <!-- Select2 (searchable dropdowns) -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+      // Auto-init: any <select> with class "js-searchable-select" becomes a real-time search dropdown.
+      // Works for dropdowns rendered now AND ones added later dynamically (e.g. inside Alpine.js templates).
+      document.addEventListener('DOMContentLoaded', function () {
+        $('.js-searchable-select').each(function () {
+          $(this).select2({
+            width: '100%',
+            placeholder: $(this).data('placeholder') || 'Search...',
+            allowClear: !$(this).prop('required'),
+            dropdownParent: $(this).closest('.form-card, form, body').first()
+          });
+        });
+      });
+    </script>
 
     {% block extra_js %}{% endblock %}
 

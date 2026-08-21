@@ -21,7 +21,8 @@
       </div>
       <div>
         <label class="field-label" for="select-training">Select Training</label>
-        <select id="select-training" name="train" required class="field-input">
+        <select id="select-training" name="train" required class="field-input js-searchable-select" data-placeholder="Search training...">
+          <option></option>
           {% for t in training %}
           <option value="{{ t.id }}">{{ t.train_name }} ({{ t.training_month }})</option>
           {% endfor %}
@@ -29,7 +30,8 @@
       </div>
       <div>
         <label class="field-label" for="select-drill">Select Drill</label>
-        <select id="select-drill" name="drill" required class="field-input">
+        <select id="select-drill" name="drill" required class="field-input js-searchable-select" data-placeholder="Search drill...">
+          <option></option>
           {% for d in drills %}
           <option value="{{ d.id }}">{{ d.drill_name }} ({{ d.drilling_month }})</option>
           {% endfor %}

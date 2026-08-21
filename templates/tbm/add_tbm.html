@@ -21,7 +21,8 @@
       </div>
       <div>
         <label class="field-label" for="violation-type">Select Tool Box Meeting</label>
-        <select id="violation-type" name="meeting_topic" class="field-input">
+        <select id="violation-type" name="meeting_topic" class="field-input js-searchable-select" data-placeholder="Search toolbox meeting topic...">
+          <option></option>
           {% for tbm in tbms %}
           <option>{{ tbm.meeting_topic }}</option>
           {% endfor %}
