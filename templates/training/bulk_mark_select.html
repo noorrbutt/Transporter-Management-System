@@ -1,0 +1,94 @@
+{% extends "base/base.html" %}
+
+{% block title %}Bulk Mark Training / Drill / TBM{% endblock %}
+
+{% block content %}
+<div class="form-card" x-data="{ kind: '{{ selected_kind }}' }">
+  <div class="form-card-header">
+    <span class="form-card-icon"><i class="fa fa-users"></i></span>
+    <h1 class="form-card-title">Bulk Mark Training / Drill / TBM</h1>
+  </div>
+
+  <form method="get" action="{% url 'bulk_mark_drivers' %}">
+    <div class="form-card-body">
+
+      <div>
+        <label class="field-label">What are you marking?</label>
+        <div class="flex flex-wrap gap-2">
+          <label class="flex items-center gap-2 border border-ink-200 rounded-lg px-4 py-2 cursor-pointer"
+                 :class="kind === 'training' ? 'border-accent-600 ring-1 ring-accent-600' : ''">
+            <input type="radio" name="kind" value="training" x-model="kind" class="accent-accent-600">
+            <span class="text-sm font-medium">Training</span>
+          </label>
+          <label class="flex items-center gap-2 border border-ink-200 rounded-lg px-4 py-2 cursor-pointer"
+                 :class="kind === 'drill' ? 'border-accent-600 ring-1 ring-accent-600' : ''">
+            <input type="radio" name="kind" value="drill" x-model="kind" class="accent-accent-600">
+            <span class="text-sm font-medium">Drill</span>
+          </label>
+          <label class="flex items-center gap-2 border border-ink-200 rounded-lg px-4 py-2 cursor-pointer"
+                 :class="kind === 'tbm' ? 'border-accent-600 ring-1 ring-accent-600' : ''">
+            <input type="radio" name="kind" value="tbm" x-model="kind" class="accent-accent-600">
+            <span class="text-sm font-medium">Tool Box Meeting</span>
+          </label>
+        </div>
+      </div>
+
+      <div x-show="kind === 'training'" x-cloak>
+        <label class="field-label" for="training-item">Select Training</label>
+        <select id="training-item" name="item" class="field-input js-searchable-select" data-placeholder="Search training...">
+          <option></option>
+          {% for t in training_items %}
+          <option value="{{ t.id }}">{{ t.train_name }} ({{ t.training_month }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div x-show="kind === 'drill'" x-cloak>
+        <label class="field-label" for="drill-item">Select Drill</label>
+        <select id="drill-item" name="item" class="field-input js-searchable-select" data-placeholder="Search drill...">
+          <option></option>
+          {% for d in drill_items %}
+          <option value="{{ d.id }}">{{ d.drill_name }} ({{ d.drilling_month }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div x-show="kind === 'tbm'" x-cloak>
+        <label class="field-label" for="tbm-item">Select Tool Box Meeting</label>
+        <select id="tbm-item" name="item" class="field-input js-searchable-select" data-placeholder="Search toolbox meeting topic...">
+          <option></option>
+          {% for m in tbm_items %}
+          <option value="{{ m.id }}">{{ m.meeting_topic }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div x-show="kind === 'training' || kind === 'drill'" x-cloak>
+        <label class="field-label" for="completed-date">Completion Date <span class="text-accent-600">*</span></label>
+        <input type="date" id="completed-date" name="date" value="{{ today }}" class="field-input">
+      </div>
+
+    </div>
+    <div class="form-card-footer">
+      <button type="submit" class="btn-accent">
+        Next: Select Drivers <i class="fa fa-arrow-right ml-1"></i>
+      </button>
+      <a href="{% url 'get_drivers' %}" class="btn-ghost">Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Re-init Select2 whenever Alpine toggles a panel's visibility, since a
+  // select that was hidden on load may not have been sized correctly.
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+      $('.js-searchable-select').each(function () {
+        if (!$(this).hasClass('select2-hidden-accessible')) {
+          $(this).select2({ width: '100%', placeholder: $(this).data('placeholder') || 'Search...' });
+        }
+      });
+    }, 50);
+  });
+</script>
+{% endblock %}
